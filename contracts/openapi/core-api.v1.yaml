@@ -7,6 +7,38 @@ servers:
   - url: http://localhost:4002
     description: Desarrollo local
 paths:
+  /auth/login:
+    post:
+      operationId: authLogin
+      summary: Autenticación email/password — emite JWT con tenant y rol
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Login exitoso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+        "401":
+          description: Credenciales inválidas
+  /auth/logout:
+    post:
+      operationId: authLogout
+      summary: Cierre de sesión — invalida el JWT activo
+      tags: [Auth]
+      security:
+        - bearerAuth: []
+      responses:
+        "204":
+          description: Sesión cerrada
+        "401":
+          description: No autenticado o token revocado
   /health:
     get:
       operationId: getHealth
@@ -20,7 +52,42 @@ paths:
               schema:
                 $ref: "#/components/schemas/HealthResponse"
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+    LoginResponse:
+      type: object
+      required: [accessToken, expiresAt, userId, tenantId, email, role]
+      properties:
+        accessToken:
+          type: string
+        expiresAt:
+          type: string
+          format: date-time
+        userId:
+          type: string
+          format: uuid
+        tenantId:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        role:
+          type: string
     HealthResponse:
       type: object
       required: [status, env, database]

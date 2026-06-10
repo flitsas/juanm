@@ -1,3 +1,4 @@
+using Gdc.Infrastructure.Auth;
 using Gdc.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -14,9 +15,19 @@ public static class DependencyInjection
         var connectionString = configuration.GetConnectionString("Core")
             ?? throw new InvalidOperationException("Connection string 'Core' is not configured.");
 
-        services.AddDbContext<GdcDbContext>(options =>
-            options.UseNpgsql(connectionString, npgsql =>
-                npgsql.MigrationsHistoryTable("__ef_migrations_history", "core")));
+        if (configuration.GetValue<bool>("Testing:UseInMemoryDatabase"))
+        {
+            services.AddDbContext<GdcDbContext>(options =>
+                options.UseInMemoryDatabase(configuration["Testing:InMemoryDatabaseName"] ?? "gdc_test"));
+        }
+        else
+        {
+            services.AddDbContext<GdcDbContext>(options =>
+                options.UseNpgsql(connectionString, npgsql =>
+                    npgsql.MigrationsHistoryTable("__ef_migrations_history", "core")));
+        }
+
+        services.AddAuthServices(configuration);
 
         return services;
     }

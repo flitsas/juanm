@@ -1,3 +1,5 @@
+using Gdc.Api.Auth;
+using Gdc.Api.Endpoints;
 using Gdc.Infrastructure;
 using Gdc.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -5,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddOpenApi();
 
 builder.Services.AddCors(options =>
@@ -28,6 +31,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapGet("/health", async (GdcDbContext db, CancellationToken ct) =>
 {
@@ -42,4 +47,8 @@ app.MapGet("/health", async (GdcDbContext db, CancellationToken ct) =>
 .WithName("HealthCheck")
 .WithTags("System");
 
+app.MapAuthEndpoints();
+
 app.Run();
+
+public partial class Program;
