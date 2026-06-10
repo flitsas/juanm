@@ -69,3 +69,25 @@ body {
   outline: 2px solid var(--flit-border-focus);
   outline-offset: 2px;
 }
+
+.flit-card {
+  border-radius: var(--flit-radius-card);
+  background: var(--flit-bg-card);
+  box-shadow: var(--flit-shadow-card);
+  border: 1px solid var(--flit-border-input);
+}
+
+.flit-table thead tr {
+  background: #d0dcef;
+}
+
+.flit-table th,
+.flit-table td {
+  padding: 0.625rem 0.75rem;
+  border-bottom: 1px solid var(--flit-border-input);
+  font-size: 0.875rem;
+}
+
+.flit-table tbody tr:hover {
+  background: rgba(0, 62, 255, 0.04);
+}

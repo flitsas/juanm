@@ -1,3 +1,4 @@
+import { AdminNavLink } from "@/features/auth/components/admin-nav-link";
 import { AuthGuard } from "@/features/auth/components/auth-guard";
 import { LogoutButton } from "@/features/auth/components/logout-button";
 
@@ -20,7 +21,10 @@ export default function DashboardPage() {
                 Sesión activa. Usa cerrar sesión para volver al login.
               </p>
             </div>
-            <LogoutButton />
+            <div className="flex items-center gap-3">
+              <AdminNavLink />
+              <LogoutButton />
+            </div>
           </div>
         </div>
       </main>

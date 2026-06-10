@@ -522,6 +522,81 @@ HU_CONFIG = {
         ],
         "frontend_only": True,
     },
+    9709: {
+        "filter": "FullyQualifiedName~auth",
+        "fe_specs": 5,
+        "fe_tests": 10,
+        "be_specs": 0,
+        "be_tests": 0,
+        "specs": [
+            "<li><code>frontend/src/features/auth/api/admin-api.spec.ts</code> — 4 tests</li>",
+            "<li><code>frontend/src/features/auth/components/invite-user-form.spec.tsx</code> — 1 test</li>",
+            "<li><code>frontend/src/features/auth/components/rbac-matrix-panel.spec.tsx</code> — 1 test</li>",
+            "<li><code>frontend/src/features/auth/components/ui-state.spec.tsx</code> — 3 tests</li>",
+            "<li><code>frontend/src/features/auth/lib/tenants.spec.ts</code> — 1 test</li>",
+        ],
+        "acs": lambda: [
+            ac_block(
+                "1",
+                "Invitación",
+                "Happy path",
+                "✅ Pass",
+                [
+                    ["Tipo de petición", "POST"],
+                    ["Endpoint", "/auth/users/invite"],
+                    ["UI", "Consola Super Admin → Invitar usuario"],
+                ],
+                [
+                    ["Código de respuesta", "201"],
+                    ["Estado usuario", "Pending"],
+                    ["UI", "Confirmación con role=status"],
+                ],
+                [
+                    ["Estado usuario", "Pending ✓"],
+                    ["UI", "Invitación enviada con confirmación ✓"],
+                ],
+                "confirma invitación con usuario pending / inviteUser crea usuario pending",
+            ),
+            ac_block(
+                "2",
+                "Matriz RBAC",
+                "Happy path",
+                "✅ Pass",
+                [
+                    ["Tipo de petición", "GET + PUT"],
+                    ["Endpoint", "/auth/rbac/matrix"],
+                    ["UI", "Toggle permiso + Guardar cambios"],
+                ],
+                [
+                    ["Código de respuesta", "204"],
+                    ["UI", "role=status confirma actualización"],
+                ],
+                [
+                    ["UI", "Matriz RBAC actualizada correctamente ✓"],
+                ],
+                "guarda toggle y confirma estado actualizado",
+            ),
+            ac_block(
+                "3",
+                "Estados UI",
+                "Edge case",
+                "✅ Pass",
+                [
+                    ["UI", "Consola admin"],
+                    ["Estados", "vacío, cargando, error"],
+                ],
+                [
+                    ["WCAG", "role=status (carga), role=alert (error)"],
+                    ["Vacío", "EmptyState con mensaje descriptivo"],
+                ],
+                [
+                    ["WCAG", "LoadingState / EmptyState / ErrorState accesibles ✓"],
+                ],
+                "LoadingState expone estado de carga accesible / ErrorState usa role alert / EmptyState muestra mensaje vacío",
+            ),
+        ],
+        "frontend_only": True,
+    },
     9707: {
         "filter": "FullyQualifiedName~RbacMatrix",
         "be_specs": 2,
