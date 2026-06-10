@@ -5,16 +5,21 @@ using Gdc.Infrastructure.Persistence;
 using Gdc.Infrastructure.Persistence.Auth.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace Gdc.Infrastructure.Auth;
 
 public sealed class AuthSessionService(
     GdcDbContext dbContext,
-    IJwtTokenService jwtTokenService) : IAuthSessionService
+    IJwtTokenService jwtTokenService,
+    IOptions<LockoutSettings> lockoutOptions) : IAuthSessionService
 {
     private static readonly PasswordHasher<User> PasswordHasher = new();
 
     private const string GenericInvalidMessage = "Credenciales inválidas.";
+
+    public const string AccountLockedSuggestionMessage =
+        "Cuenta bloqueada temporalmente. Le sugerimos recuperar o cambiar su contraseña.";
 
     public async Task<(LoginResponse? Success, AuthError? Error)> LoginAsync(
         LoginRequest request,
@@ -44,7 +49,7 @@ public sealed class AuthSessionService(
 
         if (user.LockedUntil is { } lockedUntil && lockedUntil > DateTimeOffset.UtcNow)
         {
-            return (null, new AuthError(AuthErrorCode.AccountLocked, GenericInvalidMessage));
+            return (null, new AuthError(AuthErrorCode.AccountLocked, AccountLockedSuggestionMessage));
         }
 
         var trackedUser = await dbContext.Users
@@ -60,8 +65,18 @@ public sealed class AuthSessionService(
 
         if (verification == PasswordVerificationResult.Failed)
         {
+            var now = DateTimeOffset.UtcNow;
             trackedUser.FailedLoginCount++;
-            trackedUser.UpdatedAt = DateTimeOffset.UtcNow;
+            trackedUser.UpdatedAt = now;
+
+            var lockout = lockoutOptions.Value;
+            if (trackedUser.FailedLoginCount >= lockout.MaxFailedAttempts)
+            {
+                trackedUser.LockedUntil = now.AddMinutes(lockout.LockoutMinutes);
+                await dbContext.SaveChangesAsync(cancellationToken);
+                return (null, new AuthError(AuthErrorCode.AccountLocked, AccountLockedSuggestionMessage));
+            }
+
             await dbContext.SaveChangesAsync(cancellationToken);
             return (null, new AuthError(AuthErrorCode.InvalidCredentials, GenericInvalidMessage));
         }

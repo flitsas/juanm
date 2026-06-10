@@ -18,7 +18,10 @@ public class AuthSessionServiceTests
             AccessTokenMinutes = 15,
         }));
 
-        return new AuthSessionService(context, jwt);
+        return new AuthSessionService(
+            context,
+            jwt,
+            Options.Create(new LockoutSettings { MaxFailedAttempts = 100, LockoutMinutes = 15 }));
     }
 
     [Fact]

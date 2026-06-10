@@ -1,4 +1,3 @@
-using System.Text.RegularExpressions;
 using Gdc.Infrastructure.Auth.Models;
 using Gdc.Infrastructure.Persistence;
 using Gdc.Infrastructure.Persistence.Auth;
@@ -9,7 +8,7 @@ using Microsoft.Extensions.Options;
 
 namespace Gdc.Infrastructure.Auth;
 
-public sealed partial class UserInvitationService(
+public sealed class UserInvitationService(
     GdcDbContext dbContext,
     ITenantContext tenantContext,
     IEmailSender emailSender,
@@ -107,11 +106,11 @@ public sealed partial class UserInvitationService(
             return (null, new InvitationError(InvitationErrorCode.InvalidToken, "Token de activación inválido."));
         }
 
-        if (!IsPasswordCompliant(request.Password))
+        if (!PasswordPolicy.IsCompliant(request.Password))
         {
             return (null, new InvitationError(
                 InvitationErrorCode.InvalidPassword,
-                "La contraseña debe tener al menos 8 caracteres, una letra y un número."));
+                PasswordPolicy.InvalidMessage));
         }
 
         var tokenHash = TokenHasher.Hash(request.Token.Trim());
@@ -163,15 +162,4 @@ public sealed partial class UserInvitationService(
             _ => null,
         };
 
-    private static bool IsPasswordCompliant(string password) =>
-        !string.IsNullOrWhiteSpace(password)
-        && password.Length >= 8
-        && LetterRegex().IsMatch(password)
-        && DigitRegex().IsMatch(password);
-
-    [GeneratedRegex(@"[A-Za-z]")]
-    private static partial Regex LetterRegex();
-
-    [GeneratedRegex(@"\d")]
-    private static partial Regex DigitRegex();
 }

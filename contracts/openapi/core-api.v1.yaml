@@ -102,6 +102,61 @@ paths:
           description: Cuenta activada
         "410":
           description: Token expirado
+  /auth/password/forgot:
+    post:
+      operationId: authForgotPassword
+      summary: Solicita recuperación de contraseña (siempre 202)
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ForgotPasswordRequest"
+      responses:
+        "202":
+          description: Solicitud aceptada
+  /auth/password/reset:
+    post:
+      operationId: authResetPassword
+      summary: Restablece contraseña con token de recuperación
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResetPasswordRequest"
+      responses:
+        "200":
+          description: Contraseña actualizada
+        "410":
+          description: Token expirado
+  /auth/users/{userId}/password:
+    put:
+      operationId: authAdminSetPassword
+      summary: SuperAdmin sobrescribe contraseña de usuario activo
+      tags: [Auth]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminSetPasswordRequest"
+      responses:
+        "204":
+          description: Contraseña actualizada
+        "404":
+          description: Usuario no encontrado
   /auth/logout:
     post:
       operationId: authLogout
@@ -175,6 +230,29 @@ components:
           format: uuid
         roleCode:
           type: string
+    ForgotPasswordRequest:
+      type: object
+      required: [email]
+      properties:
+        email:
+          type: string
+          format: email
+    ResetPasswordRequest:
+      type: object
+      required: [token, password]
+      properties:
+        token:
+          type: string
+        password:
+          type: string
+          format: password
+    AdminSetPasswordRequest:
+      type: object
+      required: [password]
+      properties:
+        password:
+          type: string
+          format: password
     ActivateUserRequest:
       type: object
       required: [token, password]

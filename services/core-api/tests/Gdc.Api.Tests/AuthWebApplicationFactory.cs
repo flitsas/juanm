@@ -43,10 +43,14 @@ public sealed class AuthWebApplicationFactory : WebApplicationFactory<Program>
     public CapturingEmailSender GetEmailSender() =>
         _emailSender ?? Services.GetRequiredService<CapturingEmailSender>();
 
-    public string GetActivationTokenFromLastEmail()
+    public string GetActivationTokenFromLastEmail() => ExtractTokenFromLastEmail();
+
+    public string GetPasswordResetTokenFromLastEmail() => ExtractTokenFromLastEmail();
+
+    private string ExtractTokenFromLastEmail()
     {
         var body = GetEmailSender().LastMessage?.Body
-            ?? throw new InvalidOperationException("No activation email captured.");
+            ?? throw new InvalidOperationException("No email captured.");
         const string marker = "token=";
         var start = body.IndexOf(marker, StringComparison.Ordinal) + marker.Length;
         return body[start..];

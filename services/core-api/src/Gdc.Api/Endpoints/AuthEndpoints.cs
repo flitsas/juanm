@@ -27,8 +27,9 @@ public static class AuthEndpoints
 
             if (success is null || error is not null)
             {
+                var message = error?.Message ?? "Credenciales inválidas.";
                 return Results.Json(
-                    new { message = error?.Message ?? "Credenciales inválidas." },
+                    new { message },
                     statusCode: StatusCodes.Status401Unauthorized);
             }
 
@@ -140,6 +141,84 @@ public static class AuthEndpoints
         })
         .WithName("AuthActivateUser")
         .AllowAnonymous();
+
+        group.MapPost("/password/forgot", async (
+            [FromBody] ForgotPasswordRequest request,
+            IPasswordRecoveryService passwordRecoveryService,
+            CancellationToken cancellationToken) =>
+        {
+            if (string.IsNullOrWhiteSpace(request.Email))
+            {
+                return Results.Accepted();
+            }
+
+            await passwordRecoveryService.ForgotPasswordAsync(request, cancellationToken);
+            return Results.Accepted();
+        })
+        .WithName("AuthForgotPassword")
+        .AllowAnonymous();
+
+        group.MapPost("/password/reset", async (
+            [FromBody] ResetPasswordRequest request,
+            IPasswordRecoveryService passwordRecoveryService,
+            CancellationToken cancellationToken) =>
+        {
+            if (string.IsNullOrWhiteSpace(request.Token) || string.IsNullOrWhiteSpace(request.Password))
+            {
+                return Results.BadRequest(new { message = "Solicitud inválida." });
+            }
+
+            var (success, error) = await passwordRecoveryService.ResetPasswordAsync(request, cancellationToken);
+            if (success is null || error is not null)
+            {
+                return error!.Code switch
+                {
+                    PasswordRecoveryErrorCode.ExpiredToken => Results.Json(
+                        new { message = error.Message },
+                        statusCode: StatusCodes.Status410Gone),
+                    PasswordRecoveryErrorCode.InvalidToken => Results.BadRequest(new { message = error.Message }),
+                    PasswordRecoveryErrorCode.InvalidPassword => Results.BadRequest(new { message = error.Message }),
+                    PasswordRecoveryErrorCode.UserNotActive => Results.BadRequest(new { message = error.Message }),
+                    _ => Results.BadRequest(new { message = error.Message }),
+                };
+            }
+
+            return Results.Ok(success);
+        })
+        .WithName("AuthResetPassword")
+        .AllowAnonymous();
+
+        group.MapPut("/users/{userId:guid}/password", async (
+            Guid userId,
+            [FromBody] AdminSetPasswordRequest request,
+            IPasswordRecoveryService passwordRecoveryService,
+            CancellationToken cancellationToken) =>
+        {
+            if (string.IsNullOrWhiteSpace(request.Password))
+            {
+                return Results.BadRequest(new { message = "Solicitud inválida." });
+            }
+
+            var (success, error) = await passwordRecoveryService.AdminSetPasswordAsync(
+                userId,
+                request,
+                cancellationToken);
+
+            if (success is null || error is not null)
+            {
+                return error!.Code switch
+                {
+                    PasswordRecoveryErrorCode.UserNotFound => Results.NotFound(new { message = error.Message }),
+                    PasswordRecoveryErrorCode.InvalidPassword => Results.BadRequest(new { message = error.Message }),
+                    PasswordRecoveryErrorCode.UserNotActive => Results.BadRequest(new { message = error.Message }),
+                    _ => Results.BadRequest(new { message = error.Message }),
+                };
+            }
+
+            return Results.NoContent();
+        })
+        .WithName("AuthAdminSetPassword")
+        .RequireAuthorization(AuthPolicies.SuperAdmin);
 
         return app;
     }
