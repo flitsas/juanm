@@ -1,0 +1,45 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build / cache
+dist/
+.next/
+out/
+*.tsbuildinfo
+
+# .NET
+bin/
+obj/
+publish/
+*.user
+*.suo
+TestResults/
+coverage/
+
+# Environment & secrets
+.env
+.env.local
+.env.*.local
+.env.user-identity
+infra/secrets/*
+!infra/secrets/.gitkeep
+
+# IDE
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs & temp
+*.log
+tmp/
+temp/
+
+# Playwright
+playwright-report/
+test-results/

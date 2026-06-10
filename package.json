@@ -1,0 +1,22 @@
+{
+  "name": "gdc-monorepo",
+  "private": true,
+  "packageManager": "pnpm@11.5.0",
+  "scripts": {
+    "install:all": "pnpm install && dotnet restore services/core-api/Gdc.CoreApi.slnx",
+    "dev": "pnpm run --parallel dev:api dev:web",
+    "dev:api": "dotnet watch --project services/core-api/src/Gdc.Api/Gdc.Api.csproj run --launch-profile http",
+    "dev:web": "pnpm --filter @gdc/frontend dev",
+    "build": "dotnet build services/core-api/Gdc.CoreApi.slnx -c Release && pnpm --filter @gdc/frontend build",
+    "test": "dotnet test services/core-api/Gdc.CoreApi.slnx -c Release && pnpm --filter @gdc/frontend test",
+    "test:e2e": "pnpm --filter @gdc/frontend test:e2e",
+    "lint": "pnpm -r lint && dotnet format services/core-api/Gdc.CoreApi.slnx --verify-no-changes --verbosity quiet",
+    "format": "pnpm -r format && dotnet format services/core-api/Gdc.CoreApi.slnx",
+    "typecheck": "pnpm -r typecheck",
+    "migrate": "dotnet ef database update --project services/core-api/src/Gdc.Infrastructure/Gdc.Infrastructure.csproj --startup-project services/core-api/src/Gdc.Api/Gdc.Api.csproj",
+    "migrate:add": "dotnet ef migrations add --project services/core-api/src/Gdc.Infrastructure/Gdc.Infrastructure.csproj --startup-project services/core-api/src/Gdc.Api/Gdc.Api.csproj",
+    "docker:up": "docker compose -f infra/docker-compose.yml up -d",
+    "docker:down": "docker compose -f infra/docker-compose.yml down",
+    "doctor": "node scripts/doctor.mjs"
+  }
+}

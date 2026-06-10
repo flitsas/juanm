@@ -1,0 +1,35 @@
+openapi: 3.1.0
+info:
+  title: GDC Core API
+  version: 1.0.0
+  description: API principal del backend GDC 2.0 (.NET 10 + EF Core + PostgreSQL)
+servers:
+  - url: http://localhost:4002
+    description: Desarrollo local
+paths:
+  /health:
+    get:
+      operationId: getHealth
+      summary: Health check del servicio y conexión a base de datos
+      tags: [System]
+      responses:
+        "200":
+          description: Servicio operativo
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthResponse"
+components:
+  schemas:
+    HealthResponse:
+      type: object
+      required: [status, env, database]
+      properties:
+        status:
+          type: string
+          enum: [ok, degraded]
+        env:
+          type: string
+        database:
+          type: string
+          enum: [connected, unavailable]
