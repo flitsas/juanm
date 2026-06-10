@@ -53,20 +53,11 @@ public class AuthSchemaTests
             .UseNpgsql("Host=localhost;Database=gdc_test;Username=postgres;Password=postgres")
             .Options;
 
-        using var context = new GdcDbContext(options);
+        using var context = new GdcDbContext(options, new TenantContext());
         var migrations = context.Database.GetMigrations().ToList();
 
         Assert.Contains(migrations, m => m.EndsWith("_AddAuthSchema", StringComparison.Ordinal));
     }
 
-    private static GdcDbContext CreateContext()
-    {
-        var options = new DbContextOptionsBuilder<GdcDbContext>()
-            .UseInMemoryDatabase($"auth-schema-{Guid.NewGuid()}")
-            .Options;
-
-        var context = new GdcDbContext(options);
-        context.Database.EnsureCreated();
-        return context;
-    }
+    private static GdcDbContext CreateContext() => TestDbContextFactory.CreateInMemory();
 }

@@ -1,3 +1,5 @@
+using Gdc.Infrastructure.Persistence;
+
 namespace Gdc.Infrastructure.Persistence.Auth.Entities;
 
 public enum UserStatus
@@ -7,7 +9,7 @@ public enum UserStatus
     Locked = 2,
 }
 
-public sealed class User : AuditableEntity
+public sealed class User : AuditableEntity, ITenantEntity
 {
     public Guid TenantId { get; set; }
 

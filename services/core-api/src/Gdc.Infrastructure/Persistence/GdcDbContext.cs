@@ -4,8 +4,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gdc.Infrastructure.Persistence;
 
-public sealed class GdcDbContext(DbContextOptions<GdcDbContext> options) : DbContext(options)
+public sealed class GdcDbContext : DbContext
 {
+    private readonly ITenantContext _tenantContext;
+
+    public GdcDbContext(DbContextOptions<GdcDbContext> options, ITenantContext tenantContext)
+        : base(options)
+    {
+        _tenantContext = tenantContext;
+    }
+
     public DbSet<Tenant> Tenants => Set<Tenant>();
     public DbSet<User> Users => Set<User>();
     public DbSet<Role> Roles => Set<Role>();
@@ -21,6 +29,12 @@ public sealed class GdcDbContext(DbContextOptions<GdcDbContext> options) : DbCon
         modelBuilder.HasDefaultSchema("core");
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(GdcDbContext).Assembly);
         AuthSeedData.SeedRoles(modelBuilder);
+
+        modelBuilder.Entity<User>().HasQueryFilter(user =>
+            user.DeletedAt == null &&
+            (_tenantContext.BypassTenantFilter ||
+             (_tenantContext.TenantId != null && user.TenantId == _tenantContext.TenantId)));
+
         base.OnModelCreating(modelBuilder);
     }
 }

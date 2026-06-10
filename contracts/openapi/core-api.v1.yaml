@@ -27,6 +27,47 @@ paths:
                 $ref: "#/components/schemas/LoginResponse"
         "401":
           description: Credenciales inválidas
+  /auth/users:
+    get:
+      operationId: authListTenantUsers
+      summary: Lista usuarios del tenant autenticado
+      tags: [Auth]
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Usuarios del tenant actual
+  /auth/users/{userId}:
+    get:
+      operationId: authGetTenantUser
+      summary: Obtiene usuario por id dentro del tenant actual
+      tags: [Auth]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Usuario encontrado
+        "404":
+          description: No encontrado o fuera de tenant
+  /auth/admin/users:
+    get:
+      operationId: authAdminListAllUsers
+      summary: Lista usuarios cross-tenant (SuperAdmin)
+      tags: [Auth]
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Lista global
+        "403":
+          description: No autorizado
   /auth/logout:
     post:
       operationId: authLogout

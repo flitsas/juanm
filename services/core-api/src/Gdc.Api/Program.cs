@@ -32,6 +32,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors();
 app.UseAuthentication();
+app.UseTenantContext();
 app.UseAuthorization();
 
 app.MapGet("/health", async (GdcDbContext db, CancellationToken ct) =>

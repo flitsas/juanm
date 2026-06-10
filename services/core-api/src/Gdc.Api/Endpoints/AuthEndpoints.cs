@@ -1,3 +1,4 @@
+using Gdc.Api.Auth;
 using Gdc.Infrastructure.Auth;
 using Gdc.Infrastructure.Auth.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -51,6 +52,37 @@ public static class AuthEndpoints
         })
         .WithName("AuthLogout")
         .RequireAuthorization();
+
+        group.MapGet("/users", async (
+            IUserReadService userReadService,
+            CancellationToken cancellationToken) =>
+        {
+            var users = await userReadService.ListCurrentTenantUsersAsync(cancellationToken);
+            return Results.Ok(users);
+        })
+        .WithName("AuthListTenantUsers")
+        .RequireAuthorization();
+
+        group.MapGet("/users/{userId:guid}", async (
+            Guid userId,
+            IUserReadService userReadService,
+            CancellationToken cancellationToken) =>
+        {
+            var user = await userReadService.GetUserByIdAsync(userId, cancellationToken);
+            return user is null ? Results.NotFound() : Results.Ok(user);
+        })
+        .WithName("AuthGetTenantUser")
+        .RequireAuthorization();
+
+        group.MapGet("/admin/users", async (
+            IUserReadService userReadService,
+            CancellationToken cancellationToken) =>
+        {
+            var users = await userReadService.ListAllUsersForSuperAdminAsync(cancellationToken);
+            return Results.Ok(users);
+        })
+        .WithName("AuthAdminListAllUsers")
+        .RequireAuthorization(AuthPolicies.SuperAdmin);
 
         return app;
     }

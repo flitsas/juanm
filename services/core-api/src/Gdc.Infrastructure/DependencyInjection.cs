@@ -12,6 +12,8 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
+        services.AddScoped<ITenantContext, TenantContext>();
+
         var connectionString = configuration.GetConnectionString("Core")
             ?? throw new InvalidOperationException("Connection string 'Core' is not configured.");
 
@@ -22,9 +24,14 @@ public static class DependencyInjection
         }
         else
         {
-            services.AddDbContext<GdcDbContext>(options =>
-                options.UseNpgsql(connectionString, npgsql =>
-                    npgsql.MigrationsHistoryTable("__ef_migrations_history", "core")));
+            services.AddDbContext<GdcDbContext>((serviceProvider, options) =>
+            {
+                var tenantContext = serviceProvider.GetRequiredService<ITenantContext>();
+                options
+                    .UseNpgsql(connectionString, npgsql =>
+                        npgsql.MigrationsHistoryTable("__ef_migrations_history", "core"))
+                    .AddInterceptors(new NpgsqlTenantRlsInterceptor(tenantContext));
+            });
         }
 
         services.AddAuthServices(configuration);

@@ -23,6 +23,7 @@ public sealed class AuthSessionService(
         var normalizedEmail = request.Email.Trim().ToLowerInvariant();
 
         var users = await dbContext.Users
+            .IgnoreQueryFilters()
             .AsNoTracking()
             .Include(u => u.UserRoles)
             .ThenInclude(ur => ur.Role)
@@ -47,6 +48,7 @@ public sealed class AuthSessionService(
         }
 
         var trackedUser = await dbContext.Users
+            .IgnoreQueryFilters()
             .Include(u => u.UserRoles)
             .ThenInclude(ur => ur.Role)
             .FirstAsync(u => u.Id == user.Id, cancellationToken);

@@ -10,6 +10,7 @@ public static class AuthDependencyInjection
         services.Configure<JwtSettings>(configuration.GetSection(JwtSettings.SectionName));
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddScoped<IAuthSessionService, AuthSessionService>();
+        services.AddScoped<IUserReadService, UserReadService>();
         return services;
     }
 }

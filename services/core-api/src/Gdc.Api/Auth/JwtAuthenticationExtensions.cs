@@ -56,7 +56,17 @@ public static class JwtAuthenticationExtensions
                 };
             });
 
-        services.AddAuthorization();
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy(AuthPolicies.SuperAdmin, policy =>
+                policy.RequireRole(AuthRoles.SuperAdmin));
+        });
+
         return services;
     }
+}
+
+public static class AuthPolicies
+{
+    public const string SuperAdmin = "SuperAdmin";
 }

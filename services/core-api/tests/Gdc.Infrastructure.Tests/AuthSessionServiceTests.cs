@@ -24,7 +24,7 @@ public class AuthSessionServiceTests
     [Fact]
     public async Task LoginAsync_with_valid_credentials_returns_jwt_with_tenant_and_role()
     {
-        await using var context = AuthTestData.CreateInMemoryContext();
+        await using var context = TestDbContextFactory.CreateInMemory();
         await AuthTestData.SeedActiveUserAsync(context);
         var service = CreateService(context);
 
@@ -42,7 +42,7 @@ public class AuthSessionServiceTests
     [Fact]
     public async Task LoginAsync_with_invalid_password_returns_generic_error()
     {
-        await using var context = AuthTestData.CreateInMemoryContext();
+        await using var context = TestDbContextFactory.CreateInMemory();
         await AuthTestData.SeedActiveUserAsync(context);
         var service = CreateService(context);
 
@@ -58,7 +58,7 @@ public class AuthSessionServiceTests
     [Fact]
     public async Task LogoutAsync_revokes_token_and_blocks_reuse()
     {
-        await using var context = AuthTestData.CreateInMemoryContext();
+        await using var context = TestDbContextFactory.CreateInMemory();
         await AuthTestData.SeedActiveUserAsync(context);
         var jwt = new JwtTokenService(Options.Create(new JwtSettings
         {
@@ -70,6 +70,7 @@ public class AuthSessionServiceTests
         var service = CreateService(context);
 
         var user = await context.Users
+            .IgnoreQueryFilters()
             .Include(u => u.UserRoles)
             .ThenInclude(ur => ur.Role)
             .FirstAsync();
