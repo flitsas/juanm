@@ -1,3 +1,4 @@
+using Gdc.Infrastructure.Auth;
 using Gdc.Infrastructure.Persistence;
 using Gdc.Infrastructure.Persistence.Auth;
 using Gdc.Infrastructure.Persistence.Auth.Entities;
@@ -116,5 +117,36 @@ public static class AuthTestData
         context.UserRoles.Add(new UserRole { UserId = SuperAdminUserId, RoleId = AuthRoleIds.SuperAdmin });
 
         await context.SaveChangesAsync();
+    }
+
+    public static async Task<(string RawToken, Guid UserId)> SeedPendingUserWithExpiredTokenAsync(GdcDbContext context)
+    {
+        var now = DateTimeOffset.UtcNow;
+        var userId = Guid.Parse("33333333-3333-4333-8333-333333333399");
+        var user = new User
+        {
+            Id = userId,
+            TenantId = TenantId,
+            Email = "expired@example.com",
+            Status = UserStatus.Pending,
+            CreatedAt = now,
+            UpdatedAt = now,
+        };
+        user.PasswordHash = new PasswordHasher<User>().HashPassword(user, Guid.NewGuid().ToString("N"));
+
+        var rawToken = TokenHasher.GenerateToken();
+        context.Users.Add(user);
+        context.UserRoles.Add(new UserRole { UserId = userId, RoleId = AuthRoleIds.Operator });
+        context.ActivationTokens.Add(new ActivationToken
+        {
+            Id = Guid.NewGuid(),
+            UserId = userId,
+            TokenHash = TokenHasher.Hash(rawToken),
+            ExpiresAt = now.AddHours(-1),
+            CreatedAt = now,
+            UpdatedAt = now,
+        });
+        await context.SaveChangesAsync();
+        return (rawToken, userId);
     }
 }

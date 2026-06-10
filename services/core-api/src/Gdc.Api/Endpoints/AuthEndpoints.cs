@@ -84,6 +84,63 @@ public static class AuthEndpoints
         .WithName("AuthAdminListAllUsers")
         .RequireAuthorization(AuthPolicies.SuperAdmin);
 
+        group.MapPost("/users/invite", async (
+            [FromBody] InviteUserRequest request,
+            IUserInvitationService invitationService,
+            CancellationToken cancellationToken) =>
+        {
+            if (string.IsNullOrWhiteSpace(request.Email) || request.TenantId == Guid.Empty)
+            {
+                return Results.BadRequest(new { message = "Solicitud inválida." });
+            }
+
+            var (success, error) = await invitationService.InviteAsync(request, cancellationToken);
+            if (success is null || error is not null)
+            {
+                return error!.Code switch
+                {
+                    InvitationErrorCode.TenantNotFound => Results.NotFound(new { message = error.Message }),
+                    InvitationErrorCode.DuplicateEmail => Results.Conflict(new { message = error.Message }),
+                    InvitationErrorCode.InvalidRole => Results.BadRequest(new { message = error.Message }),
+                    _ => Results.BadRequest(new { message = error.Message }),
+                };
+            }
+
+            return Results.Created($"/auth/users/{success.UserId}", success);
+        })
+        .WithName("AuthInviteUser")
+        .RequireAuthorization(AuthPolicies.SuperAdmin);
+
+        group.MapPost("/users/activate", async (
+            [FromBody] ActivateUserRequest request,
+            IUserInvitationService invitationService,
+            CancellationToken cancellationToken) =>
+        {
+            if (string.IsNullOrWhiteSpace(request.Token) || string.IsNullOrWhiteSpace(request.Password))
+            {
+                return Results.BadRequest(new { message = "Solicitud inválida." });
+            }
+
+            var (success, error) = await invitationService.ActivateAsync(request, cancellationToken);
+            if (success is null || error is not null)
+            {
+                return error!.Code switch
+                {
+                    InvitationErrorCode.ExpiredToken => Results.Json(
+                        new { message = error.Message },
+                        statusCode: StatusCodes.Status410Gone),
+                    InvitationErrorCode.InvalidToken => Results.BadRequest(new { message = error.Message }),
+                    InvitationErrorCode.InvalidPassword => Results.BadRequest(new { message = error.Message }),
+                    InvitationErrorCode.UserNotPending => Results.BadRequest(new { message = error.Message }),
+                    _ => Results.BadRequest(new { message = error.Message }),
+                };
+            }
+
+            return Results.Ok(success);
+        })
+        .WithName("AuthActivateUser")
+        .AllowAnonymous();
+
         return app;
     }
 }

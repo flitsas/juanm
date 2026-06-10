@@ -68,6 +68,40 @@ paths:
           description: Lista global
         "403":
           description: No autorizado
+  /auth/users/invite:
+    post:
+      operationId: authInviteUser
+      summary: Invita usuario a un tenant (SuperAdmin)
+      tags: [Auth]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InviteUserRequest"
+      responses:
+        "201":
+          description: Usuario pending creado y correo enviado
+        "409":
+          description: Email duplicado en tenant
+  /auth/users/activate:
+    post:
+      operationId: authActivateUser
+      summary: Activa cuenta con token de invitación (48h)
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ActivateUserRequest"
+      responses:
+        "200":
+          description: Cuenta activada
+        "410":
+          description: Token expirado
   /auth/logout:
     post:
       operationId: authLogout
@@ -129,6 +163,27 @@ components:
           format: email
         role:
           type: string
+    InviteUserRequest:
+      type: object
+      required: [email, tenantId]
+      properties:
+        email:
+          type: string
+          format: email
+        tenantId:
+          type: string
+          format: uuid
+        roleCode:
+          type: string
+    ActivateUserRequest:
+      type: object
+      required: [token, password]
+      properties:
+        token:
+          type: string
+        password:
+          type: string
+          format: password
     HealthResponse:
       type: object
       required: [status, env, database]
