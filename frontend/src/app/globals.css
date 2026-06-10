@@ -1,19 +1,71 @@
 @import "tailwindcss";
 
+/* Tokens FLIT — alineados a DESIGNS/flitready-suite */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --flit-bg-app: #e2eaf7;
+  --flit-bg-card: #ffffff;
+  --flit-text-primary: #162744;
+  --flit-text-secondary: #59677d;
+  --flit-text-brand: #003eff;
+  --flit-border-input: #d9dee8;
+  --flit-border-focus: #003eff;
+  --flit-state-danger: #ff4000;
+  --flit-action: #003eff;
+  --flit-gradient-flit: linear-gradient(-45deg, #b3ff1f 0%, #003eff 100%);
+  --flit-radius-input: 16px;
+  --flit-radius-card: 18px;
+  --flit-shadow-card: 0 8px 24px rgba(22, 39, 68, 0.08);
+  --flit-shadow-button: 0 4px 14px rgba(0, 62, 255, 0.25);
+  --font-sans: var(--font-poppins), Inter, system-ui, sans-serif;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: system-ui, -apple-system, sans-serif;
+  background: var(--flit-bg-app);
+  color: var(--flit-text-primary);
+  font-family: var(--font-sans);
+}
+
+.flit-input {
+  display: block;
+  width: 100%;
+  height: 48px;
+  padding: 0 16px;
+  border: 1px solid var(--flit-border-input);
+  border-radius: var(--flit-radius-input);
+  background: #fff;
+  color: var(--flit-text-primary);
+  font-size: 14px;
+}
+
+.flit-input:focus {
+  outline: 2px solid var(--flit-border-focus);
+  outline-offset: 1px;
+}
+
+.flit-gradient-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 999px;
+  background: var(--flit-action);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--flit-shadow-button);
+  transition: transform 120ms ease, opacity 120ms ease, box-shadow 120ms ease;
+}
+
+.flit-gradient-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.flit-gradient-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.flit-gradient-btn:focus-visible {
+  outline: 2px solid var(--flit-border-focus);
+  outline-offset: 2px;
 }

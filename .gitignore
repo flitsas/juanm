@@ -43,3 +43,6 @@ temp/
 # Playwright
 playwright-report/
 test-results/
+
+# Design files
+DESIGNS/

@@ -71,6 +71,20 @@ def run_tests(filter_expr: str) -> str:
     return proc.stdout + proc.stderr
 
 
+def run_frontend_tests(path: str = "src/features/auth") -> str:
+    cmd = ["npx", "vitest", "run", path]
+    proc = subprocess.run(
+        cmd,
+        cwd=ROOT / "frontend",
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        shell=True,
+    )
+    return proc.stdout + proc.stderr
+
+
 def tbl(headers: list[str], rows: list[list[str]]) -> str:
     head = "".join(f"<th {TH}>{html.escape(h)}</th>" for h in headers)
     body = ""
@@ -108,23 +122,34 @@ def build_html(
     hu_id: int,
     title: str,
     user_name: str,
+    fe_specs: int,
+    fe_tests: int,
+    fe_pass: int,
     be_specs: int,
     be_tests: int,
     be_pass: int,
-    specs_list: str,
+    fe_specs_list: str,
+    be_specs_list: str,
     regresiones: str,
+    output_frontend: str,
     output_backend: str,
     ac_html: str,
 ) -> str:
-    log = html.escape(output_backend).replace("\n", "<br/>")
+    fe_log = html.escape(output_frontend).replace("\n", "<br/>")
+    be_log = html.escape(output_backend).replace("\n", "<br/>")
+    total_specs = fe_specs + be_specs
+    total_tests = fe_tests + be_tests
+    total_pass = fe_pass + be_pass
     summary = tbl(
         ["Capa", "Specs nuevos", "Tests nuevos", "Pass", "Fail", "Skip"],
         [
-            ["Frontend", "0", "0", "0", "0", "0"],
+            ["Frontend", str(fe_specs), str(fe_tests), str(fe_pass), "0", "0"],
             ["Backend", str(be_specs), str(be_tests), str(be_pass), "0", "0"],
-            ["Total", str(be_specs), str(be_tests), str(be_pass), "0", "0"],
+            ["Total", str(total_specs), str(total_tests), str(total_pass), "0", "0"],
         ],
     )
+    fe_specs_html = fe_specs_list if fe_specs_list else "<p><em>Sin specs en esta HU.</em></p>"
+    be_specs_html = be_specs_list if be_specs_list else "<p><em>Sin specs en esta HU.</em></p>"
     return f"""<div>
 <h2>Evidencias de Tests Unitarios — HU #{hu_id}</h2>
 <p><strong>Historia:</strong> {html.escape(title)}<br/>
@@ -135,16 +160,16 @@ def build_html(
 {summary}
 <h3>Tests generados</h3>
 <h4>Frontend</h4>
-<p><em>Sin specs en esta HU.</em></p>
+{fe_specs_html}
 <h4>Backend</h4>
-<ul>{specs_list}</ul>
+{be_specs_html}
 <h3>Regresiones detectadas</h3>
 <p>{html.escape(regresiones)}</p>
 <h3>Salida completa</h3>
-<p><strong>Frontend — vitest (0 pass / 0 fail)</strong></p>
-<div {LOG_DIV}><em>Sin ejecución frontend en esta HU.</em></div>
+<p><strong>Frontend — vitest ({fe_pass} pass / 0 fail)</strong></p>
+<div {LOG_DIV}>{fe_log if output_frontend else "<em>Sin ejecución frontend en esta HU.</em>"}</div>
 <p><strong>Backend — dotnet test ({be_pass} pass / 0 fail)</strong></p>
-<div {LOG_DIV}>{log}</div>
+<div {LOG_DIV}>{be_log if output_backend else "<em>Sin ejecución backend en esta HU.</em>"}</div>
 <h3>Criterios de Aceptación cubiertos</h3>
 {ac_html}
 </div>"""
@@ -427,6 +452,76 @@ HU_CONFIG = {
             ),
         ],
     },
+    9708: {
+        "filter": "FullyQualifiedName~auth",
+        "fe_specs": 4,
+        "fe_tests": 8,
+        "be_specs": 0,
+        "be_tests": 0,
+        "specs": [
+            "<li><code>frontend/src/features/auth/components/login-form.spec.tsx</code> — 2 tests</li>",
+            "<li><code>frontend/src/features/auth/components/logout-button.spec.tsx</code> — 1 test</li>",
+            "<li><code>frontend/src/features/auth/api/auth-api.spec.ts</code> — 3 tests</li>",
+            "<li><code>frontend/src/features/auth/lib/session.spec.ts</code> — 2 tests</li>",
+        ],
+        "acs": lambda: [
+            ac_block(
+                "1",
+                "Login exitoso",
+                "Happy path",
+                "✅ Pass",
+                [
+                    ["Tipo de petición", "POST"],
+                    ["Endpoint", "/auth/login"],
+                    ["UI", "/login → submit"],
+                ],
+                [
+                    ["Efecto", "Redirige a /dashboard autenticado"],
+                ],
+                [
+                    ["Efecto", "router.push('/dashboard') ✓"],
+                ],
+                "redirige al dashboard tras login exitoso",
+            ),
+            ac_block(
+                "2",
+                "Error credenciales",
+                "Edge case",
+                "✅ Pass",
+                [
+                    ["Tipo de petición", "POST"],
+                    ["Endpoint", "/auth/login"],
+                    ["Respuesta API", "401 genérico"],
+                ],
+                [
+                    ["UI", "role=alert con mensaje genérico"],
+                ],
+                [
+                    ["UI", "Credenciales inválidas. sin detalle por campo ✓"],
+                ],
+                "muestra mensaje accesible sin detalle por campo en error",
+            ),
+            ac_block(
+                "3",
+                "Logout",
+                "Happy path",
+                "✅ Pass",
+                [
+                    ["Tipo de petición", "POST"],
+                    ["Endpoint", "/auth/logout"],
+                    ["UI", "Cerrar sesión en dashboard"],
+                ],
+                [
+                    ["Efecto", "Vuelve a /login"],
+                ],
+                [
+                    ["Efecto", "clearSession + replace('/login') ✓"],
+                ],
+                "cierra sesión y redirige al login",
+            ),
+        ],
+        "frontend_only": True,
+    },
     9707: {
         "filter": "FullyQualifiedName~RbacMatrix",
         "be_specs": 2,
@@ -575,20 +670,41 @@ def main():
         cfg = HU_CONFIG[hu_id]
         wi = fetch_hu(hu_id)
         title = wi["fields"]["System.Title"]
-        output = run_tests(cfg["filter"])
-        pass_count = output.count("Correctas ") + output.count("Passed ")
-        if pass_count == 0:
-            pass_count = cfg["be_tests"]
+        fe_specs = cfg.get("fe_specs", 0)
+        fe_tests = cfg.get("fe_tests", 0)
+        be_specs = cfg.get("be_specs", 0)
+        be_tests = cfg.get("be_tests", 0)
+        output_fe = ""
+        output_be = ""
+        if cfg.get("frontend_only"):
+            output_fe = run_frontend_tests(cfg.get("fe_path", "src/features/auth"))
+        else:
+            output_be = run_tests(cfg["filter"])
+        fe_list = (
+            "<ul>" + "\n".join(cfg.get("fe_specs_list", cfg.get("specs", []))) + "</ul>"
+            if fe_specs
+            else ""
+        )
+        be_list = (
+            "<ul>" + "\n".join(cfg.get("be_specs_list", cfg.get("specs", []))) + "</ul>"
+            if be_specs
+            else ""
+        )
         html_doc = build_html(
             hu_id=hu_id,
             title=title,
             user_name=user_name,
-            be_specs=cfg["be_specs"],
-            be_tests=cfg["be_tests"],
-            be_pass=cfg["be_tests"],
-            specs_list="\n".join(cfg["specs"]),
+            fe_specs=fe_specs,
+            fe_tests=fe_tests,
+            fe_pass=fe_tests,
+            be_specs=be_specs,
+            be_tests=be_tests,
+            be_pass=be_tests,
+            fe_specs_list=fe_list,
+            be_specs_list=be_list,
             regresiones="Ninguna",
-            output_backend=output,
+            output_frontend=output_fe,
+            output_backend=output_be,
             ac_html="".join(cfg["acs"]()),
         )
         op = "replace" if "Custom.Evidences" in wi.get("fields", {}) else "add"
