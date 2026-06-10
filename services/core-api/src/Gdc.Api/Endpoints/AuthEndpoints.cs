@@ -220,6 +220,32 @@ public static class AuthEndpoints
         .WithName("AuthAdminSetPassword")
         .RequireAuthorization(AuthPolicies.SuperAdmin);
 
+        group.MapGet("/rbac/matrix", async (
+            IRbacMatrixService rbacMatrixService,
+            CancellationToken cancellationToken) =>
+        {
+            var matrix = await rbacMatrixService.GetMatrixAsync(cancellationToken);
+            return Results.Ok(matrix);
+        })
+        .WithName("AuthGetRbacMatrix")
+        .RequireAuthorization(AuthPolicies.SuperAdmin);
+
+        group.MapPut("/rbac/matrix", async (
+            [FromBody] UpdateRbacMatrixRequest request,
+            IRbacMatrixService rbacMatrixService,
+            CancellationToken cancellationToken) =>
+        {
+            if (request.Assignments is null || request.Assignments.Count == 0)
+            {
+                return Results.BadRequest(new { message = "Solicitud inválida." });
+            }
+
+            await rbacMatrixService.UpdateMatrixAsync(request, cancellationToken);
+            return Results.NoContent();
+        })
+        .WithName("AuthUpdateRbacMatrix")
+        .RequireAuthorization(AuthPolicies.SuperAdmin);
+
         return app;
     }
 }

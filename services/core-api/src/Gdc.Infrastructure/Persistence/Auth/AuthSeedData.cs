@@ -42,4 +42,53 @@ internal static class AuthSeedData
                 UpdatedAt = SeedTimestamp,
             });
     }
+
+    public static void SeedPermissions(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Permission>().HasData(
+            new Permission
+            {
+                Id = AuthPermissionIds.UsersRead,
+                Code = "auth.users.read",
+                Module = "auth",
+                Action = "read",
+                Description = "Consultar usuarios",
+                IsActive = true,
+                CreatedAt = SeedTimestamp,
+                UpdatedAt = SeedTimestamp,
+            },
+            new Permission
+            {
+                Id = AuthPermissionIds.UsersWrite,
+                Code = "auth.users.write",
+                Module = "auth",
+                Action = "write",
+                Description = "Gestionar usuarios",
+                IsActive = true,
+                CreatedAt = SeedTimestamp,
+                UpdatedAt = SeedTimestamp,
+            },
+            new Permission
+            {
+                Id = AuthPermissionIds.RbacManage,
+                Code = "auth.rbac.manage",
+                Module = "auth",
+                Action = "manage",
+                Description = "Administrar matriz RBAC",
+                IsActive = true,
+                CreatedAt = SeedTimestamp,
+                UpdatedAt = SeedTimestamp,
+            });
+    }
+
+    public static void SeedDefaultRolePermissions(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<RolePermission>().HasData(
+            new RolePermission { RoleId = AuthRoleIds.SuperAdmin, PermissionId = AuthPermissionIds.UsersRead },
+            new RolePermission { RoleId = AuthRoleIds.SuperAdmin, PermissionId = AuthPermissionIds.UsersWrite },
+            new RolePermission { RoleId = AuthRoleIds.SuperAdmin, PermissionId = AuthPermissionIds.RbacManage },
+            new RolePermission { RoleId = AuthRoleIds.TenantAdmin, PermissionId = AuthPermissionIds.UsersRead },
+            new RolePermission { RoleId = AuthRoleIds.TenantAdmin, PermissionId = AuthPermissionIds.UsersWrite },
+            new RolePermission { RoleId = AuthRoleIds.Operator, PermissionId = AuthPermissionIds.UsersRead });
+    }
 }

@@ -157,6 +157,35 @@ paths:
           description: Contraseña actualizada
         "404":
           description: Usuario no encontrado
+  /auth/rbac/matrix:
+    get:
+      operationId: authGetRbacMatrix
+      summary: Consulta matriz RBAC roles/permisos (SuperAdmin)
+      tags: [Auth]
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Matriz RBAC
+        "403":
+          description: No autorizado
+    put:
+      operationId: authUpdateRbacMatrix
+      summary: Actualiza asignaciones de la matriz RBAC (SuperAdmin)
+      tags: [Auth]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateRbacMatrixRequest"
+      responses:
+        "204":
+          description: Matriz actualizada
+        "403":
+          description: No autorizado
   /auth/logout:
     post:
       operationId: authLogout
@@ -246,6 +275,26 @@ components:
         password:
           type: string
           format: password
+    UpdateRbacMatrixRequest:
+      type: object
+      required: [assignments]
+      properties:
+        assignments:
+          type: array
+          items:
+            $ref: "#/components/schemas/RbacAssignmentUpdate"
+    RbacAssignmentUpdate:
+      type: object
+      required: [roleId, permissionId, enabled]
+      properties:
+        roleId:
+          type: string
+          format: uuid
+        permissionId:
+          type: string
+          format: uuid
+        enabled:
+          type: boolean
     AdminSetPasswordRequest:
       type: object
       required: [password]

@@ -16,6 +16,7 @@ public static class AuthDependencyInjection
         services.AddScoped<IUserReadService, UserReadService>();
         services.AddScoped<IUserInvitationService, UserInvitationService>();
         services.AddScoped<IPasswordRecoveryService, PasswordRecoveryService>();
+        services.AddScoped<IRbacMatrixService, RbacMatrixService>();
         services.AddSingleton<IEmailSender, LoggingEmailSender>();
         return services;
     }

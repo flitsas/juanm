@@ -427,6 +427,74 @@ HU_CONFIG = {
             ),
         ],
     },
+    9707: {
+        "filter": "FullyQualifiedName~RbacMatrix",
+        "be_specs": 2,
+        "be_tests": 8,
+        "specs": [
+            "<li><code>.../RbacMatrixServiceTests.cs</code> — 4 tests</li>",
+            "<li><code>.../RbacMatrixEndpointsTests.cs</code> — 4 tests</li>",
+        ],
+        "acs": lambda: [
+            ac_block(
+                "1",
+                "Consultar matriz",
+                "Happy path",
+                "✅ Pass",
+                [
+                    ["Tipo de petición", "GET"],
+                    ["Endpoint", "/auth/rbac/matrix"],
+                    ["Auth", "Bearer SuperAdmin"],
+                ],
+                [
+                    ["Código de respuesta", "200"],
+                    ["Cuerpo", "roles y permisos"],
+                ],
+                [
+                    ["Código de respuesta", "200 ✓"],
+                    ["Cuerpo", "≥3 roles y ≥3 permisos ✓"],
+                ],
+                "Get_rbac_matrix_returns_roles_and_permissions_for_super_admin / GetMatrixAsync_returns_roles_and_permissions",
+            ),
+            ac_block(
+                "2",
+                "Actualizar matriz",
+                "Happy path",
+                "✅ Pass",
+                [
+                    ["Tipo de petición", "PUT"],
+                    ["Endpoint", "/auth/rbac/matrix"],
+                    ["Cuerpo", "assignments con enabled true/false"],
+                ],
+                [
+                    ["Código de respuesta", "204"],
+                    ["Efecto", "Cambios visibles en GET siguiente"],
+                ],
+                [
+                    ["Código de respuesta", "204 ✓; GET refleja cambio ✓"],
+                ],
+                "Put_rbac_matrix_persists_changes_for_super_admin / UpdateMatrixAsync_is_reflected_on_next_get",
+            ),
+            ac_block(
+                "3",
+                "Denegado",
+                "Edge case",
+                "✅ Pass",
+                [
+                    ["Tipo de petición", "PUT"],
+                    ["Endpoint", "/auth/rbac/matrix"],
+                    ["Auth", "Bearer Operator (no SuperAdmin)"],
+                ],
+                [
+                    ["Código de respuesta", "403"],
+                ],
+                [
+                    ["Código de respuesta", "403 ✓"],
+                ],
+                "Put_rbac_matrix_returns_403_for_non_super_admin",
+            ),
+        ],
+    },
     9706: {
         "filter": "FullyQualifiedName~PasswordRecovery|FullyQualifiedName~LoginAsync_locks",
         "be_specs": 2,

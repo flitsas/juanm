@@ -29,6 +29,8 @@ public sealed class GdcDbContext : DbContext
         modelBuilder.HasDefaultSchema("core");
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(GdcDbContext).Assembly);
         AuthSeedData.SeedRoles(modelBuilder);
+        AuthSeedData.SeedPermissions(modelBuilder);
+        AuthSeedData.SeedDefaultRolePermissions(modelBuilder);
 
         modelBuilder.Entity<User>().HasQueryFilter(user =>
             user.DeletedAt == null &&

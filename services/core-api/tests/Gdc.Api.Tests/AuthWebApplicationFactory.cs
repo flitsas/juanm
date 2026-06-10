@@ -37,6 +37,7 @@ public sealed class AuthWebApplicationFactory : WebApplicationFactory<Program>
     {
         using var scope = Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<GdcDbContext>();
+        await db.Database.EnsureCreatedAsync();
         await seed(db);
     }
 
