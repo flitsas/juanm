@@ -86,6 +86,21 @@ ID: #[feature_id] — Siguiente: diseño técnico.</div>
 
 **Precondición:** Feature aprobado con ID en ADO.
 
+### Opción previa (opcional): OpenSpec
+
+Antes o en paralelo al diseño formal, el equipo puede explorar localmente con OpenSpec:
+
+```
+/opsx:propose "<slug-del-cambio>"
+/opsx:explore   # solo pensar, sin implementar
+```
+
+**Límites:** OpenSpec es borrador en `openspec/changes/`. No sustituye ADO ni el orquestador. **No usar** `/opsx:apply` para implementar HUs.
+
+**Handoff a FLIT:** al aprobar el borrador OpenSpec, exportar propuesta/diseño/tasks relevantes a `docs/designs/[feature_id]-[slug].md` y continuar con `architecture-agent` para ADR, OpenAPI y gates ADO.
+
+Ver regla `.cursor/rules/openspec-integration.mdc`.
+
 **Instrucción al agente:**
 ```
 Usa el architecture-agent para diseñar la solución del Feature #[feature_id]

@@ -78,6 +78,14 @@ pnpm dev
 
 
 
+## OpenSpec + FLIT (diseño híbrido)
+
+
+
+OpenSpec (`/opsx:propose`, `/opsx:explore`) sirve para **explorar y diseñar** cambios en `openspec/changes/` antes del diseño formal. La implementación, ADO, PRs y deploy siguen el **orquestador FLIT**. No usar `/opsx:apply` en lugar del pipeline FLIT. Detalle en `INSTRUCCIONES.md` y `.cursor/rules/openspec-integration.mdc`.
+
+
+
 ## Stack
 
 
@@ -109,6 +117,8 @@ pnpm dev
 .cursor/skills/         ← Skills del pipeline FLIT
 
 .cursor/rules/          ← Reglas Cursor
+
+openspec/               ← Diseño local OpenSpec (Fase 2 opcional)
 
 agent-templates/        ← Plantillas FLIT corporativas (DoR, DoD, conventions)
 

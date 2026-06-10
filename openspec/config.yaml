@@ -1,0 +1,20 @@
+schema: spec-driven
+
+context: |
+  Proyecto: GDC 2.0 (monorepo FLIT)
+  Backend: .NET 10 + EF Core 10 + PostgreSQL — services/core-api/
+  Frontend: React 19 + Next.js 16 + Tailwind 4 + Biome — frontend/
+  API contract: contracts/openapi/core-api.v1.yaml
+  Gestión: Azure DevOps (Feature → US → Task → Bug)
+  Convenciones: agent-templates/conventions.md, branches feature/AB-####-slug
+  OpenSpec es solo diseño local; implementación vía orquestador FLIT + ADO
+
+# Per-artifact rules (optional)
+# Add custom rules for specific artifacts.
+# Example:
+#   rules:
+#     proposal:
+#       - Keep proposals under 500 words
+#       - Always include a "Non-goals" section
+#     tasks:
+#       - Break tasks into chunks of max 2 hours

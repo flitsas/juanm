@@ -1,0 +1,55 @@
+---
+description: Integra OpenSpec como herramienta de diseño local (Fase 2). ADO y el orquestador FLIT siguen siendo la fuente de verdad operativa.
+globs:
+alwaysApply: true
+---
+
+# OpenSpec + FLIT — Integración híbrida
+
+OpenSpec complementa el pipeline FLIT **solo en exploración y diseño**. No sustituye Azure DevOps ni el orquestador.
+
+## Cuándo usar OpenSpec
+
+| Comando / skill | Uso permitido | Fase FLIT |
+|-----------------|---------------|-----------|
+| `/opsx:explore`, `/opsx:propose`, `openspec-explore`, `openspec-propose` | Explorar ideas, proponer cambios, redactar artefactos de diseño | **Antes o durante Fase 2** (diseño) |
+| `/opsx:sync`, `openspec-sync-specs` | Sincronizar delta specs → `openspec/specs/` | Post-diseño, pre-ADO |
+| `/opsx:archive`, `openspec-archive-change` | Archivar un change completado en diseño | Tras exportar a `docs/designs/` |
+| `/opsx:apply`, `openspec-apply-change` | **NO usar** como sustituto del orquestador | — |
+
+## Fuente de verdad
+
+| Ámbito | Fuente canónica |
+|--------|-----------------|
+| Work items, sprints, estados HU | **Azure DevOps** |
+| Implementación, tests, PR, merge, deploy | **Orquestador FLIT** (`.cursor/agents/orchestrator-agent.md`) |
+| Borrador de diseño por feature/cambio | `openspec/changes/<nombre>/` |
+| Diseño aprobado y trazable | `docs/designs/[feature_id]-[slug].md` + ADR en `docs/decisions/` |
+
+## Flujo recomendado
+
+```
+Requerimiento en texto libre
+  → (opcional) /opsx:propose "..."  — exploración local
+  → Orquestador Fase 1: Feature en ADO
+  → (opcional) exportar artefactos OpenSpec a docs/designs/
+  → Fase 2: architecture-agent — diseño formal + ADR
+  → Fases 3–5: HUs, implementación, review, merge, deploy DEV
+```
+
+## Reglas para el agente principal
+
+1. Si el usuario pide **flujo completo** («desarrollar», «implementar requerimiento»), seguir `orchestrator-routing.mdc` — **no** iniciar con `/opsx:apply`.
+2. Si el usuario pide **explorar o diseñar** sin implementar, puede usar `/opsx:explore` o `/opsx:propose`.
+3. Tras aprobar diseño OpenSpec, **exportar** resumen a `docs/designs/` y continuar con `architecture-agent` para ADR, OpenAPI y gates ADO.
+4. **Nunca** marcar una HU como `Active`, abrir PR ni mergear usando solo OpenSpec — requiere gates FLIT (confirmación humana, dev-tester, code-review, etc.).
+5. `openspec/changes/` es borrador local; no reemplaza `Custom.Commits`, `Custom.Evidences` ni Discussion en ADO.
+
+## Instalación (referencia)
+
+```bash
+npm install -g @fission-ai/openspec@latest
+openspec init --tools cursor --force   # ya ejecutado en este repo
+```
+
+Telemetría anónima: desactivar con `OPENSPEC_TELEMETRY=0` en `.env`.

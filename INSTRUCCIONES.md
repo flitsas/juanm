@@ -278,6 +278,58 @@ Edita y commitea directamente `.cursor/agents/`, `.cursor/skills/` y las reglas 
 
 
 
+### OpenSpec (diseño local, opcional)
+
+
+
+OpenSpec complementa FLIT **solo en exploración y diseño** (Fase 2). ADO y el orquestador siguen siendo la fuente de verdad para implementación, PRs y deploy.
+
+
+
+**Instalación (una vez por máquina):**
+
+
+
+```bash
+
+npm install -g @fission-ai/openspec@latest
+
+# Ya inicializado en este repo con: openspec init --tools cursor --force
+
+```
+
+
+
+**Comandos en Cursor:**
+
+
+
+| Comando | Uso |
+|---------|-----|
+| `/opsx:propose "nombre"` | Crear un change con propuesta, diseño y tasks |
+| `/opsx:explore` | Explorar ideas sin implementar |
+| `/opsx:sync` | Sincronizar specs delta → `openspec/specs/` |
+| `/opsx:archive` | Archivar change tras exportar diseño |
+
+**No usar** `/opsx:apply` como sustituto del orquestador FLIT.
+
+
+
+**Flujo híbrido recomendado:**
+
+
+
+1. (Opcional) `/opsx:propose` para borrador local en `openspec/changes/`
+2. Orquestador → Feature en ADO (Fase 1)
+3. Exportar diseño a `docs/designs/` + `architecture-agent` (Fase 2)
+4. HUs, implementación, review, merge — siempre vía orquestador
+
+
+
+Regla: `.cursor/rules/openspec-integration.mdc`
+
+
+
 ---
 
 
@@ -567,6 +619,8 @@ Use the frontend-agent to implement story #4526  (la US [FRONTEND] de Contratos)
 | Health check | `/flit:health` |
 
 | Agentes Cursor | `.cursor/agents/`, `.cursor/skills/` |
+
+| OpenSpec (diseño) | `/opsx:propose`, `/opsx:explore` — ver `openspec/` |
 
 
 
