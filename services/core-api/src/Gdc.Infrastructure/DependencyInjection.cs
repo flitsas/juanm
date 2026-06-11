@@ -34,6 +34,7 @@ public static class DependencyInjection
         services.AddScoped<EmailLogQueryService>();
         services.AddScoped<NotifCompanyService>();
         services.AddScoped<NotifProviderService>();
+        services.AddScoped<NotifTemplateService>();
         services.Configure<NotifEncryptionOptions>(configuration.GetSection(NotifEncryptionOptions.SectionName));
         services.AddSingleton<IEmailCredentialEncryptor, AesEmailCredentialEncryptor>();
         services.AddSingleton<IEmailSenderFactory, EmailSenderFactory>();
