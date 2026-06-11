@@ -12,6 +12,11 @@ import type {
   TestProviderPayload,
   TestProviderResult,
   UpdateCompanyPayload,
+  NotifQueueListResult,
+  NotifRule,
+  NotifRuleListResult,
+  NotifSwitchState,
+  SaveRulePayload,
   UploadTemplateAssetResult,
 } from "../lib/notif.types";
 import { DEFAULT_TEMPLATE_VARIABLES } from "../lib/template-preview";
@@ -290,4 +295,137 @@ export async function uploadTemplateAsset(
   }
 
   return response.json() as Promise<UploadTemplateAssetResult>;
+}
+
+export async function fetchRules(init?: RequestInit): Promise<NotifRuleListResult> {
+  const response = await fetch(`${getApiBaseUrl()}/api/v1/notif/rules`, {
+    ...init,
+    headers: {
+      ...buildNotifHeaders(),
+      ...init?.headers,
+    },
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    throw await parseError(response);
+  }
+
+  return response.json() as Promise<NotifRuleListResult>;
+}
+
+export async function createRule(
+  payload: SaveRulePayload,
+  init?: RequestInit,
+): Promise<NotifRule> {
+  const response = await fetch(`${getApiBaseUrl()}/api/v1/notif/rules`, {
+    method: "POST",
+    ...init,
+    headers: {
+      "Content-Type": "application/json",
+      ...buildNotifHeaders(),
+      ...init?.headers,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    throw await parseError(response);
+  }
+
+  return response.json() as Promise<NotifRule>;
+}
+
+export async function updateRule(
+  id: string,
+  payload: SaveRulePayload,
+  init?: RequestInit,
+): Promise<NotifRule> {
+  const response = await fetch(`${getApiBaseUrl()}/api/v1/notif/rules/${id}`, {
+    method: "PUT",
+    ...init,
+    headers: {
+      "Content-Type": "application/json",
+      ...buildNotifHeaders(),
+      ...init?.headers,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    throw await parseError(response);
+  }
+
+  return response.json() as Promise<NotifRule>;
+}
+
+export async function deleteRule(id: string, init?: RequestInit): Promise<void> {
+  const response = await fetch(`${getApiBaseUrl()}/api/v1/notif/rules/${id}`, {
+    method: "DELETE",
+    ...init,
+    headers: {
+      ...buildNotifHeaders(),
+      ...init?.headers,
+    },
+  });
+
+  if (!response.ok) {
+    throw await parseError(response);
+  }
+}
+
+export async function fetchQueue(init?: RequestInit): Promise<NotifQueueListResult> {
+  const response = await fetch(`${getApiBaseUrl()}/api/v1/notif/queue`, {
+    ...init,
+    headers: {
+      ...buildNotifHeaders(),
+      ...init?.headers,
+    },
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    throw await parseError(response);
+  }
+
+  return response.json() as Promise<NotifQueueListResult>;
+}
+
+export async function fetchSwitch(init?: RequestInit): Promise<NotifSwitchState> {
+  const response = await fetch(`${getApiBaseUrl()}/api/v1/notif/switch`, {
+    ...init,
+    headers: {
+      ...buildNotifHeaders(),
+      ...init?.headers,
+    },
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    throw await parseError(response);
+  }
+
+  return response.json() as Promise<NotifSwitchState>;
+}
+
+export async function updateSwitch(
+  dispatchEnabled: boolean,
+  init?: RequestInit,
+): Promise<NotifSwitchState> {
+  const response = await fetch(`${getApiBaseUrl()}/api/v1/notif/switch`, {
+    method: "PUT",
+    ...init,
+    headers: {
+      "Content-Type": "application/json",
+      ...buildNotifHeaders(),
+      ...init?.headers,
+    },
+    body: JSON.stringify({ dispatchEnabled }),
+  });
+
+  if (!response.ok) {
+    throw await parseError(response);
+  }
+
+  return response.json() as Promise<NotifSwitchState>;
 }

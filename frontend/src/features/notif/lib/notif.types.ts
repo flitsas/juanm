@@ -86,3 +86,54 @@ export type UploadTemplateAssetResult = {
   url: string;
   contentType: string;
 };
+
+export type RuleTriggerType = "chronological" | "state";
+
+export type TriggerReference = "fecha_comparendo" | "fecha_notificacion";
+
+export type NotifRule = {
+  id: string;
+  emailTemplateId: string;
+  name: string;
+  triggerType: RuleTriggerType;
+  triggerDays: number | null;
+  triggerReference: TriggerReference | null;
+  triggerEstado: string | null;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string | null;
+};
+
+export type NotifRuleListResult = {
+  items: NotifRule[];
+};
+
+export type SaveRulePayload = {
+  emailTemplateId: string;
+  name: string;
+  triggerType: RuleTriggerType;
+  triggerDays?: number | null;
+  triggerReference?: TriggerReference | null;
+  triggerEstado?: string | null;
+  isActive?: boolean;
+};
+
+export type NotifQueueItem = {
+  id: string;
+  notificationRuleId: string;
+  emailTemplateId: string;
+  comparendoId: string;
+  destino: string;
+  status: string;
+  scheduledAt: string;
+  processedAt: string | null;
+  errorMessage: string | null;
+};
+
+export type NotifQueueListResult = {
+  items: NotifQueueItem[];
+};
+
+export type NotifSwitchState = {
+  dispatchEnabled: boolean;
+};

@@ -10,9 +10,10 @@ import type { NotifCompany } from "../lib/notif.types";
 import { CompaniesTable } from "./CompaniesTable";
 import { CompanyFormDialog } from "./CompanyFormDialog";
 import { ProviderForm } from "./ProviderForm";
+import { RulesSection } from "./RulesSection";
 import { TemplatesSection } from "./TemplatesSection";
 
-type AdminTab = "companies" | "provider" | "templates";
+type AdminTab = "companies" | "provider" | "templates" | "rules";
 
 export function NotifAdminPage() {
   const superAdmin = isSuperAdmin();
@@ -61,7 +62,7 @@ export function NotifAdminPage() {
     <div className="mx-auto max-w-[1200px] space-y-6 p-6" data-testid="notif-admin-page">
       <PageHeaderCard
         title="Notificaciones"
-        subtitle="Motor NOTIF · compañías, proveedor y plantillas email marca blanca"
+        subtitle="Motor NOTIF · compañías, proveedor, plantillas y reglas de comunicación"
         actions={
           superAdmin && tab === "companies" ? (
             <Button
@@ -124,6 +125,20 @@ export function NotifAdminPage() {
         >
           Plantillas
         </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={tab === "rules"}
+          className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+            tab === "rules"
+              ? "bg-[var(--action)] text-white shadow-md"
+              : "bg-[var(--card)] text-[var(--deep)] hover:bg-[var(--muted)]"
+          }`}
+          onClick={() => setTab("rules")}
+          data-testid="notif-tab-rules"
+        >
+          Reglas
+        </button>
       </div>
 
       {tab === "companies" && superAdmin ? (
@@ -180,6 +195,8 @@ export function NotifAdminPage() {
       ) : null}
 
       {tab === "templates" ? <TemplatesSection /> : null}
+
+      {tab === "rules" ? <RulesSection /> : null}
 
       <CompanyFormDialog
         open={dialogOpen}
