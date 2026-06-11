@@ -26,6 +26,7 @@ export function DgcOcrBufferForm({
     >
       <div className="flex flex-wrap items-start gap-4">
         {form.previewUrl ? (
+          // biome-ignore lint/performance/noImgElement: blob URL local de vista previa OCR
           <img
             src={form.previewUrl}
             alt={`Vista previa ${form.fileName}`}

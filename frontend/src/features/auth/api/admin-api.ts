@@ -7,11 +7,7 @@ import type {
   UserSummary,
 } from "../types";
 
-async function authFetch<T>(
-  path: string,
-  accessToken: string,
-  init?: RequestInit,
-): Promise<T> {
+async function authFetch<T>(path: string, accessToken: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${getApiBaseUrl()}${path}`, {
     ...init,
     headers: {

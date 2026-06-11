@@ -1,7 +1,8 @@
 const statusStyles: Record<string, string> = {
   Active: "bg-[var(--flit-action)]/15 text-[var(--flit-action)] border-[var(--flit-action)]/40",
   Pending: "bg-[var(--flit-amber)]/20 text-[var(--flit-amber)] border-[var(--flit-amber)]/40",
-  Locked: "bg-[var(--flit-state-danger)]/15 text-[var(--flit-state-danger)] border-[var(--flit-state-danger)]/40",
+  Locked:
+    "bg-[var(--flit-state-danger)]/15 text-[var(--flit-state-danger)] border-[var(--flit-state-danger)]/40",
 };
 
 type StatusBadgeProps = {

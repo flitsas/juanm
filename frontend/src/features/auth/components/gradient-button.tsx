@@ -11,11 +11,7 @@ export function GradientButton({
   ...props
 }: GradientButtonProps) {
   return (
-    <button
-      type={type}
-      className={`flit-gradient-btn w-full ${className}`}
-      {...props}
-    >
+    <button type={type} className={`flit-gradient-btn w-full ${className}`} {...props}>
       {children}
     </button>
   );

@@ -4,7 +4,7 @@ import { AppHeader } from "./AppHeader";
 
 vi.mock("next/image", () => ({
   default: (props: { alt?: string; src: string }) => (
-    // eslint-disable-next-line @next/next/no-img-element
+    // biome-ignore lint/performance/noImgElement: mock ligero de next/image en tests
     <img alt={props.alt ?? ""} src={props.src} />
   ),
 }));

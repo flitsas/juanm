@@ -13,9 +13,7 @@ const matrix = {
   permissions: [
     { id: "p1", code: "users.read", module: "users", action: "read", description: null },
   ],
-  roles: [
-    { roleId: "r1", code: "Operator", name: "Operador", permissionIds: [] },
-  ],
+  roles: [{ roleId: "r1", code: "Operator", name: "Operador", permissionIds: [] }],
 };
 
 describe("RbacMatrixPanel", () => {

@@ -5,8 +5,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { SectionHeader } from "@/components/flit/section-header";
 import { TabPills } from "@/components/flit/tab-pills";
 import { listAdminUsers } from "../api/admin-api";
-import { groupUsersByTenant } from "../lib/tenants";
 import { getSession } from "../lib/session";
+import { groupUsersByTenant } from "../lib/tenants";
 import { LogoutButton } from "./logout-button";
 import { RbacMatrixPanel } from "./rbac-matrix-panel";
 import { TenantUsersPanel } from "./tenant-users-panel";
@@ -51,10 +51,7 @@ export function AdminConsole() {
   return (
     <div className="min-h-screen bg-[var(--flit-bg-app)] p-4 md:p-8">
       <header className="mx-auto mb-6 flex max-w-7xl flex-wrap items-center justify-between gap-4 border-b border-[var(--flit-border-input)] pb-4">
-        <SectionHeader
-          title="Administración"
-          subtitle="Multi-compañía, usuarios y roles"
-        />
+        <SectionHeader title="Administración" subtitle="Multi-compañía, usuarios y roles" />
         <div className="flex items-center gap-3">
           <Link
             href="/dashboard"

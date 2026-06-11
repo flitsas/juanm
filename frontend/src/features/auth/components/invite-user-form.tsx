@@ -19,9 +19,7 @@ export function InviteUserForm({
   onInvited,
 }: InviteUserFormProps) {
   const [email, setEmail] = useState("");
-  const [tenantId, setTenantId] = useState(
-    defaultTenantId ?? tenants[0]?.tenantId ?? "",
-  );
+  const [tenantId, setTenantId] = useState(defaultTenantId ?? tenants[0]?.tenantId ?? "");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -69,7 +67,10 @@ export function InviteUserForm({
 
       <div className="mt-4 space-y-3">
         <div className="space-y-1.5">
-          <label htmlFor="invite-email" className="text-xs font-semibold text-[var(--flit-text-primary)]">
+          <label
+            htmlFor="invite-email"
+            className="text-xs font-semibold text-[var(--flit-text-primary)]"
+          >
             Correo electrónico
           </label>
           <input
@@ -84,7 +85,10 @@ export function InviteUserForm({
         </div>
 
         <div className="space-y-1.5">
-          <label htmlFor="invite-compania" className="text-xs font-semibold text-[var(--flit-text-primary)]">
+          <label
+            htmlFor="invite-compania"
+            className="text-xs font-semibold text-[var(--flit-text-primary)]"
+          >
             Compañía
           </label>
           <select

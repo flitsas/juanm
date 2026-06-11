@@ -1,5 +1,10 @@
 import { getApiBaseUrl } from "@/lib/api-base-url";
-import type { ActivateAccountPayload, ActivateAccountResult, AuthSession, LoginPayload } from "../types";
+import type {
+  ActivateAccountPayload,
+  ActivateAccountResult,
+  AuthSession,
+  LoginPayload,
+} from "../types";
 
 export async function login(payload: LoginPayload): Promise<AuthSession> {
   const res = await fetch(`${getApiBaseUrl()}/auth/login`, {

@@ -47,10 +47,7 @@ export function LoginForm() {
 
       <div className="mt-8 space-y-4">
         <div className="space-y-1.5">
-          <label
-            htmlFor="email"
-            className="text-xs font-semibold text-[var(--flit-text-primary)]"
-          >
+          <label htmlFor="email" className="text-xs font-semibold text-[var(--flit-text-primary)]">
             Correo electrónico
           </label>
           <input

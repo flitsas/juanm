@@ -83,8 +83,7 @@ export function TenantUsersPanel({
                 <div className="mt-1.5 flex items-center justify-between text-[11px] text-[var(--flit-text-secondary)]">
                   <span className="inline-flex items-center gap-1">
                     <Users className="size-3" aria-hidden="true" />
-                    {tenant.users.length}{" "}
-                    {tenant.users.length === 1 ? "usuario" : "usuarios"}
+                    {tenant.users.length} {tenant.users.length === 1 ? "usuario" : "usuarios"}
                   </span>
                 </div>
               </button>

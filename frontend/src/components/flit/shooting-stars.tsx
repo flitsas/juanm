@@ -44,9 +44,11 @@ export function ShootingStars({
               ? "rgba(0,62,255,0.85)"
               : "rgba(255,255,255,0.55)");
 
+        const streakKey = `streak-${streakSeed(i, 0, 0, 1_000_000)}`;
+
         return (
           <span
-            key={i}
+            key={streakKey}
             className="absolute top-0 left-0 block rounded-full"
             style={{
               width: `${len}px`,

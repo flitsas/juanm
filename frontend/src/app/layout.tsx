@@ -11,7 +11,8 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: "GDC — Gestión De Comparendos",
-  description: "Plataforma GDC (Gestión De Comparendos) — comparendos, fotomultas y administración multi-tenant.",
+  description:
+    "Plataforma GDC (Gestión De Comparendos) — comparendos, fotomultas y administración multi-tenant.",
 };
 
 export default function RootLayout({

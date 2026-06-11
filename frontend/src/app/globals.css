@@ -264,6 +264,28 @@ body {
   color: var(--deep);
 }
 
+.flit-table thead tr {
+  background: var(--flit-table-head);
+}
+
+.flit-table th,
+.flit-table td {
+  padding: 0.625rem 0.75rem;
+  border-bottom: 1px solid var(--flit-border-input);
+  font-size: 0.875rem;
+}
+
+.flit-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--flit-table-head);
+}
+
+.flit-table tbody tr:hover {
+  background: rgba(0, 62, 255, 0.04);
+}
+
 /* Panel portaleado a body — no hereda .flit-calendar */
 .flit-datepicker-panel.p-datepicker {
   margin-top: 0.35rem;
@@ -359,7 +381,6 @@ body {
   z-index: 60;
 }
 
-
 .flit-input {
   display: block;
   width: 100%;
@@ -388,7 +409,10 @@ body {
   font-weight: 600;
   cursor: pointer;
   box-shadow: var(--flit-shadow-button);
-  transition: transform 120ms ease, opacity 120ms ease, box-shadow 120ms ease;
+  transition:
+    transform 120ms ease,
+    opacity 120ms ease,
+    box-shadow 120ms ease;
 }
 
 .flit-gradient-btn:hover:not(:disabled) {
@@ -420,7 +444,9 @@ body {
   font-weight: 600;
   cursor: pointer;
   box-shadow: var(--flit-shadow-button);
-  transition: transform 120ms ease, opacity 120ms ease;
+  transition:
+    transform 120ms ease,
+    opacity 120ms ease;
 }
 
 .flit-btn-primary:hover:not(:disabled) {
@@ -442,7 +468,9 @@ body {
   padding: 0.5rem 1rem;
   font-size: 0.875rem;
   font-weight: 500;
-  transition: background 120ms ease, border-color 120ms ease;
+  transition:
+    background 120ms ease,
+    border-color 120ms ease;
 }
 
 .flit-tab-pill-active {
@@ -469,28 +497,6 @@ body {
   padding: 0.125rem 0.625rem;
   font-size: 0.75rem;
   font-weight: 500;
-}
-
-.flit-table thead tr {
-  background: var(--flit-table-head);
-}
-
-.flit-table th,
-.flit-table td {
-  padding: 0.625rem 0.75rem;
-  border-bottom: 1px solid var(--flit-border-input);
-  font-size: 0.875rem;
-}
-
-.flit-table thead th {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  background: var(--flit-table-head);
-}
-
-.flit-table tbody tr:hover {
-  background: rgba(0, 62, 255, 0.04);
 }
 
 .scrollbar-thin {

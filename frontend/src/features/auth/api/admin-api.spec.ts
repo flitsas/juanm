@@ -95,9 +95,7 @@ describe("admin-api", () => {
     const fetchMock = vi.fn().mockResolvedValue({ ok: true, status: 204 });
     vi.stubGlobal("fetch", fetchMock);
 
-    await updateRbacMatrix("jwt-super", [
-      { roleId: "r1", permissionId: "p1", enabled: true },
-    ]);
+    await updateRbacMatrix("jwt-super", [{ roleId: "r1", permissionId: "p1", enabled: true }]);
 
     expect(fetchMock).toHaveBeenCalledWith(
       expect.stringContaining("/auth/rbac/matrix"),
