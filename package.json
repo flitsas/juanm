@@ -2,11 +2,15 @@
   "name": "gdc-monorepo",
   "private": true,
   "packageManager": "pnpm@11.5.0",
+  "pnpm": {
+    "onlyBuiltDependencies": ["esbuild", "sharp"]
+  },
   "scripts": {
     "install:all": "pnpm install && dotnet restore services/core-api/Gdc.CoreApi.slnx",
-    "dev": "pnpm run --parallel dev:api dev:web",
+    "dev": "pnpm run --parallel dev:api dev:web dev:python-ml",
     "dev:api": "dotnet watch --project services/core-api/src/Gdc.Api/Gdc.Api.csproj run --launch-profile http",
     "dev:web": "pnpm --filter @gdc/frontend dev",
+    "dev:python-ml": "py -m uvicorn app.main:app --app-dir services/python-ml --host 127.0.0.1 --port 4012 --reload",
     "build": "dotnet build services/core-api/Gdc.CoreApi.slnx -c Release && pnpm --filter @gdc/frontend build",
     "test": "dotnet test services/core-api/Gdc.CoreApi.slnx -c Release && pnpm --filter @gdc/frontend test",
     "test:e2e": "pnpm --filter @gdc/frontend test:e2e",

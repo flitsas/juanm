@@ -1,19 +1,91 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --radius: 0.875rem;
+  --lime: oklch(0.93 0.23 130);
+  --action: oklch(0.48 0.27 265);
+  --deep: oklch(0.27 0.08 260);
+  --tech: oklch(0.82 0.13 195);
+  --amber-acc: oklch(0.82 0.17 85);
+  --alert: oklch(0.62 0.24 30);
+  --table-head: oklch(0.91 0.03 250);
+  --gradient-flit: linear-gradient(-45deg, #b3ff1f 0%, #003eff 100%);
+  --background: #e2eaf7;
+  --foreground: oklch(0.17 0.04 260);
+  --card: oklch(1 0 0);
+  --muted: oklch(0.96 0.01 250);
+  --muted-foreground: oklch(0.5 0.03 260);
+  --border: oklch(0.9 0.02 250);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@utility bg-gradient-flit {
+  background: var(--gradient-flit);
+}
+
+@utility text-gradient-flit {
+  background: var(--gradient-flit);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: var(--font-sans, "Poppins", ui-sans-serif, system-ui, sans-serif);
+}
+
+@keyframes blob-drift-a {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(8%, 6%) scale(1.05);
+  }
+}
+
+@keyframes blob-drift-b {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-6%, 4%) scale(1.08);
+  }
+}
+
+@keyframes blob-drift-c {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(4%, -5%) scale(1.04);
+  }
+}
+
+.flit-dock-tooltip-panel.p-tooltip .p-tooltip-text {
+  background: var(--card);
+  color: var(--deep);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(22, 39, 68, 0.12);
+  font-family: "Poppins", sans-serif;
+  font-size: 13px;
+  padding: 8px 12px;
+}
+
+.flit-btn-primary.p-button {
+  background: var(--action);
+  border: none;
+  border-radius: 999px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  padding: 0.625rem 1.25rem;
+  box-shadow: 0 10px 22px rgba(0, 62, 255, 0.22);
+}
+
+.flit-btn-primary.p-button:not(:disabled):hover {
+  background: color-mix(in oklab, var(--action) 88%, black);
 }
