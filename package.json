@@ -4,7 +4,7 @@
   "packageManager": "pnpm@11.5.0",
   "scripts": {
     "install:all": "pnpm install && dotnet restore services/core-api/Gdc.CoreApi.slnx",
-    "dev": "pnpm run --parallel dev:api dev:web dev:python-ml",
+    "dev": "node scripts/dev.mjs",
     "dev:api": "dotnet watch --project services/core-api/src/Gdc.Api/Gdc.Api.csproj run --launch-profile http",
     "dev:web": "pnpm --filter @gdc/frontend dev",
     "dev:python-ml": "py -m uvicorn app.main:app --app-dir services/python-ml --host 127.0.0.1 --port 4012 --reload",

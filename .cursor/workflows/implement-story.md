@@ -7,6 +7,8 @@
 Implementa la historia #4521
 ```
 
+> **Modo alternativo (Feature batch):** Si el usuario pide implementar un Feature completo con **rama única por Feature**, **commits por HU** y **PR sin merge automático**, usar `.cursor/workflows/implement-feature.md` en lugar de este workflow.
+
 ---
 
 ## Precondiciones
