@@ -1,6 +1,7 @@
 using Gdc.Infrastructure.Auth;
 using Gdc.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -30,6 +31,7 @@ public static class DependencyInjection
                 options
                     .UseNpgsql(connectionString, npgsql =>
                         npgsql.MigrationsHistoryTable("__ef_migrations_history", "core"))
+                    .ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning))
                     .AddInterceptors(new NpgsqlTenantRlsInterceptor(tenantContext));
             });
         }

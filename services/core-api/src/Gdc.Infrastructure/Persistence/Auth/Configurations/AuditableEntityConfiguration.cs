@@ -35,7 +35,10 @@ internal static class AuditableEntityConfiguration
 
         builder.Property(e => e.RowVersion)
             .HasColumnName("row_version")
-            .IsRowVersion();
+            .HasColumnType("xid")
+            .HasDefaultValueSql("'0'::xid")
+            .ValueGeneratedOnAddOrUpdate()
+            .IsConcurrencyToken();
 
         builder.HasQueryFilter(e => e.DeletedAt == null);
     }

@@ -17,6 +17,7 @@ public enum InvitationErrorCode
     ExpiredToken,
     InvalidPassword,
     UserNotPending,
+    EmailDeliveryFailed,
 }
 
 public sealed record InvitationError(InvitationErrorCode Code, string Message);

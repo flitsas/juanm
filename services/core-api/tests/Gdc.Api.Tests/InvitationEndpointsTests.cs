@@ -35,6 +35,7 @@ public class InvitationEndpointsTests
 
         var emailSender = factory.GetEmailSender();
         Assert.NotNull(emailSender.LastMessage);
+        Assert.Contains("http://localhost:40103/activate?token=", emailSender.LastMessage.Body);
     }
 
     [Fact]

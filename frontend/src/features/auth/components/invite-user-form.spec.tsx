@@ -14,6 +14,28 @@ describe("InviteUserForm", () => {
     vi.clearAllMocks();
   });
 
+  it("muestra error cuando el correo ya existe en el tenant", async () => {
+    vi.mocked(inviteUser).mockRejectedValue(
+      new Error("El email ya está registrado en este tenant."),
+    );
+
+    render(
+      <InviteUserForm
+        accessToken="jwt"
+        tenants={[{ tenantId: "t1", label: "Tenant Demo", users: [] }]}
+        onInvited={vi.fn()}
+      />,
+    );
+
+    fireEvent.change(screen.getByLabelText(/correo/i), {
+      target: { value: "duplicado@example.com" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: /invitar/i }));
+
+    const alert = await screen.findByRole("alert");
+    expect(alert.textContent).toMatch(/registrado/i);
+  });
+
   it("confirma invitación con usuario pending", async () => {
     vi.mocked(inviteUser).mockResolvedValue({
       userId: "u1",
@@ -33,7 +55,7 @@ describe("InviteUserForm", () => {
     fireEvent.change(screen.getByLabelText(/correo/i), {
       target: { value: "invited@example.com" },
     });
-    fireEvent.change(screen.getByLabelText(/tenant/i), { target: { value: "t1" } });
+    fireEvent.change(screen.getByLabelText(/compañía/i), { target: { value: "t1" } });
     fireEvent.click(screen.getByRole("button", { name: /invitar/i }));
 
     await waitFor(() => {

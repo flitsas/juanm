@@ -1,10 +1,22 @@
+using Gdc.Api;
 using Gdc.Api.Auth;
 using Gdc.Api.Endpoints;
 using Gdc.Infrastructure;
+using Gdc.Infrastructure.Auth;
 using Gdc.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
+DotEnvLoader.LoadIfPresent();
+
 var builder = WebApplication.CreateBuilder(args);
+
+if (builder.Environment.IsDevelopment())
+{
+    builder.Configuration.AddJsonFile(
+        "appsettings.Development.local.json",
+        optional: true,
+        reloadOnChange: true);
+}
 
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddJwtAuthentication(builder.Configuration);
@@ -17,7 +29,7 @@ builder.Services.AddCors(options =>
         policy
             .WithOrigins(
                 builder.Configuration["Cors:Origins"]?.Split(';', StringSplitOptions.RemoveEmptyEntries)
-                ?? ["http://localhost:4001"])
+                ?? ["http://localhost:40103"])
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
@@ -26,6 +38,30 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
+{
+    var smtpSettings = new SmtpSettings();
+    SmtpSettings.Bind(app.Configuration, smtpSettings);
+    var emailSender = app.Services.GetRequiredService<IEmailSender>();
+    app.Logger.LogInformation(
+        "Correo: {SenderType} | SMTP {Host}:{Port} | From {From} | Enabled {Enabled}",
+        emailSender.GetType().Name,
+        string.IsNullOrWhiteSpace(smtpSettings.Host) ? "(sin host)" : smtpSettings.Host,
+        smtpSettings.Port,
+        string.IsNullOrWhiteSpace(smtpSettings.FromAddress) ? "(sin remitente)" : smtpSettings.FromAddress,
+        smtpSettings.Enabled);
+}
+
+if (app.Environment.IsDevelopment()
+    && !app.Configuration.GetValue<bool>("Testing:UseInMemoryDatabase"))
+{
+    app.MapOpenApi();
+
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<GdcDbContext>();
+    await db.Database.MigrateAsync();
+    await DevDataSeeder.SeedIfEmptyAsync(db);
+}
+else if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }

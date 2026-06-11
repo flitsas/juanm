@@ -3,6 +3,7 @@ using Gdc.Infrastructure.Auth.Models;
 using Gdc.Infrastructure.Persistence;
 using Gdc.Infrastructure.Persistence.Auth.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 
 namespace Gdc.Infrastructure.Tests;
@@ -22,7 +23,12 @@ public class UserInvitationServiceTests
             context,
             tenant,
             emailSender,
-            Options.Create(new InvitationSettings { ActivationTokenHours = 48 }));
+            Options.Create(new InvitationSettings
+            {
+                ActivationTokenHours = 48,
+                ActivationBaseUrl = "http://localhost:40103/activate",
+            }),
+            NullLogger<UserInvitationService>.Instance);
     }
 
     private static TenantContext CreateSuperAdminContext()
@@ -97,6 +103,24 @@ public class UserInvitationServiceTests
             .IgnoreQueryFilters()
             .FirstAsync(t => t.UserId == invite.UserId);
         Assert.NotNull(tokenRow.UsedAt);
+    }
+
+    [Fact]
+    public async Task InviteAsync_includes_activation_base_url_in_email_body()
+    {
+        var emailSender = new CapturingEmailSender();
+        var tenantContext = CreateSuperAdminContext();
+        await using var context = TestDbContextFactory.CreateInMemory(tenantContext);
+        await AuthTestData.SeedActiveUserAsync(context);
+
+        var service = CreateService(context, emailSender, tenantContext);
+        var (_, error) = await service.InviteAsync(
+            new InviteUserRequest("link.user@example.com", AuthTestData.TenantId));
+
+        Assert.Null(error);
+        Assert.NotNull(emailSender.LastMessage);
+        Assert.Contains("http://localhost:40103/activate?token=", emailSender.LastMessage.Body);
+        Assert.Contains("48 horas", emailSender.LastMessage.Body);
     }
 
     [Fact]

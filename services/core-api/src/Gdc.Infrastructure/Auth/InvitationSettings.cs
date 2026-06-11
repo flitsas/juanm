@@ -6,5 +6,5 @@ public sealed class InvitationSettings
 
     public int ActivationTokenHours { get; set; } = 48;
 
-    public string ActivationBaseUrl { get; set; } = "http://localhost:4001/activate";
+    public string ActivationBaseUrl { get; set; } = "http://localhost:40103/activate";
 }

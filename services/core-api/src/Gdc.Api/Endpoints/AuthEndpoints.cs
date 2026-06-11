@@ -103,6 +103,10 @@ public static class AuthEndpoints
                     InvitationErrorCode.TenantNotFound => Results.NotFound(new { message = error.Message }),
                     InvitationErrorCode.DuplicateEmail => Results.Conflict(new { message = error.Message }),
                     InvitationErrorCode.InvalidRole => Results.BadRequest(new { message = error.Message }),
+                    InvitationErrorCode.EmailDeliveryFailed => Results.Problem(
+                        detail: error.Message,
+                        statusCode: StatusCodes.Status503ServiceUnavailable,
+                        title: "Envío de correo no disponible"),
                     _ => Results.BadRequest(new { message = error.Message }),
                 };
             }

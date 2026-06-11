@@ -255,17 +255,6 @@ namespace Gdc.Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.InsertData(
-                schema: "auth",
-                table: "roles",
-                columns: new[] { "id", "code", "created_at", "created_by", "deleted_at", "deleted_by", "description", "is_active", "name", "updated_at", "updated_by" },
-                values: new object[,]
-                {
-                    { new Guid("11111111-1111-4111-8111-111111111101"), "SuperAdmin", new DateTimeOffset(new DateTime(2026, 6, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)), null, null, null, "Acceso global de gobierno multi-tenant", true, "Super Administrador", new DateTimeOffset(new DateTime(2026, 6, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)), null },
-                    { new Guid("11111111-1111-4111-8111-111111111102"), "TenantAdmin", new DateTimeOffset(new DateTime(2026, 6, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)), null, null, null, "Administración de usuarios y permisos del tenant", true, "Administrador de tenant", new DateTimeOffset(new DateTime(2026, 6, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)), null },
-                    { new Guid("11111111-1111-4111-8111-111111111103"), "Operator", new DateTimeOffset(new DateTime(2026, 6, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)), null, null, null, "Usuario operativo con permisos funcionales asignados", true, "Operador", new DateTimeOffset(new DateTime(2026, 6, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)), null }
-                });
-
             migrationBuilder.CreateIndex(
                 name: "ix_activation_tokens_user_id",
                 schema: "auth",

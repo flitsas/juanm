@@ -47,6 +47,20 @@ public class AuthSchemaTests
     }
 
     [Fact]
+    public void RowVersion_has_database_default_for_inserts()
+    {
+        using var context = CreateContext();
+
+        var userEntity = context.Model.FindEntityType(typeof(User));
+        Assert.NotNull(userEntity);
+
+        var rowVersion = userEntity.FindProperty(nameof(AuditableEntity.RowVersion));
+        Assert.NotNull(rowVersion);
+        Assert.Equal("'0'::xid", rowVersion.GetDefaultValueSql());
+        Assert.True(rowVersion.IsConcurrencyToken);
+    }
+
+    [Fact]
     public void AddAuthSchema_migration_is_registered()
     {
         var options = new DbContextOptionsBuilder<GdcDbContext>()

@@ -58,7 +58,7 @@ GDC 2.0 es un monorepo greenfield (.NET 10 + PostgreSQL + Next.js 16). El Featur
 
 ## Open Questions
 
-- ¿Servidor SMTP definitivo para DEV/QA? (usar Mailhog en docker-compose para DEV)
+- SMTP DEV/QA/PDN: Office 365 (`smtp.office365.com:587`) vía variables `SMTP_*` en `.env` (local) o secrets de despliegue
 - ¿Tabla `tenants` ya existe en otro módulo o se referencia por UUID externo? → Asumir FK a `core.tenants` existente o stub hasta módulo tenants.
 
 ## Modelo de datos (conceptual)

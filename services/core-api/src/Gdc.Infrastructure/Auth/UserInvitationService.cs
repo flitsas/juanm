@@ -4,6 +4,7 @@ using Gdc.Infrastructure.Persistence.Auth;
 using Gdc.Infrastructure.Persistence.Auth.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Gdc.Infrastructure.Auth;
@@ -12,7 +13,8 @@ public sealed class UserInvitationService(
     GdcDbContext dbContext,
     ITenantContext tenantContext,
     IEmailSender emailSender,
-    IOptions<InvitationSettings> invitationOptions) : IUserInvitationService
+    IOptions<InvitationSettings> invitationOptions,
+    ILogger<UserInvitationService> logger) : IUserInvitationService
 {
     private static readonly PasswordHasher<User> PasswordHasher = new();
     public async Task<(InviteUserResponse? Success, InvitationError? Error)> InviteAsync(
@@ -81,18 +83,34 @@ public sealed class UserInvitationService(
             UpdatedAt = now,
         };
 
+        var userRole = new UserRole { UserId = user.Id, RoleId = roleId.Value };
         dbContext.Users.Add(user);
-        dbContext.UserRoles.Add(new UserRole { UserId = user.Id, RoleId = roleId.Value });
+        dbContext.UserRoles.Add(userRole);
         dbContext.ActivationTokens.Add(activationToken);
         await dbContext.SaveChangesAsync(cancellationToken);
 
         var activationUrl = $"{settings.ActivationBaseUrl.TrimEnd('/')}?token={rawToken}";
-        await emailSender.SendAsync(
-            new EmailMessage(
-                normalizedEmail,
-                "Activación de cuenta GDC",
-                $"Utilice el siguiente enlace para activar su cuenta (válido {settings.ActivationTokenHours} horas): {activationUrl}"),
-            cancellationToken);
+        try
+        {
+            await emailSender.SendAsync(
+                new EmailMessage(
+                    normalizedEmail,
+                    "Activación de cuenta GDC",
+                    $"Utilice el siguiente enlace para activar su cuenta (válido {settings.ActivationTokenHours} horas): {activationUrl}"),
+                cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "No se pudo enviar el correo de invitación a {Email}", normalizedEmail);
+            dbContext.Users.Remove(user);
+            dbContext.UserRoles.Remove(userRole);
+            dbContext.ActivationTokens.Remove(activationToken);
+            await dbContext.SaveChangesAsync(cancellationToken);
+
+            return (null, new InvitationError(
+                InvitationErrorCode.EmailDeliveryFailed,
+                "No se pudo enviar el correo de invitación. Verifique la conectividad SMTP."));
+        }
 
         return (new InviteUserResponse(user.Id, user.TenantId, user.Email, user.Status.ToString()), null);
     }

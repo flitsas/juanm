@@ -33,6 +33,24 @@ describe("admin-api", () => {
     );
   });
 
+  it("inviteUser propaga error 409 en correo duplicado", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: false,
+        status: 409,
+        json: async () => ({ message: "El email ya está registrado en este tenant." }),
+      }),
+    );
+
+    await expect(
+      inviteUser("jwt-super", {
+        email: "dup@example.com",
+        tenantId: "22222222-2222-4222-8222-222222222201",
+      }),
+    ).rejects.toThrow(/registrado/i);
+  });
+
   it("inviteUser crea usuario pending", async () => {
     const created = {
       userId: "33333333-3333-4333-8333-333333333333",

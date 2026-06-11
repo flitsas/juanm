@@ -12,6 +12,17 @@ export type LoginPayload = {
   password: string;
 };
 
+export type ActivateAccountPayload = {
+  token: string;
+  password: string;
+};
+
+export type ActivateAccountResult = {
+  userId: string;
+  email: string;
+  status: string;
+};
+
 export type UserSummary = {
   id: string;
   tenantId: string;

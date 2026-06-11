@@ -1,5 +1,5 @@
 import { getApiBaseUrl } from "@/lib/api-base-url";
-import type { AuthSession, LoginPayload } from "../types";
+import type { ActivateAccountPayload, ActivateAccountResult, AuthSession, LoginPayload } from "../types";
 
 export async function login(payload: LoginPayload): Promise<AuthSession> {
   const res = await fetch(`${getApiBaseUrl()}/auth/login`, {
@@ -25,4 +25,24 @@ export async function logout(accessToken: string): Promise<void> {
   if (!res.ok && res.status !== 204) {
     throw new Error("No se pudo cerrar la sesión.");
   }
+}
+
+export async function activateAccount(
+  payload: ActivateAccountPayload,
+): Promise<ActivateAccountResult> {
+  const res = await fetch(`${getApiBaseUrl()}/auth/users/activate`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) {
+    const body = (await res.json().catch(() => ({}))) as { message?: string };
+    const message = body.message ?? "No se pudo activar la cuenta.";
+    const error = new Error(message) as Error & { status?: number };
+    error.status = res.status;
+    throw error;
+  }
+
+  return res.json() as Promise<ActivateAccountResult>;
 }
