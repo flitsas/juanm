@@ -2,7 +2,7 @@ name: CD - Build & Deploy to VPS
 
 on:
   push:
-    branches: [develop]
+    branches: [release, develop]
   workflow_dispatch:
 
 concurrency:
@@ -15,8 +15,10 @@ permissions:
 
 env:
   REGISTRY: ghcr.io
-  CORE_API_IMAGE: ghcr.io/flitsas/flit-boilerplate/core-api
-  FRONTEND_IMAGE: ghcr.io/flitsas/flit-boilerplate/frontend
+  # Namespace del paquete GHCR segun la rama (Opcion A: paquetes separados por ambiente):
+  #   release -> juanm-pdn   |   develop -> juanm-dev
+  CORE_API_IMAGE: ghcr.io/flitsas/${{ github.ref == 'refs/heads/release' && 'juanm-pdn' || 'juanm-dev' }}/core-api
+  FRONTEND_IMAGE: ghcr.io/flitsas/${{ github.ref == 'refs/heads/release' && 'juanm-pdn' || 'juanm-dev' }}/frontend
 
 jobs:
   build-core-api:
@@ -45,7 +47,8 @@ jobs:
           images: ${{ env.CORE_API_IMAGE }}
           tags: |
             type=sha,prefix=sha-
-            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/release' }}
+            type=raw,value=develop,enable=${{ github.ref == 'refs/heads/develop' }}
 
       - name: Build and push core-api
         uses: docker/build-push-action@v6
@@ -84,7 +87,8 @@ jobs:
           images: ${{ env.FRONTEND_IMAGE }}
           tags: |
             type=sha,prefix=sha-
-            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/release' }}
+            type=raw,value=develop,enable=${{ github.ref == 'refs/heads/develop' }}
 
       - name: Build and push frontend
         uses: docker/build-push-action@v6
@@ -95,8 +99,8 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            VITE_API_BASE_URL=https://api.orca.flitsas.com/api/v1
-            VITE_TRASPASOS_API_BASE_URL=https://api.orca.flitsas.com/api/v1/procedures
+            VITE_API_BASE_URL=https://${{ github.ref == 'refs/heads/release' && 'api.juanm.flitsas.online' || 'dev.api.juanm.flitsas.online' }}/api/v1
+            VITE_TRASPASOS_API_BASE_URL=https://${{ github.ref == 'refs/heads/release' && 'api.juanm.flitsas.online' || 'dev.api.juanm.flitsas.online' }}/api/v1/procedures
             VITE_DEV_USER_ID=01900000-100b-7001-8001-000000000001
           cache-from: type=gha,scope=frontend
           cache-to: type=gha,mode=max,scope=frontend
@@ -107,7 +111,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     environment:
-      name: production
+      name: ${{ github.ref == 'refs/heads/release' && 'production' || 'develop' }}
       url: ${{ vars.PUBLIC_DOMAIN && format('https://{0}', vars.PUBLIC_DOMAIN) || '' }}
 
     steps:
@@ -115,16 +119,31 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Copy compose file to VPS
+        env:
+          SSH_KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+          SSH_HOST: ${{ secrets.HOSTINGER_SSH_HOST }}
+          SSH_USER: ${{ secrets.HOSTINGER_SSH_USER }}
+          DEPLOY_PATH: ${{ secrets.HOSTINGER_DEPLOY_PATH }}
         run: |
-          echo "${{ secrets.HOSTINGER_SSH_KEY }}" > /tmp/deploy_key
+          set -euo pipefail
+          # Falla rapido y nombra el secret faltante (en vez de un exit 1 opaco)
+          : "${SSH_HOST:?Falta el secret HOSTINGER_SSH_HOST}"
+          : "${SSH_USER:?Falta el secret HOSTINGER_SSH_USER}"
+          : "${DEPLOY_PATH:?Falta el secret HOSTINGER_DEPLOY_PATH}"
+          [ -n "$SSH_KEY" ] || { echo "Falta el secret HOSTINGER_SSH_KEY"; exit 1; }
+
+          printf '%s\n' "$SSH_KEY" > /tmp/deploy_key
           chmod 600 /tmp/deploy_key
           mkdir -p ~/.ssh && chmod 700 ~/.ssh
-          ssh-keyscan -H ${{ secrets.HOSTINGER_SSH_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
-          ssh -i /tmp/deploy_key ${{ secrets.HOSTINGER_SSH_USER }}@${{ secrets.HOSTINGER_SSH_HOST }} \
-            "mkdir -p ${{ secrets.HOSTINGER_DEPLOY_PATH }}"
-          scp -i /tmp/deploy_key \
+          # Best-effort: precarga la host key. Si ssh-keyscan falla (es intermitente),
+          # StrictHostKeyChecking=accept-new la aceptara en la primera conexion igual.
+          ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
+
+          ssh -i /tmp/deploy_key -o BatchMode=yes -o StrictHostKeyChecking=accept-new \
+            "$SSH_USER@$SSH_HOST" "mkdir -p '$DEPLOY_PATH'"
+          scp -i /tmp/deploy_key -o BatchMode=yes -o StrictHostKeyChecking=accept-new \
             docker-compose.prod.yml \
-            ${{ secrets.HOSTINGER_SSH_USER }}@${{ secrets.HOSTINGER_SSH_HOST }}:${{ secrets.HOSTINGER_DEPLOY_PATH }}/docker-compose.prod.yml
+            "$SSH_USER@$SSH_HOST:$DEPLOY_PATH/docker-compose.prod.yml"
           rm -f /tmp/deploy_key
 
       - name: Deploy via SSH
@@ -148,14 +167,20 @@ jobs:
             # Remove dangling images to free space
             docker image prune -f
 
-            # Health check: hit the container directly (bypass host nginx)
-            echo "Waiting for application to start..."
+            # Health check: hit the container directly (bypass host nginx).
+            # Lee los puertos del .env del proyecto (defaults = prod) para que
+            # funcione igual en produccion y develop con sus propios puertos.
+            FE_PORT="$(grep -E '^FRONTEND_PORT=' .env 2>/dev/null | head -1 | cut -d= -f2 || true)"
+            GW_PORT="$(grep -E '^GATEWAY_PORT=' .env 2>/dev/null | head -1 | cut -d= -f2 || true)"
+            FE_PORT="${FE_PORT:-40103}"
+            GW_PORT="${GW_PORT:-40203}"
+            echo "Waiting for application to start (front:$FE_PORT gateway:$GW_PORT)..."
             sleep 15
             ok=0
             for i in 1 2 3 4 5 6; do
-              # Front (4001) + API publica del gateway (4002) deben responder.
-              if curl -fsS http://127.0.0.1:4001/ > /dev/null \
-                 && curl -fsS http://127.0.0.1:4002/health > /dev/null; then
+              # Front + API publica del gateway deben responder.
+              if curl -fsS "http://127.0.0.1:${FE_PORT}/" > /dev/null \
+                 && curl -fsS "http://127.0.0.1:${GW_PORT}/health" > /dev/null; then
                 echo "Health check OK (attempt $i)"
                 ok=1
                 break
