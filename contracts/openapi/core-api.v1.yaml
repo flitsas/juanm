@@ -269,6 +269,612 @@ paths:
                 $ref: "#/components/schemas/EmailEvidenceResponse"
         "404":
           description: Evidencia no encontrada
+  /api/v1/notif/companies:
+    get:
+      operationId: listNotifCompanies
+      summary: Lista compañías (Super Admin)
+      tags: [NOTIF Admin]
+      parameters:
+        - name: X-Role
+          in: header
+          required: true
+          schema:
+            type: string
+            enum: [super_admin, SuperAdmin]
+      responses:
+        "200":
+          description: Nómina global de empresas
+        "403":
+          description: Rol insuficiente
+    post:
+      operationId: createNotifCompany
+      summary: Crea compañía (Super Admin)
+      tags: [NOTIF Admin]
+      parameters:
+        - name: X-Role
+          in: header
+          required: true
+          schema:
+            type: string
+            enum: [super_admin, SuperAdmin]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name:
+                  type: string
+                nit:
+                  type: string
+                contactPhone:
+                  type: string
+                contactEmail:
+                  type: string
+      responses:
+        "201":
+          description: Compañía creada
+        "403":
+          description: Rol insuficiente
+  /api/v1/notif/companies/{id}:
+    get:
+      operationId: getNotifCompany
+      summary: Obtiene compañía por id (Super Admin)
+      tags: [NOTIF Admin]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: X-Role
+          in: header
+          required: true
+          schema:
+            type: string
+            enum: [super_admin, SuperAdmin]
+      responses:
+        "200":
+          description: Compañía encontrada
+        "403":
+          description: Rol insuficiente
+        "404":
+          description: No encontrada
+    put:
+      operationId: updateNotifCompany
+      summary: Actualiza compañía (Super Admin)
+      tags: [NOTIF Admin]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: X-Role
+          in: header
+          required: true
+          schema:
+            type: string
+            enum: [super_admin, SuperAdmin]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name:
+                  type: string
+                nit:
+                  type: string
+                contactPhone:
+                  type: string
+                contactEmail:
+                  type: string
+                isActive:
+                  type: boolean
+      responses:
+        "200":
+          description: Compañía actualizada
+        "403":
+          description: Rol insuficiente
+        "404":
+          description: No encontrada
+    delete:
+      operationId: deleteNotifCompany
+      summary: Elimina compañía (Super Admin, soft delete)
+      tags: [NOTIF Admin]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: X-Role
+          in: header
+          required: true
+          schema:
+            type: string
+            enum: [super_admin, SuperAdmin]
+      responses:
+        "204":
+          description: Compañía eliminada
+        "403":
+          description: Rol insuficiente
+        "404":
+          description: No encontrada
+  /api/v1/notif/profile:
+    get:
+      operationId: getNotifTenantProfile
+      summary: Perfil del tenant autenticado
+      tags: [NOTIF Admin]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Perfil del tenant
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TenantProfileResponse"
+        "404":
+          description: Tenant no encontrado
+    put:
+      operationId: updateNotifTenantProfile
+      summary: Actualiza teléfono y correo de contacto del tenant
+      tags: [NOTIF Admin]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                contactPhone:
+                  type: string
+                contactEmail:
+                  type: string
+      responses:
+        "200":
+          description: Perfil actualizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TenantProfileResponse"
+        "404":
+          description: Tenant no encontrado
+  /api/v1/notif/provider:
+    get:
+      operationId: getNotifProvider
+      summary: Proveedor de email activo del tenant
+      tags: [NOTIF Provider]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Configuración activa (sin credenciales en claro)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProviderResponse"
+        "404":
+          description: Sin proveedor configurado
+    put:
+      operationId: saveNotifProvider
+      summary: Guarda proveedor con credenciales cifradas
+      tags: [NOTIF Provider]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [providerType, fromAddress, credentials]
+              properties:
+                providerType:
+                  type: string
+                  enum: [api, sendgrid, flit_mail]
+                fromAddress:
+                  type: string
+                credentials:
+                  type: object
+                  additionalProperties: true
+      responses:
+        "200":
+          description: Proveedor validado y persistido
+        "400":
+          description: Credenciales inválidas o payload incorrecto
+  /api/v1/notif/provider/test:
+    post:
+      operationId: testNotifProvider
+      summary: Envía correo de prueba
+      tags: [NOTIF Provider]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [destino]
+              properties:
+                destino:
+                  type: string
+                  format: email
+                providerType:
+                  type: string
+                fromAddress:
+                  type: string
+                credentials:
+                  type: object
+      responses:
+        "200":
+          description: Prueba exitosa
+        "400":
+          description: Prueba fallida
+  /api/v1/notif/templates:
+    get:
+      operationId: listNotifTemplates
+      summary: Lista plantillas email del tenant
+      tags: [NOTIF Templates]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Listado de plantillas
+    post:
+      operationId: createNotifTemplate
+      summary: Crea plantilla email marca blanca
+      tags: [NOTIF Templates]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EmailTemplateRequest"
+      responses:
+        "201":
+          description: Plantilla creada
+        "400":
+          description: Validación fallida
+  /api/v1/notif/templates/{id}:
+    get:
+      operationId: getNotifTemplate
+      tags: [NOTIF Templates]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Plantilla encontrada
+        "404":
+          description: No encontrada
+    put:
+      operationId: updateNotifTemplate
+      tags: [NOTIF Templates]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EmailTemplateRequest"
+      responses:
+        "200":
+          description: Plantilla actualizada
+        "400":
+          description: Validación fallida
+    delete:
+      operationId: deleteNotifTemplate
+      tags: [NOTIF Templates]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Plantilla eliminada
+  /api/v1/notif/templates/{id}/preview:
+    post:
+      operationId: previewNotifTemplate
+      summary: Preview HTML con variables de merge
+      tags: [NOTIF Templates]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                variables:
+                  type: object
+                  additionalProperties:
+                    type: string
+      responses:
+        "200":
+          description: HTML preview
+  /api/v1/notif/templates/assets:
+    post:
+      operationId: uploadNotifTemplateAsset
+      summary: Sube banner o pie PNG/JPG
+      tags: [NOTIF Templates]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          description: URL del asset
+        "400":
+          description: Formato no permitido
+  /api/v1/notif/rules:
+    get:
+      operationId: listNotifRules
+      summary: Lista reglas de comunicación del tenant
+      tags: [NOTIF Rules]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Reglas configuradas
+    post:
+      operationId: createNotifRule
+      summary: Crea regla cronológica o estatal
+      tags: [NOTIF Rules]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateNotifRuleRequest"
+      responses:
+        "201":
+          description: Regla creada
+        "400":
+          description: Validación fallida
+  /api/v1/notif/rules/{id}:
+    get:
+      operationId: getNotifRule
+      summary: Obtiene regla por id
+      tags: [NOTIF Rules]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Regla encontrada
+        "404":
+          description: No encontrada
+    put:
+      operationId: updateNotifRule
+      summary: Actualiza regla
+      tags: [NOTIF Rules]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateNotifRuleRequest"
+      responses:
+        "200":
+          description: Regla actualizada
+        "400":
+          description: Validación fallida
+        "404":
+          description: No encontrada
+    delete:
+      operationId: deleteNotifRule
+      summary: Elimina regla (soft delete)
+      tags: [NOTIF Rules]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Eliminada
+        "404":
+          description: No encontrada
+  /api/v1/notif/queue:
+    get:
+      operationId: listNotifQueue
+      summary: Lista cola de envíos del tenant
+      tags: [NOTIF Queue]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Items en cola
+  /api/v1/notif/switch:
+    get:
+      operationId: getNotifSwitch
+      summary: Estado del switch operativo On/Off
+      tags: [NOTIF Switch]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Estado actual
+    put:
+      operationId: updateNotifSwitch
+      summary: Activa o pausa encolado de nuevos envíos
+      tags: [NOTIF Switch]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateNotifSwitchRequest"
+      responses:
+        "200":
+          description: Switch actualizado
+        "400":
+          description: Sin proveedor activo
   /health:
     get:
       operationId: getHealth
@@ -431,3 +1037,117 @@ components:
         database:
           type: string
           enum: [connected, unavailable]
+    CompanyResponse:
+      type: object
+      required: [id, name, isActive, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        nit:
+          type: string
+          nullable: true
+        contactPhone:
+          type: string
+          nullable: true
+        contactEmail:
+          type: string
+          nullable: true
+        isActive:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+          nullable: true
+    TenantProfileResponse:
+      type: object
+      required: [tenantId, name]
+      properties:
+        tenantId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        contactPhone:
+          type: string
+          nullable: true
+        contactEmail:
+          type: string
+          nullable: true
+    EmailTemplateRequest:
+      type: object
+      required: [name, subject, htmlBody]
+      properties:
+        name:
+          type: string
+        subject:
+          type: string
+        htmlBody:
+          type: string
+        bannerUrl:
+          type: string
+          nullable: true
+        footerUrl:
+          type: string
+          nullable: true
+    ProviderResponse:
+      type: object
+      required: [id, providerType, fromAddress, isActive, dispatchEnabled, hasCredentials]
+      properties:
+        id:
+          type: string
+          format: uuid
+        providerType:
+          type: string
+          enum: [api, sendgrid, flit_mail]
+        fromAddress:
+          type: string
+        isActive:
+          type: boolean
+        dispatchEnabled:
+          type: boolean
+        hasCredentials:
+          type: boolean
+        updatedAt:
+          type: string
+          format: date-time
+          nullable: true
+    CreateNotifRuleRequest:
+      type: object
+      required: [emailTemplateId, name, triggerType]
+      properties:
+        emailTemplateId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        triggerType:
+          type: string
+          enum: [chronological, state]
+        triggerDays:
+          type: integer
+          nullable: true
+        triggerReference:
+          type: string
+          enum: [fecha_comparendo, fecha_notificacion]
+          nullable: true
+        triggerEstado:
+          type: string
+          nullable: true
+        isActive:
+          type: boolean
+          default: true
+    UpdateNotifRuleRequest:
+      allOf:
+        - $ref: "#/components/schemas/CreateNotifRuleRequest"
+    UpdateNotifSwitchRequest:
+      type: object
+      required: [dispatchEnabled]
+      properties:
+        dispatchEnabled:
+          type: boolean

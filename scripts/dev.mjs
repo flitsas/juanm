@@ -61,6 +61,7 @@ for (const { name, command, args } of services) {
     cwd: process.cwd(),
     stdio: ["inherit", "pipe", "pipe"],
     env: process.env,
+    shell: isWin,
   });
 
   children.push(child);

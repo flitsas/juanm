@@ -55,14 +55,15 @@ export const SHELL_NAV_ITEMS: ShellNavItem[] = [
   {
     id: "admin",
     label: "Admin",
-    description: "Multi-compañía y usuarios.",
-    href: "/admin",
+    description: "Multi-compañía y configuración NOTIF.",
+    href: "/admin/notificaciones",
     icon: Building2,
-    enabled: false,
+    enabled: true,
   },
 ];
 
 export function resolveActiveNavId(pathname: string): string {
   if (pathname.startsWith("/dgc")) return "dgc";
+  if (pathname.startsWith("/admin")) return "admin";
   return "dashboard";
 }

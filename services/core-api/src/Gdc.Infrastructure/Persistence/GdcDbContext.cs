@@ -1,5 +1,7 @@
 using Gdc.Modules.Dgc.Domain.Entities;
 using Gdc.Modules.Dgc.Infrastructure.Persistence;
+using Gdc.Modules.Notif.Domain.Entities;
+using Gdc.Modules.Notif.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace Gdc.Infrastructure.Persistence;
@@ -20,10 +22,23 @@ public sealed class GdcDbContext(DbContextOptions<GdcDbContext> options) : DbCon
 
     public DbSet<DescuentoMatriz> DescuentoMatrices => Set<DescuentoMatriz>();
 
+    public DbSet<EmailProviderConfig> EmailProviderConfigs => Set<EmailProviderConfig>();
+
+    public DbSet<EmailTemplate> EmailTemplates => Set<EmailTemplate>();
+
+    public DbSet<NotificationRule> NotificationRules => Set<NotificationRule>();
+
+    public DbSet<EmailQueue> EmailQueues => Set<EmailQueue>();
+
+    public DbSet<EmailSendLog> EmailSendLogs => Set<EmailSendLog>();
+
+    public DbSet<TenantCompany> TenantCompanies => Set<TenantCompany>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasDefaultSchema("core");
         modelBuilder.ApplyDgcConfigurations();
+        modelBuilder.ApplyNotifConfigurations();
         base.OnModelCreating(modelBuilder);
     }
 }
