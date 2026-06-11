@@ -1,4 +1,5 @@
 using Gdc.Infrastructure.Persistence;
+using Gdc.Infrastructure.Tests;
 using Gdc.Modules.Notif.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -39,12 +40,5 @@ public sealed class NotifTenantIsolationTests
         Assert.Equal(tenantA, visible[0].TenantId);
     }
 
-    private static GdcDbContext CreateInMemoryContext()
-    {
-        var options = new DbContextOptionsBuilder<GdcDbContext>()
-            .UseInMemoryDatabase(Guid.NewGuid().ToString())
-            .Options;
-
-        return new GdcDbContext(options);
-    }
+    private static GdcDbContext CreateInMemoryContext() => TestDbContextFactory.CreateInMemory();
 }

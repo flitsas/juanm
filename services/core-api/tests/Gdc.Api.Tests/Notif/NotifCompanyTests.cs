@@ -1,5 +1,6 @@
 using Gdc.Infrastructure.Notif;
 using Gdc.Infrastructure.Persistence;
+using Gdc.Infrastructure.Tests;
 using Gdc.Modules.Dgc.Application.Abstractions;
 using Gdc.Modules.Notif.Application.Abstractions;
 using Gdc.Modules.Notif.Application.TenantAdmin;
@@ -117,14 +118,7 @@ public sealed class NotifCompanyTests
             new FakeRoleContext(isSuperAdmin),
             TimeProvider.System);
 
-    private static GdcDbContext CreateDbContext()
-    {
-        var options = new DbContextOptionsBuilder<GdcDbContext>()
-            .UseInMemoryDatabase(Guid.NewGuid().ToString())
-            .Options;
-
-        return new GdcDbContext(options);
-    }
+    private static GdcDbContext CreateDbContext() => TestDbContextFactory.CreateInMemory();
 
     private sealed class FakeTenantContext(Guid tenantId) : Gdc.Modules.Dgc.Application.Abstractions.ITenantContext
     {

@@ -1,5 +1,6 @@
 using Gdc.Infrastructure.Notif;
 using Gdc.Infrastructure.Persistence;
+using Gdc.Infrastructure.Tests;
 using Gdc.Modules.Dgc.Application.Abstractions;
 using Gdc.Modules.Notif.Application.Templates;
 using Microsoft.EntityFrameworkCore;
@@ -101,11 +102,7 @@ public sealed class NotifTemplateTests
     private static GdcDbContext CreateDbContext()
     {
         NotifTemplateAssetStore.Clear();
-        var options = new DbContextOptionsBuilder<GdcDbContext>()
-            .UseInMemoryDatabase(Guid.NewGuid().ToString())
-            .Options;
-
-        return new GdcDbContext(options);
+        return TestDbContextFactory.CreateInMemory();
     }
 
     private sealed class FakeTenantContext(Guid tenantId) : Gdc.Modules.Dgc.Application.Abstractions.ITenantContext

@@ -1,0 +1,27 @@
+title = "GDC gitleaks"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Placeholders de desarrollo y archivos de ejemplo"
+paths = [
+  '''(?i)\.env\.example$''',
+  '''(?i)appsettings(\.Development)?\.json$''',
+  '''(?i)docker-compose\.yml$''',
+  '''(?i)Gdc\.Api\.http$''',
+  '''(?i)README\.md$''',
+  '''(?i)\.spec\.(ts|tsx)$''',
+  '''(?i)Tests\.cs$''',
+  '''(?i)DevDataSeeder\.cs$''',
+]
+regexes = [
+  '''dev-only-secret-key-min-32-characters-long''',
+  '''CHANGE_ME_USE_ENV_OR_USER_SECRETS_MIN_32_CHARS''',
+  '''dev-only-change-in-production-notif-email-key''',
+  '''Password=postgres''',
+  '''Password=test''',
+  '''Password=flit_local''',
+  '''"apiKey":"secret-key"''',
+  '''"apiKey":"bad"''',
+]

@@ -2,6 +2,7 @@ using Gdc.Infrastructure.Dgc;
 using Gdc.Infrastructure.Notif;
 using Gdc.Infrastructure.Notif.EmailSenders;
 using Gdc.Infrastructure.Persistence;
+using Gdc.Infrastructure.Tests;
 using Gdc.Modules.Dgc.Application.Abstractions;
 using Gdc.Modules.Dgc.Domain.Entities;
 using Gdc.Modules.Notif.Application.Abstractions;
@@ -275,14 +276,7 @@ public sealed class NotifRuleTests
         await db.SaveChangesAsync();
     }
 
-    private static GdcDbContext CreateDbContext()
-    {
-        var options = new DbContextOptionsBuilder<GdcDbContext>()
-            .UseInMemoryDatabase(Guid.NewGuid().ToString())
-            .Options;
-
-        return new GdcDbContext(options);
-    }
+    private static GdcDbContext CreateDbContext() => TestDbContextFactory.CreateInMemory();
 
     private sealed class FakeTenantContext(Guid tenantId) : Gdc.Modules.Dgc.Application.Abstractions.ITenantContext
     {

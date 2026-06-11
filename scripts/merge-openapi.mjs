@@ -31,5 +31,5 @@ ${authSchemasBlock}
 ${mainSchemasBlock}
 `;
 
-fs.writeFileSync("contracts/openapi/core-api.v1.yaml", merged);
+fs.writeFileSync("contracts/openapi/core-api.v1.yaml", merged, "utf8");
 console.log(`Merged openapi: ${merged.split("\n").length} lines`);

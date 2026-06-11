@@ -1,0 +1,20 @@
+asyncapi: 3.0.0
+info:
+  title: GDC Domain Events
+  version: 1.0.0
+  description: Contrato de eventos de dominio GDC 2.0 (placeholder MVP)
+channels:
+  gdc.comparendo.created:
+    address: gdc.comparendo.created
+    messages:
+      comparendoCreated:
+        payload:
+          type: object
+          required: [comparendoId, tenantId]
+          properties:
+            comparendoId:
+              type: string
+              format: uuid
+            tenantId:
+              type: string
+              format: uuid
