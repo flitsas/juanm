@@ -4,11 +4,17 @@ import type {
   NotifCompany,
   NotifCompanyListResult,
   NotifProvider,
+  NotifTemplate,
+  NotifTemplateListResult,
+  PreviewTemplateResult,
   SaveProviderPayload,
+  SaveTemplatePayload,
   TestProviderPayload,
   TestProviderResult,
   UpdateCompanyPayload,
+  UploadTemplateAssetResult,
 } from "../lib/notif.types";
+import { DEFAULT_TEMPLATE_VARIABLES } from "../lib/template-preview";
 import { buildNotifHeaders } from "./notif-headers";
 
 async function parseError(response: Response): Promise<Error> {
@@ -160,4 +166,128 @@ export async function testProvider(
   }
 
   return response.json() as Promise<TestProviderResult>;
+}
+
+export async function fetchTemplates(init?: RequestInit): Promise<NotifTemplateListResult> {
+  const response = await fetch(`${getApiBaseUrl()}/api/v1/notif/templates`, {
+    ...init,
+    headers: {
+      ...buildNotifHeaders(),
+      ...init?.headers,
+    },
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    throw await parseError(response);
+  }
+
+  return response.json() as Promise<NotifTemplateListResult>;
+}
+
+export async function createTemplate(
+  payload: SaveTemplatePayload,
+  init?: RequestInit,
+): Promise<NotifTemplate> {
+  const response = await fetch(`${getApiBaseUrl()}/api/v1/notif/templates`, {
+    method: "POST",
+    ...init,
+    headers: {
+      "Content-Type": "application/json",
+      ...buildNotifHeaders(),
+      ...init?.headers,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    throw await parseError(response);
+  }
+
+  return response.json() as Promise<NotifTemplate>;
+}
+
+export async function updateTemplate(
+  id: string,
+  payload: SaveTemplatePayload,
+  init?: RequestInit,
+): Promise<NotifTemplate> {
+  const response = await fetch(`${getApiBaseUrl()}/api/v1/notif/templates/${id}`, {
+    method: "PUT",
+    ...init,
+    headers: {
+      "Content-Type": "application/json",
+      ...buildNotifHeaders(),
+      ...init?.headers,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    throw await parseError(response);
+  }
+
+  return response.json() as Promise<NotifTemplate>;
+}
+
+export async function deleteTemplate(id: string, init?: RequestInit): Promise<void> {
+  const response = await fetch(`${getApiBaseUrl()}/api/v1/notif/templates/${id}`, {
+    method: "DELETE",
+    ...init,
+    headers: {
+      ...buildNotifHeaders(),
+      ...init?.headers,
+    },
+  });
+
+  if (!response.ok) {
+    throw await parseError(response);
+  }
+}
+
+export async function previewTemplate(
+  id: string,
+  variables: Record<string, string> = DEFAULT_TEMPLATE_VARIABLES,
+  init?: RequestInit,
+): Promise<PreviewTemplateResult> {
+  const response = await fetch(`${getApiBaseUrl()}/api/v1/notif/templates/${id}/preview`, {
+    method: "POST",
+    ...init,
+    headers: {
+      "Content-Type": "application/json",
+      ...buildNotifHeaders(),
+      ...init?.headers,
+    },
+    body: JSON.stringify({ variables }),
+  });
+
+  if (!response.ok) {
+    throw await parseError(response);
+  }
+
+  return response.json() as Promise<PreviewTemplateResult>;
+}
+
+export async function uploadTemplateAsset(
+  file: File,
+  init?: RequestInit,
+): Promise<UploadTemplateAssetResult> {
+  const form = new FormData();
+  form.append("file", file);
+
+  const response = await fetch(`${getApiBaseUrl()}/api/v1/notif/templates/assets`, {
+    method: "POST",
+    ...init,
+    headers: {
+      ...buildNotifHeaders(),
+      ...init?.headers,
+    },
+    body: form,
+  });
+
+  if (!response.ok) {
+    throw await parseError(response);
+  }
+
+  return response.json() as Promise<UploadTemplateAssetResult>;
 }

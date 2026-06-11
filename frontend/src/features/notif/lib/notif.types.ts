@@ -53,3 +53,36 @@ export type TestProviderResult = {
 };
 
 export type ProviderType = "api" | "sendgrid" | "flit_mail";
+
+export type NotifTemplate = {
+  id: string;
+  name: string;
+  subject: string;
+  htmlBody: string;
+  bannerUrl: string | null;
+  footerUrl: string | null;
+  createdAt: string;
+  updatedAt: string | null;
+};
+
+export type NotifTemplateListResult = {
+  items: NotifTemplate[];
+};
+
+export type SaveTemplatePayload = {
+  name: string;
+  subject: string;
+  htmlBody: string;
+  bannerUrl?: string | null;
+  footerUrl?: string | null;
+};
+
+export type PreviewTemplateResult = {
+  subject: string;
+  htmlBody: string;
+};
+
+export type UploadTemplateAssetResult = {
+  url: string;
+  contentType: string;
+};

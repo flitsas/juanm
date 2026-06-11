@@ -10,8 +10,9 @@ import type { NotifCompany } from "../lib/notif.types";
 import { CompaniesTable } from "./CompaniesTable";
 import { CompanyFormDialog } from "./CompanyFormDialog";
 import { ProviderForm } from "./ProviderForm";
+import { TemplatesSection } from "./TemplatesSection";
 
-type AdminTab = "companies" | "provider";
+type AdminTab = "companies" | "provider" | "templates";
 
 export function NotifAdminPage() {
   const superAdmin = isSuperAdmin();
@@ -60,7 +61,7 @@ export function NotifAdminPage() {
     <div className="mx-auto max-w-[1200px] space-y-6 p-6" data-testid="notif-admin-page">
       <PageHeaderCard
         title="Notificaciones"
-        subtitle="Motor NOTIF · compañías multi-tenant y proveedor de correo"
+        subtitle="Motor NOTIF · compañías, proveedor y plantillas email marca blanca"
         actions={
           superAdmin && tab === "companies" ? (
             <Button
@@ -108,6 +109,20 @@ export function NotifAdminPage() {
           data-testid="notif-tab-provider"
         >
           Proveedor email
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={tab === "templates"}
+          className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+            tab === "templates"
+              ? "bg-[var(--action)] text-white shadow-md"
+              : "bg-[var(--card)] text-[var(--deep)] hover:bg-[var(--muted)]"
+          }`}
+          onClick={() => setTab("templates")}
+          data-testid="notif-tab-templates"
+        >
+          Plantillas
         </button>
       </div>
 
@@ -163,6 +178,8 @@ export function NotifAdminPage() {
       {tab === "provider" ? (
         <ProviderForm provider={providerQuery.data} isLoading={providerQuery.isLoading} />
       ) : null}
+
+      {tab === "templates" ? <TemplatesSection /> : null}
 
       <CompanyFormDialog
         open={dialogOpen}
