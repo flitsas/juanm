@@ -24,6 +24,7 @@ coverage/
 .env.user-identity
 .env.renting
 .env.verifik
+infra/secrets/*
 !infra/secrets/.gitkeep
 
 # IDE
