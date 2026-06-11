@@ -5,6 +5,7 @@ import { Checkbox } from "primereact/checkbox";
 import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
 import { useEffect, useState } from "react";
+import { useNotifProviderMutations } from "../api/use-provider";
 import type { NotifProvider, ProviderType } from "../lib/notif.types";
 import {
   buildProviderCredentials,
@@ -13,7 +14,6 @@ import {
   type ProviderFormState,
   validateProviderForm,
 } from "../lib/provider-validation";
-import { useNotifProviderMutations } from "../api/use-provider";
 
 const PROVIDER_OPTIONS = [
   { label: "API REST propia", value: "api" },

@@ -4,6 +4,7 @@ import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
 import { useEffect, useMemo, useState } from "react";
+import { useNotifTemplateMutations } from "../api/use-templates";
 import type { NotifTemplate } from "../lib/notif.types";
 import {
   composeTemplatePreviewHtml,
@@ -16,7 +17,6 @@ import {
   type TemplateFormState,
   validateTemplateForm,
 } from "../lib/template-validation";
-import { useNotifTemplateMutations } from "../api/use-templates";
 import { ImageAssetDropzone } from "./ImageAssetDropzone";
 import { TemplatePreviewPanel } from "./TemplatePreviewPanel";
 

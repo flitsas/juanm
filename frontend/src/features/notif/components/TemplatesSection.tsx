@@ -2,8 +2,8 @@
 
 import { Button } from "primereact/button";
 import { useState } from "react";
-import type { NotifTemplate } from "../lib/notif.types";
 import { useNotifTemplateMutations, useNotifTemplates } from "../api/use-templates";
+import type { NotifTemplate } from "../lib/notif.types";
 import { TemplateEditor } from "./TemplateEditor";
 
 export function TemplatesSection() {
