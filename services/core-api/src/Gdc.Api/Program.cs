@@ -1,12 +1,19 @@
 using Gdc.Api;
 using Gdc.Api.Auth;
+using Gdc.Api.Configuration;
 using Gdc.Api.Endpoints;
+using Gdc.Api.Tenancy;
 using Gdc.Infrastructure;
 using Gdc.Infrastructure.Auth;
+using Gdc.Infrastructure.Dgc;
 using Gdc.Infrastructure.Persistence;
+using Gdc.Modules.Dgc.Application.Abstractions;
+using Gdc.Modules.Notif.Application.Abstractions;
 using Microsoft.EntityFrameworkCore;
+using DgcTenantContext = Gdc.Modules.Dgc.Application.Abstractions.ITenantContext;
 
 DotEnvLoader.LoadIfPresent();
+DotEnvLoader.LoadRentingEnvFromRepoRoot();
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +27,10 @@ if (builder.Environment.IsDevelopment())
 
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddJwtAuthentication(builder.Configuration);
+builder.Services.AddHostedService<ContraventorAssociationHostedService>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<DgcTenantContext, HeaderTenantContext>();
+builder.Services.AddScoped<IUserRoleContext, HeaderUserRoleContext>();
 builder.Services.AddOpenApi();
 
 builder.Services.AddCors(options =>
@@ -41,7 +52,7 @@ if (app.Environment.IsDevelopment())
 {
     var smtpSettings = new SmtpSettings();
     SmtpSettings.Bind(app.Configuration, smtpSettings);
-    var emailSender = app.Services.GetRequiredService<IEmailSender>();
+    var emailSender = app.Services.GetRequiredService<Gdc.Infrastructure.Auth.IEmailSender>();
     app.Logger.LogInformation(
         "Correo: {SenderType} | SMTP {Host}:{Port} | From {From} | Enabled {Enabled}",
         emailSender.GetType().Name,
@@ -85,6 +96,13 @@ app.MapGet("/health", async (GdcDbContext db, CancellationToken ct) =>
 .WithTags("System");
 
 app.MapAuthEndpoints();
+app.MapDgcOcrEndpoints();
+app.MapDgcComparendoEndpoints();
+app.MapDgcEmailLogEndpoints();
+app.MapNotifCompanyEndpoints();
+app.MapNotifProviderEndpoints();
+app.MapNotifTemplateEndpoints();
+app.MapNotifRuleEndpoints();
 
 app.Run();
 

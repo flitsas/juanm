@@ -1,0 +1,16 @@
+# Dependencies
+node_modules/
+
+# Next.js
+.next/
+out/
+
+# Env
+.env*.local
+
+# Build / cache
+*.tsbuildinfo
+
+# Test / debug
+playwright-report/
+test-results/

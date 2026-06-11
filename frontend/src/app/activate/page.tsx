@@ -3,8 +3,8 @@ import { ActivateAccountForm } from "@/features/auth/components/activate-account
 import { AuthShell } from "@/features/auth/components/auth-shell";
 
 export const metadata = {
-  title: "Activar cuenta · GDC 2.0",
-  description: "Activa tu cuenta GDC 2.0 con el enlace de invitación",
+  title: "Activar cuenta · GDC — Gestión De Comparendos",
+  description: "Activa tu cuenta en GDC (Gestión De Comparendos) con el enlace de invitación",
 };
 
 function ActivateFallback() {

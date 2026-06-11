@@ -23,7 +23,7 @@ namespace Gdc.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Gdc.Infrastructure.Persistence.Auth.Entities.ActivationToken", b =>
+modelBuilder.Entity("Gdc.Infrastructure.Persistence.Auth.Entities.ActivationToken", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -55,8 +55,7 @@ namespace Gdc.Infrastructure.Migrations
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("xid")
-                        .HasColumnName("row_version")
-                        .HasDefaultValueSql("'0'::xid");
+                        .HasColumnName("row_version");
 
                     b.Property<string>("TokenHash")
                         .IsRequired()
@@ -125,8 +124,7 @@ namespace Gdc.Infrastructure.Migrations
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("xid")
-                        .HasColumnName("row_version")
-                        .HasDefaultValueSql("'0'::xid");
+                        .HasColumnName("row_version");
 
                     b.Property<string>("TokenHash")
                         .IsRequired()
@@ -220,8 +218,7 @@ namespace Gdc.Infrastructure.Migrations
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("xid")
-                        .HasColumnName("row_version")
-                        .HasDefaultValueSql("'0'::xid");
+                        .HasColumnName("row_version");
 
                     b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("timestamptz")
@@ -239,44 +236,6 @@ namespace Gdc.Infrastructure.Migrations
                         .HasFilter("deleted_at IS NULL");
 
                     b.ToTable("permissions", "auth");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("44444444-4444-4444-8444-444444444401"),
-                            Action = "read",
-                            Code = "auth.users.read",
-                            CreatedAt = new DateTimeOffset(new DateTime(2026, 6, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            Description = "Consultar usuarios",
-                            IsActive = true,
-                            Module = "auth",
-                            RowVersion = 0u,
-                            UpdatedAt = new DateTimeOffset(new DateTime(2026, 6, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0))
-                        },
-                        new
-                        {
-                            Id = new Guid("44444444-4444-4444-8444-444444444402"),
-                            Action = "write",
-                            Code = "auth.users.write",
-                            CreatedAt = new DateTimeOffset(new DateTime(2026, 6, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            Description = "Gestionar usuarios",
-                            IsActive = true,
-                            Module = "auth",
-                            RowVersion = 0u,
-                            UpdatedAt = new DateTimeOffset(new DateTime(2026, 6, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0))
-                        },
-                        new
-                        {
-                            Id = new Guid("44444444-4444-4444-8444-444444444403"),
-                            Action = "manage",
-                            Code = "auth.rbac.manage",
-                            CreatedAt = new DateTimeOffset(new DateTime(2026, 6, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            Description = "Administrar matriz RBAC",
-                            IsActive = true,
-                            Module = "auth",
-                            RowVersion = 0u,
-                            UpdatedAt = new DateTimeOffset(new DateTime(2026, 6, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0))
-                        });
                 });
 
             modelBuilder.Entity("Gdc.Infrastructure.Persistence.Auth.Entities.RevokedToken", b =>
@@ -315,8 +274,7 @@ namespace Gdc.Infrastructure.Migrations
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("xid")
-                        .HasColumnName("row_version")
-                        .HasDefaultValueSql("'0'::xid");
+                        .HasColumnName("row_version");
 
                     b.Property<string>("TokenId")
                         .IsRequired()
@@ -393,8 +351,7 @@ namespace Gdc.Infrastructure.Migrations
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("xid")
-                        .HasColumnName("row_version")
-                        .HasDefaultValueSql("'0'::xid");
+                        .HasColumnName("row_version");
 
                     b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("timestamptz")
@@ -465,38 +422,6 @@ namespace Gdc.Infrastructure.Migrations
                         .HasDatabaseName("ix_role_permissions_permission_id");
 
                     b.ToTable("role_permissions", "auth");
-
-                    b.HasData(
-                        new
-                        {
-                            RoleId = new Guid("11111111-1111-4111-8111-111111111101"),
-                            PermissionId = new Guid("44444444-4444-4444-8444-444444444401")
-                        },
-                        new
-                        {
-                            RoleId = new Guid("11111111-1111-4111-8111-111111111101"),
-                            PermissionId = new Guid("44444444-4444-4444-8444-444444444402")
-                        },
-                        new
-                        {
-                            RoleId = new Guid("11111111-1111-4111-8111-111111111101"),
-                            PermissionId = new Guid("44444444-4444-4444-8444-444444444403")
-                        },
-                        new
-                        {
-                            RoleId = new Guid("11111111-1111-4111-8111-111111111102"),
-                            PermissionId = new Guid("44444444-4444-4444-8444-444444444401")
-                        },
-                        new
-                        {
-                            RoleId = new Guid("11111111-1111-4111-8111-111111111102"),
-                            PermissionId = new Guid("44444444-4444-4444-8444-444444444402")
-                        },
-                        new
-                        {
-                            RoleId = new Guid("11111111-1111-4111-8111-111111111103"),
-                            PermissionId = new Guid("44444444-4444-4444-8444-444444444401")
-                        });
                 });
 
             modelBuilder.Entity("Gdc.Infrastructure.Persistence.Auth.Entities.Tenant", b =>
@@ -539,8 +464,7 @@ namespace Gdc.Infrastructure.Migrations
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("xid")
-                        .HasColumnName("row_version")
-                        .HasDefaultValueSql("'0'::xid");
+                        .HasColumnName("row_version");
 
                     b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("timestamptz")
@@ -608,8 +532,7 @@ namespace Gdc.Infrastructure.Migrations
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("xid")
-                        .HasColumnName("row_version")
-                        .HasDefaultValueSql("'0'::xid");
+                        .HasColumnName("row_version");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -753,6 +676,1128 @@ namespace Gdc.Infrastructure.Migrations
             modelBuilder.Entity("Gdc.Infrastructure.Persistence.Auth.Entities.User", b =>
                 {
                     b.Navigation("UserRoles");
+                });
+
+modelBuilder.Entity("Gdc.Modules.Dgc.Domain.Entities.Comparendo", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<Guid?>("DeletedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by");
+
+                    b.Property<string>("Documento")
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("documento");
+
+                    b.Property<string>("DpReferencia")
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)")
+                        .HasColumnName("dp_referencia");
+
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("estado");
+
+                    b.Property<string>("EstadoPago")
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("estado_pago");
+
+                    b.Property<DateOnly?>("FechaComparendo")
+                        .HasColumnType("date")
+                        .HasColumnName("fecha_comparendo");
+
+                    b.Property<DateOnly?>("FechaNotificacion")
+                        .HasColumnType("date")
+                        .HasColumnName("fecha_notificacion");
+
+                    b.Property<string>("Fuente")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("fuente");
+
+                    b.Property<string>("InfraccionCodigo")
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("infraccion_codigo");
+
+                    b.Property<string>("InfractorNombre")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("infractor_nombre");
+
+                    b.Property<string>("NumeroComparendo")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("numero_comparendo");
+
+                    b.Property<bool>("PendienteContraventor")
+                        .HasColumnType("boolean")
+                        .HasColumnName("pendiente_contraventor");
+
+                    b.Property<string>("Placa")
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("placa");
+
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasDefaultValue(0u)
+                        .HasColumnName("row_version");
+
+                    b.Property<Guid?>("SecretariaId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("secretaria_id");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<decimal>("TotalValor")
+                        .HasColumnType("numeric(15,2)")
+                        .HasColumnName("total_valor");
+
+                    b.Property<DateTimeOffset?>("UltimoIntentoAsociacion")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("ultimo_intento_asociacion");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TenantId", "NumeroComparendo")
+                        .IsUnique()
+                        .HasDatabaseName("uq_comparendos_tenant_numero");
+
+                    b.ToTable("comparendos", "dgc");
+                });
+
+            modelBuilder.Entity("Gdc.Modules.Dgc.Domain.Entities.Contraventor", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<bool>("AsociacionAutomatica")
+                        .HasColumnType("boolean")
+                        .HasColumnName("asociacion_automatica");
+
+                    b.Property<Guid>("ComparendoId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("comparendo_id");
+
+                    b.Property<string>("Correo")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("correo");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<Guid?>("DeletedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by");
+
+                    b.Property<string>("Documento")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("documento");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("nombre");
+
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasDefaultValue(0u)
+                        .HasColumnName("row_version");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ComparendoId")
+                        .IsUnique()
+                        .HasDatabaseName("uq_contraventors_comparendo_id");
+
+                    b.ToTable("contraventors", "dgc");
+                });
+
+            modelBuilder.Entity("Gdc.Modules.Dgc.Domain.Entities.ContraventorJobConfig", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by");
+
+                    b.Property<string>("CronExpression")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("cron_expression");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<Guid?>("DeletedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
+
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasDefaultValue(0u)
+                        .HasColumnName("row_version");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by");
+
+                    b.Property<int>("WindowOrder")
+                        .HasColumnType("integer")
+                        .HasColumnName("window_order");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TenantId", "WindowOrder")
+                        .IsUnique()
+                        .HasDatabaseName("uq_contraventor_job_configs_tenant_window");
+
+                    b.ToTable("contraventor_job_configs", "dgc");
+                });
+
+            modelBuilder.Entity("Gdc.Modules.Dgc.Domain.Entities.DescuentoMatriz", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<Guid?>("DeletedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by");
+
+                    b.Property<int>("DiasDescuento")
+                        .HasColumnType("integer")
+                        .HasColumnName("dias_descuento");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
+
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasDefaultValue(0u)
+                        .HasColumnName("row_version");
+
+                    b.Property<Guid?>("SecretariaId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("secretaria_id");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TenantId", "SecretariaId")
+                        .IsUnique()
+                        .HasDatabaseName("uq_descuento_matrices_tenant_secretaria");
+
+                    b.ToTable("descuento_matrices", "dgc");
+                });
+
+            modelBuilder.Entity("Gdc.Modules.Dgc.Domain.Entities.EmailLog", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Cc")
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)")
+                        .HasColumnName("cc");
+
+                    b.Property<Guid>("ComparendoId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("comparendo_id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<Guid?>("DeletedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by");
+
+                    b.Property<string>("Destino")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("destino");
+
+                    b.Property<string>("EstadoEntrega")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("estado_entrega");
+
+                    b.Property<string>("HtmlEvidencia")
+                        .HasColumnType("text")
+                        .HasColumnName("html_evidencia");
+
+                    b.Property<string>("Origen")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("origen");
+
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasDefaultValue(0u)
+                        .HasColumnName("row_version");
+
+                    b.Property<DateTimeOffset>("SentAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("sent_at");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<string>("TipoAlerta")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("tipo_alerta");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ComparendoId")
+                        .HasDatabaseName("ix_email_logs_comparendo_id");
+
+                    b.ToTable("email_logs", "dgc");
+                });
+
+            modelBuilder.Entity("Gdc.Modules.Dgc.Domain.Entities.OcrItem", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("ArchivoUri")
+                        .IsRequired()
+                        .HasMaxLength(1024)
+                        .HasColumnType("character varying(1024)")
+                        .HasColumnName("archivo_uri");
+
+                    b.Property<Guid?>("ComparendoId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("comparendo_id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<Guid?>("DeletedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by");
+
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("estado");
+
+                    b.Property<Guid>("OcrLoteId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("ocr_lote_id");
+
+                    b.Property<string>("OcrPayloadJson")
+                        .HasColumnType("jsonb")
+                        .HasColumnName("ocr_payload_json");
+
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasDefaultValue(0u)
+                        .HasColumnName("row_version");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ComparendoId");
+
+                    b.HasIndex("OcrLoteId")
+                        .HasDatabaseName("ix_ocr_items_ocr_lote_id");
+
+                    b.ToTable("ocr_items", "dgc");
+                });
+
+            modelBuilder.Entity("Gdc.Modules.Dgc.Domain.Entities.OcrLote", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<Guid?>("DeletedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by");
+
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("estado");
+
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasDefaultValue(0u)
+                        .HasColumnName("row_version");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ocr_lotes", "dgc");
+                });
+
+            modelBuilder.Entity("Gdc.Modules.Notif.Domain.Entities.EmailProviderConfig", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by");
+
+                    b.Property<string>("CredentialsEncrypted")
+                        .HasColumnType("text")
+                        .HasColumnName("credentials_encrypted");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<Guid?>("DeletedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by");
+
+                    b.Property<bool>("DispatchEnabled")
+                        .HasColumnType("boolean")
+                        .HasColumnName("dispatch_enabled");
+
+                    b.Property<string>("FromAddress")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("from_address");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
+
+                    b.Property<string>("ProviderType")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("provider_type");
+
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasDefaultValue(0u)
+                        .HasColumnName("row_version");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TenantId", "IsActive")
+                        .IsUnique()
+                        .HasDatabaseName("ix_email_provider_configs_tenant_active")
+                        .HasFilter("is_active = true AND deleted_at IS NULL");
+
+                    b.ToTable("email_provider_configs", "notif");
+                });
+
+            modelBuilder.Entity("Gdc.Modules.Notif.Domain.Entities.EmailQueue", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("ComparendoId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("comparendo_id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<Guid?>("DeletedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by");
+
+                    b.Property<string>("Destino")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("destino");
+
+                    b.Property<Guid>("EmailTemplateId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("email_template_id");
+
+                    b.Property<string>("ErrorMessage")
+                        .HasColumnType("text")
+                        .HasColumnName("error_message");
+
+                    b.Property<Guid>("NotificationRuleId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("notification_rule_id");
+
+                    b.Property<DateTimeOffset?>("ProcessedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("processed_at");
+
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasDefaultValue(0u)
+                        .HasColumnName("row_version");
+
+                    b.Property<DateTimeOffset>("ScheduledAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("scheduled_at");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("status");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ComparendoId")
+                        .HasDatabaseName("ix_email_queues_comparendo_id");
+
+                    b.HasIndex("EmailTemplateId");
+
+                    b.HasIndex("NotificationRuleId");
+
+                    b.HasIndex("TenantId", "Status", "ScheduledAt")
+                        .HasDatabaseName("ix_email_queues_tenant_status_scheduled");
+
+                    b.ToTable("email_queues", "notif");
+                });
+
+            modelBuilder.Entity("Gdc.Modules.Notif.Domain.Entities.EmailSendLog", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("ComparendoId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("comparendo_id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<Guid?>("DeletedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by");
+
+                    b.Property<string>("Destino")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("destino");
+
+                    b.Property<Guid?>("DgcEmailLogId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("dgc_email_log_id");
+
+                    b.Property<Guid?>("EmailQueueId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("email_queue_id");
+
+                    b.Property<string>("ProviderMessageId")
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)")
+                        .HasColumnName("provider_message_id");
+
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasDefaultValue(0u)
+                        .HasColumnName("row_version");
+
+                    b.Property<DateTimeOffset?>("SentAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("sent_at");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("status");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ComparendoId")
+                        .HasDatabaseName("ix_email_send_logs_comparendo_id");
+
+                    b.HasIndex("EmailQueueId")
+                        .HasDatabaseName("ix_email_send_logs_email_queue_id");
+
+                    b.ToTable("email_send_logs", "notif");
+                });
+
+            modelBuilder.Entity("Gdc.Modules.Notif.Domain.Entities.EmailTemplate", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("BannerUrl")
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)")
+                        .HasColumnName("banner_url");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<Guid?>("DeletedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by");
+
+                    b.Property<string>("FooterUrl")
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)")
+                        .HasColumnName("footer_url");
+
+                    b.Property<string>("HtmlBody")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("html_body");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)")
+                        .HasColumnName("name");
+
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasDefaultValue(0u)
+                        .HasColumnName("row_version");
+
+                    b.Property<string>("Subject")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("subject");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TenantId", "Name")
+                        .IsUnique()
+                        .HasDatabaseName("uq_email_templates_tenant_name")
+                        .HasFilter("deleted_at IS NULL");
+
+                    b.ToTable("email_templates", "notif");
+                });
+
+            modelBuilder.Entity("Gdc.Modules.Notif.Domain.Entities.NotificationRule", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<Guid?>("DeletedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by");
+
+                    b.Property<Guid>("EmailTemplateId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("email_template_id");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)")
+                        .HasColumnName("name");
+
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasDefaultValue(0u)
+                        .HasColumnName("row_version");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<int?>("TriggerDays")
+                        .HasColumnType("integer")
+                        .HasColumnName("trigger_days");
+
+                    b.Property<string>("TriggerEstado")
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("trigger_estado");
+
+                    b.Property<string>("TriggerReference")
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("trigger_reference");
+
+                    b.Property<string>("TriggerType")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("trigger_type");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmailTemplateId")
+                        .HasDatabaseName("ix_notification_rules_email_template_id");
+
+                    b.ToTable("notification_rules", "notif");
+                });
+
+            modelBuilder.Entity("Gdc.Modules.Notif.Domain.Entities.TenantCompany", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("ContactEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("contact_email");
+
+                    b.Property<string>("ContactPhone")
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("contact_phone");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.Property<string>("Nit")
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("nit");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("tenants", "identity");
+                });
+
+            modelBuilder.Entity("Gdc.Modules.Dgc.Domain.Entities.Contraventor", b =>
+                {
+                    b.HasOne("Gdc.Modules.Dgc.Domain.Entities.Comparendo", "Comparendo")
+                        .WithOne("Contraventor")
+                        .HasForeignKey("Gdc.Modules.Dgc.Domain.Entities.Contraventor", "ComparendoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Comparendo");
+                });
+
+            modelBuilder.Entity("Gdc.Modules.Dgc.Domain.Entities.EmailLog", b =>
+                {
+                    b.HasOne("Gdc.Modules.Dgc.Domain.Entities.Comparendo", "Comparendo")
+                        .WithMany("EmailLogs")
+                        .HasForeignKey("ComparendoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Comparendo");
+                });
+
+            modelBuilder.Entity("Gdc.Modules.Dgc.Domain.Entities.OcrItem", b =>
+                {
+                    b.HasOne("Gdc.Modules.Dgc.Domain.Entities.Comparendo", "Comparendo")
+                        .WithMany("OcrItems")
+                        .HasForeignKey("ComparendoId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("Gdc.Modules.Dgc.Domain.Entities.OcrLote", "OcrLote")
+                        .WithMany("Items")
+                        .HasForeignKey("OcrLoteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Comparendo");
+
+                    b.Navigation("OcrLote");
+                });
+
+            modelBuilder.Entity("Gdc.Modules.Notif.Domain.Entities.EmailQueue", b =>
+                {
+                    b.HasOne("Gdc.Modules.Notif.Domain.Entities.EmailTemplate", "EmailTemplate")
+                        .WithMany()
+                        .HasForeignKey("EmailTemplateId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Gdc.Modules.Notif.Domain.Entities.NotificationRule", "NotificationRule")
+                        .WithMany("QueueItems")
+                        .HasForeignKey("NotificationRuleId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("EmailTemplate");
+
+                    b.Navigation("NotificationRule");
+                });
+
+            modelBuilder.Entity("Gdc.Modules.Notif.Domain.Entities.EmailSendLog", b =>
+                {
+                    b.HasOne("Gdc.Modules.Notif.Domain.Entities.EmailQueue", "EmailQueue")
+                        .WithMany("SendLogs")
+                        .HasForeignKey("EmailQueueId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("EmailQueue");
+                });
+
+            modelBuilder.Entity("Gdc.Modules.Notif.Domain.Entities.NotificationRule", b =>
+                {
+                    b.HasOne("Gdc.Modules.Notif.Domain.Entities.EmailTemplate", "EmailTemplate")
+                        .WithMany("Rules")
+                        .HasForeignKey("EmailTemplateId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("EmailTemplate");
+                });
+
+            modelBuilder.Entity("Gdc.Modules.Dgc.Domain.Entities.Comparendo", b =>
+                {
+                    b.Navigation("Contraventor");
+
+                    b.Navigation("EmailLogs");
+
+                    b.Navigation("OcrItems");
+                });
+
+            modelBuilder.Entity("Gdc.Modules.Dgc.Domain.Entities.OcrLote", b =>
+                {
+                    b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("Gdc.Modules.Notif.Domain.Entities.EmailQueue", b =>
+                {
+                    b.Navigation("SendLogs");
+                });
+
+            modelBuilder.Entity("Gdc.Modules.Notif.Domain.Entities.EmailTemplate", b =>
+                {
+                    b.Navigation("Rules");
+                });
+
+            modelBuilder.Entity("Gdc.Modules.Notif.Domain.Entities.NotificationRule", b =>
+                {
+                    b.Navigation("QueueItems");
                 });
 #pragma warning restore 612, 618
         }

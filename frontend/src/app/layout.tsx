@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
+import { Providers } from "./providers";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -9,8 +10,8 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "GDC 2.0",
-  description: "Plataforma GDC — React 19 + Next.js 16",
+  title: "GDC — Gestión De Comparendos",
+  description: "Plataforma GDC (Gestión De Comparendos) — comparendos, fotomultas y administración multi-tenant.",
 };
 
 export default function RootLayout({
@@ -19,8 +20,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es">
-      <body className={`${poppins.variable} font-sans antialiased`}>{children}</body>
+    <html lang="es" suppressHydrationWarning>
+      <body className={`${poppins.variable} font-sans antialiased`}>
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }

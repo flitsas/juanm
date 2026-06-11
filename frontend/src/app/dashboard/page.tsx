@@ -3,7 +3,7 @@ import { AuthGuard } from "@/features/auth/components/auth-guard";
 import { LogoutButton } from "@/features/auth/components/logout-button";
 
 export const metadata = {
-  title: "Panel · GDC 2.0",
+  title: "Panel · GDC — Gestión De Comparendos",
 };
 
 export default function DashboardPage() {
@@ -13,7 +13,9 @@ export default function DashboardPage() {
         <div className="mx-auto max-w-3xl rounded-[var(--flit-radius-card)] bg-white p-8 shadow-[var(--flit-shadow-card)]">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
-              <p className="text-sm font-medium text-[var(--flit-text-brand)]">GDC 2.0</p>
+              <p className="text-sm font-medium text-[var(--flit-text-brand)]">
+                GDC — Gestión De Comparendos
+              </p>
               <h1 className="mt-2 text-2xl font-semibold text-[var(--flit-text-primary)]">
                 Panel autenticado
               </h1>

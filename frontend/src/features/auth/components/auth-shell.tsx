@@ -39,11 +39,11 @@ export function AuthShell({ children, intro = true }: AuthShellProps) {
         >
           <div className="flit-brand-pulse text-center">
             <p className="text-sm font-medium tracking-[0.2em] text-white/80 uppercase">
-              Gestión Documental Corporativa
+              Gestión De Comparendos
             </p>
-            <h2 className="mt-4 text-4xl font-bold text-white">GDC 2.0</h2>
+            <h2 className="mt-4 text-4xl font-bold text-white">GDC</h2>
             <p className="mt-3 text-base font-light text-white/90">
-              Plataforma integral de autenticación y administración multi-tenant.
+              Plataforma integral para comparendos, fotomultas y administración multi-tenant.
             </p>
           </div>
         </div>
