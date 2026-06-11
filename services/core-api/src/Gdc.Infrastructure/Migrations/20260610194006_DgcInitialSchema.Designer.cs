@@ -3,6 +3,7 @@ using System;
 using Gdc.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Gdc.Infrastructure.Migrations
 {
     [DbContext(typeof(GdcDbContext))]
-    partial class GdcDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260610194006_DgcInitialSchema")]
+    partial class DgcInitialSchema
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -282,68 +285,6 @@ namespace Gdc.Infrastructure.Migrations
                         .HasDatabaseName("uq_contraventor_job_configs_tenant_window");
 
                     b.ToTable("contraventor_job_configs", "dgc");
-                });
-
-            modelBuilder.Entity("Gdc.Modules.Dgc.Domain.Entities.DescuentoMatriz", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<Guid?>("CreatedBy")
-                        .HasColumnType("uuid")
-                        .HasColumnName("created_by");
-
-                    b.Property<DateTimeOffset?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("deleted_at");
-
-                    b.Property<Guid?>("DeletedBy")
-                        .HasColumnType("uuid")
-                        .HasColumnName("deleted_by");
-
-                    b.Property<int>("DiasDescuento")
-                        .HasColumnType("integer")
-                        .HasColumnName("dias_descuento");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_active");
-
-                    b.Property<uint>("RowVersion")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("xid")
-                        .HasColumnName("row_version");
-
-                    b.Property<Guid?>("SecretariaId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("secretaria_id");
-
-                    b.Property<Guid>("TenantId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("tenant_id");
-
-                    b.Property<DateTimeOffset?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at");
-
-                    b.Property<Guid?>("UpdatedBy")
-                        .HasColumnType("uuid")
-                        .HasColumnName("updated_by");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TenantId", "SecretariaId")
-                        .IsUnique()
-                        .HasDatabaseName("uq_descuento_matrices_tenant_secretaria");
-
-                    b.ToTable("descuento_matrices", "dgc");
                 });
 
             modelBuilder.Entity("Gdc.Modules.Dgc.Domain.Entities.EmailLog", b =>
