@@ -1,6 +1,8 @@
 using Gdc.Infrastructure.Dgc;
 using Gdc.Infrastructure.Dgc.Renting;
 using Gdc.Infrastructure.Notif;
+using Gdc.Infrastructure.Notif.EmailSenders;
+using Gdc.Modules.Notif.Application.Abstractions;
 using Gdc.Infrastructure.Persistence;
 using Gdc.Modules.Dgc.Application.Abstractions;
 using Microsoft.EntityFrameworkCore;
@@ -31,6 +33,12 @@ public static class DependencyInjection
         services.AddScoped<ContraventorManualService>();
         services.AddScoped<EmailLogQueryService>();
         services.AddScoped<NotifCompanyService>();
+        services.AddScoped<NotifProviderService>();
+        services.Configure<NotifEncryptionOptions>(configuration.GetSection(NotifEncryptionOptions.SectionName));
+        services.AddSingleton<IEmailCredentialEncryptor, AesEmailCredentialEncryptor>();
+        services.AddSingleton<IEmailSenderFactory, EmailSenderFactory>();
+        services.AddHttpClient("NotifEmailApi");
+        services.AddHttpClient("NotifSendGrid");
         services.AddSingleton<ContraventorWindowEvaluator>();
         services.AddSingleton(TimeProvider.System);
         services.AddDgcVehicleRegistry(configuration);

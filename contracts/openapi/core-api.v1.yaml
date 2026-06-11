@@ -461,6 +461,93 @@ paths:
                 $ref: "#/components/schemas/TenantProfileResponse"
         "404":
           description: Tenant no encontrado
+  /api/v1/notif/provider:
+    get:
+      operationId: getNotifProvider
+      summary: Proveedor de email activo del tenant
+      tags: [NOTIF Provider]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Configuración activa (sin credenciales en claro)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProviderResponse"
+        "404":
+          description: Sin proveedor configurado
+    put:
+      operationId: saveNotifProvider
+      summary: Guarda proveedor con credenciales cifradas
+      tags: [NOTIF Provider]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [providerType, fromAddress, credentials]
+              properties:
+                providerType:
+                  type: string
+                  enum: [api, sendgrid, flit_mail]
+                fromAddress:
+                  type: string
+                credentials:
+                  type: object
+                  additionalProperties: true
+      responses:
+        "200":
+          description: Proveedor validado y persistido
+        "400":
+          description: Credenciales inválidas o payload incorrecto
+  /api/v1/notif/provider/test:
+    post:
+      operationId: testNotifProvider
+      summary: Envía correo de prueba
+      tags: [NOTIF Provider]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [destino]
+              properties:
+                destino:
+                  type: string
+                  format: email
+                providerType:
+                  type: string
+                fromAddress:
+                  type: string
+                credentials:
+                  type: object
+      responses:
+        "200":
+          description: Prueba exitosa
+        "400":
+          description: Prueba fallida
   /health:
     get:
       operationId: getHealth
@@ -664,4 +751,26 @@ components:
           nullable: true
         contactEmail:
           type: string
+          nullable: true
+    ProviderResponse:
+      type: object
+      required: [id, providerType, fromAddress, isActive, dispatchEnabled, hasCredentials]
+      properties:
+        id:
+          type: string
+          format: uuid
+        providerType:
+          type: string
+          enum: [api, sendgrid, flit_mail]
+        fromAddress:
+          type: string
+        isActive:
+          type: boolean
+        dispatchEnabled:
+          type: boolean
+        hasCredentials:
+          type: boolean
+        updatedAt:
+          type: string
+          format: date-time
           nullable: true
