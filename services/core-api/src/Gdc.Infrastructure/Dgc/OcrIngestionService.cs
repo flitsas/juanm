@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Gdc.Infrastructure.Persistence;
 using Gdc.Modules.Dgc.Application.Abstractions;
+using DgcTenantContext = Gdc.Modules.Dgc.Application.Abstractions.ITenantContext;
 using Gdc.Modules.Dgc.Application.Ocr;
 using Gdc.Modules.Dgc.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +11,7 @@ namespace Gdc.Infrastructure.Dgc;
 public sealed class OcrIngestionService(
     GdcDbContext db,
     IOcrExtractor ocrExtractor,
-    ITenantContext tenantContext)
+    DgcTenantContext tenantContext)
 {
     private static readonly HashSet<string> AllowedExtensions = new(StringComparer.OrdinalIgnoreCase)
     {

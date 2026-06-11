@@ -140,7 +140,7 @@ public sealed class OcrIngestionTests
                 "raw"));
     }
 
-    private sealed class FakeTenantContext(Guid tenantId) : ITenantContext
+    private sealed class FakeTenantContext(Guid tenantId) : Gdc.Modules.Dgc.Application.Abstractions.ITenantContext
     {
         public Guid TenantId => tenantId;
 

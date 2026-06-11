@@ -1,5 +1,5 @@
 using Gdc.Infrastructure.Persistence;
-using Gdc.Modules.Dgc.Application.Abstractions;
+using DgcTenantContext = Gdc.Modules.Dgc.Application.Abstractions.ITenantContext;
 using Gdc.Modules.Notif.Application.Abstractions;
 using Gdc.Modules.Notif.Application.TenantAdmin;
 using Gdc.Modules.Notif.Domain.Entities;
@@ -9,7 +9,7 @@ namespace Gdc.Infrastructure.Notif;
 
 public sealed class NotifCompanyService(
     GdcDbContext db,
-    ITenantContext tenantContext,
+    DgcTenantContext tenantContext,
     IUserRoleContext roleContext,
     TimeProvider timeProvider)
 {

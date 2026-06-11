@@ -148,9 +148,11 @@ Equivale a `dotnet ef database update` en `services/core-api/`.
 
 pnpm dev
 
-# Frontend (Next.js): http://localhost:4001
+# Frontend (Next.js): http://localhost:40103
 
-# API (core-api):     http://localhost:4002
+# Gateway (YARP):     http://localhost:40203
+
+# API (core-api):     http://localhost:40303
 
 ```
 
@@ -162,7 +164,7 @@ Prueba que funciona:
 
 ```bash
 
-curl http://localhost:4002/health
+curl http://localhost:40203/health
 
 ```
 

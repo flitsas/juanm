@@ -1,5 +1,5 @@
 using Gdc.Infrastructure.Persistence;
-using Gdc.Modules.Dgc.Application.Abstractions;
+using DgcTenantContext = Gdc.Modules.Dgc.Application.Abstractions.ITenantContext;
 using Gdc.Modules.Notif.Application.Rules;
 using Gdc.Modules.Notif.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +8,7 @@ namespace Gdc.Infrastructure.Notif;
 
 public sealed class NotifRuleService(
     GdcDbContext db,
-    ITenantContext tenantContext,
+    DgcTenantContext tenantContext,
     TimeProvider timeProvider)
 {
     public async Task<RuleListResponse> ListAsync(CancellationToken cancellationToken)

@@ -1,0 +1,66 @@
+---
+description: Ejecutar pnpm fix:all:fullstack obligatoriamente antes de git push o abrir PR en GitHub (bloqueante para agentes).
+alwaysApply: true
+---
+
+# Pre-PR / Pre-push — Lint y formato fullstack
+
+## Cuándo aplica (bloqueante)
+
+Antes de **cualquiera** de estas acciones en ramas de trabajo (`feature/*`, `agent/*`):
+
+- `git push` (incluido `git push -u origin HEAD`)
+- Crear PR: `gh pr create`, MCP `create_pull_request`, o equivalente
+- Pedir al usuario que abra el PR si aún no corrió el fix en la rama actual
+
+**No omitir** aunque el usuario diga «sube ya», «abre el PR» o «hazlo rápido».
+
+## Secuencia obligatoria
+
+Ejecutar **en la raíz del monorepo** (`d:\Cursor\FLIT\2.0` o raíz del workspace):
+
+```bash
+pnpm fix:all:fullstack
+```
+
+Equivale a `pnpm run lint:fix && pnpm run format` (frontend ESLint fix + Prettier, Python Ruff, `dotnet format` en core-api).
+
+### Tras el comando
+
+1. Si `git status` muestra cambios → **commit** en la rama actual:
+   - Mensaje: `HU{id}: Aplicar lint y formato fullstack` (usar el ID de HU si se conoce; si no, descripción breve).
+2. Verificar checks alineados con CI (`.github/workflows/ci.yml`):
+   ```bash
+   pnpm -r format:check
+   pnpm -r lint
+   pnpm -r typecheck
+   ```
+   Si el PR solo toca frontend, como mínimo deben pasar en `@flit/frontend`.
+3. Solo entonces: `git push` y/o crear el PR.
+
+## Fallback si `fix:all:fullstack` falla por entorno
+
+Si falla por herramientas ausentes (ej. `uv` no instalado en Windows):
+
+1. Informar al usuario qué componente faltó.
+2. Ejecutar el fix mínimo del **alcance del PR**:
+   ```bash
+   pnpm run fix:frontend
+   pnpm -r format:check
+   pnpm -r lint
+   pnpm -r typecheck
+   ```
+3. **No** formatear todo `frontend/src` si el PR solo modificó archivos concretos — preferir Prettier/ESLint solo en rutas del diff cuando el fix global tocaría cientos de archivos ajenos al PR.
+4. **No** hacer push ni abrir PR si `format:check` o `lint` fallan en archivos que el PR introduce o modifica.
+
+## Prohibido
+
+- `git push` o abrir PR sin haber ejecutado `pnpm fix:all:fullstack` (o fallback documentado arriba) en el mismo turno de trabajo.
+- Asumir que `dev-tester` o tests locales sustituyen `format:check` de CI.
+- `git push --force` en ramas compartidas (convención FLIT existente).
+
+## Orden canónico (resumen)
+
+```
+Código listo → pnpm fix:all:fullstack → commit (si hay diff) → format:check + lint + typecheck → git push → crear PR → ADO Modo A (integration)
+```

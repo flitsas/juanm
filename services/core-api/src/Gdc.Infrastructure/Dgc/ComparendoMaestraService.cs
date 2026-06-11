@@ -1,12 +1,13 @@
 using Gdc.Infrastructure.Persistence;
 using Gdc.Modules.Dgc.Application.Abstractions;
+using DgcTenantContext = Gdc.Modules.Dgc.Application.Abstractions.ITenantContext;
 using Gdc.Modules.Dgc.Application.Maestra;
 using Gdc.Modules.Dgc.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Gdc.Infrastructure.Dgc;
 
-public sealed class ComparendoMaestraService(GdcDbContext db, ITenantContext tenantContext)
+public sealed class ComparendoMaestraService(GdcDbContext db, DgcTenantContext tenantContext)
 {
     public async Task<ComparendoMaestraListResult> ListAsync(
         ComparendoMaestraQuery query,

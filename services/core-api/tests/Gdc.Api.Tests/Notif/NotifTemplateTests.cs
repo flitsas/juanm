@@ -108,7 +108,7 @@ public sealed class NotifTemplateTests
         return new GdcDbContext(options);
     }
 
-    private sealed class FakeTenantContext(Guid tenantId) : ITenantContext
+    private sealed class FakeTenantContext(Guid tenantId) : Gdc.Modules.Dgc.Application.Abstractions.ITenantContext
     {
         public Guid TenantId => tenantId;
 

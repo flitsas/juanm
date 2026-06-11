@@ -1,11 +1,12 @@
 using Gdc.Infrastructure.Persistence;
 using Gdc.Modules.Dgc.Application.Abstractions;
+using DgcTenantContext = Gdc.Modules.Dgc.Application.Abstractions.ITenantContext;
 using Gdc.Modules.Dgc.Application.EmailLog;
 using Microsoft.EntityFrameworkCore;
 
 namespace Gdc.Infrastructure.Dgc;
 
-public sealed class EmailLogQueryService(GdcDbContext db, ITenantContext tenantContext)
+public sealed class EmailLogQueryService(GdcDbContext db, DgcTenantContext tenantContext)
 {
     public async Task<EmailLogListResult?> ListByComparendoAsync(
         Guid comparendoId,

@@ -213,7 +213,7 @@ public sealed class ContraventorAssociationTests
             Task.FromResult(new ContraventorLookupResult(ContraventorLookupStatus.ProviderUnavailable));
     }
 
-    private sealed class FakeTenantContext(Guid tenantId) : ITenantContext
+    private sealed class FakeTenantContext(Guid tenantId) : Gdc.Modules.Dgc.Application.Abstractions.ITenantContext
     {
         public Guid TenantId => tenantId;
 

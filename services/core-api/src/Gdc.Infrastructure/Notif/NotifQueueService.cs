@@ -1,11 +1,11 @@
 using Gdc.Infrastructure.Persistence;
-using Gdc.Modules.Dgc.Application.Abstractions;
+using DgcTenantContext = Gdc.Modules.Dgc.Application.Abstractions.ITenantContext;
 using Gdc.Modules.Notif.Application.Rules;
 using Microsoft.EntityFrameworkCore;
 
 namespace Gdc.Infrastructure.Notif;
 
-public sealed class NotifQueueService(GdcDbContext db, ITenantContext tenantContext)
+public sealed class NotifQueueService(GdcDbContext db, DgcTenantContext tenantContext)
 {
     public async Task<QueueListResponse> ListAsync(CancellationToken cancellationToken)
     {

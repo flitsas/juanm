@@ -1,6 +1,6 @@
 using System.Text.Json;
 using Gdc.Infrastructure.Persistence;
-using Gdc.Modules.Dgc.Application.Abstractions;
+using DgcTenantContext = Gdc.Modules.Dgc.Application.Abstractions.ITenantContext;
 using Gdc.Modules.Notif.Application.Abstractions;
 using Gdc.Modules.Notif.Application.Provider;
 using Gdc.Modules.Notif.Domain.Entities;
@@ -10,7 +10,7 @@ namespace Gdc.Infrastructure.Notif;
 
 public sealed class NotifProviderService(
     GdcDbContext db,
-    ITenantContext tenantContext,
+    DgcTenantContext tenantContext,
     IEmailSenderFactory senderFactory,
     IEmailCredentialEncryptor encryptor,
     TimeProvider timeProvider)
