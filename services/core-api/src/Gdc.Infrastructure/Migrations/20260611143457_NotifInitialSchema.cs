@@ -32,7 +32,7 @@ namespace Gdc.Infrastructure.Migrations
                     updated_by = table.Column<Guid>(type: "uuid", nullable: true),
                     deleted_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     deleted_by = table.Column<Guid>(type: "uuid", nullable: true),
-                    row_version = table.Column<uint>(type: "xid", rowVersion: true, nullable: false, defaultValue: 0u)
+                    row_version = table.Column<uint>(type: "xid", rowVersion: true, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -57,7 +57,7 @@ namespace Gdc.Infrastructure.Migrations
                     updated_by = table.Column<Guid>(type: "uuid", nullable: true),
                     deleted_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     deleted_by = table.Column<Guid>(type: "uuid", nullable: true),
-                    row_version = table.Column<uint>(type: "xid", rowVersion: true, nullable: false, defaultValue: 0u)
+                    row_version = table.Column<uint>(type: "xid", rowVersion: true, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -84,7 +84,7 @@ namespace Gdc.Infrastructure.Migrations
                     updated_by = table.Column<Guid>(type: "uuid", nullable: true),
                     deleted_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     deleted_by = table.Column<Guid>(type: "uuid", nullable: true),
-                    row_version = table.Column<uint>(type: "xid", rowVersion: true, nullable: false, defaultValue: 0u)
+                    row_version = table.Column<uint>(type: "xid", rowVersion: true, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -119,7 +119,7 @@ namespace Gdc.Infrastructure.Migrations
                     updated_by = table.Column<Guid>(type: "uuid", nullable: true),
                     deleted_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     deleted_by = table.Column<Guid>(type: "uuid", nullable: true),
-                    row_version = table.Column<uint>(type: "xid", rowVersion: true, nullable: false, defaultValue: 0u)
+                    row_version = table.Column<uint>(type: "xid", rowVersion: true, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -160,7 +160,7 @@ namespace Gdc.Infrastructure.Migrations
                     updated_by = table.Column<Guid>(type: "uuid", nullable: true),
                     deleted_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     deleted_by = table.Column<Guid>(type: "uuid", nullable: true),
-                    row_version = table.Column<uint>(type: "xid", rowVersion: true, nullable: false, defaultValue: 0u)
+                    row_version = table.Column<uint>(type: "xid", rowVersion: true, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -274,6 +274,12 @@ namespace Gdc.Infrastructure.Migrations
                 COMMENT ON COLUMN notif.email_provider_configs.credentials_encrypted IS '@pii:high';
                 COMMENT ON COLUMN notif.email_queues.destino IS '@pii:high';
                 COMMENT ON COLUMN notif.email_send_logs.destino IS '@pii:high';
+
+                ALTER TABLE notif.email_provider_configs ALTER COLUMN row_version SET DEFAULT '0'::xid;
+                ALTER TABLE notif.email_templates ALTER COLUMN row_version SET DEFAULT '0'::xid;
+                ALTER TABLE notif.notification_rules ALTER COLUMN row_version SET DEFAULT '0'::xid;
+                ALTER TABLE notif.email_queues ALTER COLUMN row_version SET DEFAULT '0'::xid;
+                ALTER TABLE notif.email_send_logs ALTER COLUMN row_version SET DEFAULT '0'::xid;
                 """);
         }
 

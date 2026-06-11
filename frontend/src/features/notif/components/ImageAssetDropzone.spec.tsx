@@ -5,14 +5,7 @@ import { ImageAssetDropzone } from "./ImageAssetDropzone";
 describe("ImageAssetDropzone", () => {
   it("rechaza archivos que no son PNG o JPG", () => {
     const onUpload = vi.fn();
-    render(
-      <ImageAssetDropzone
-        label="Banner"
-        assetUrl=""
-        onUpload={onUpload}
-        testId="drop"
-      />,
-    );
+    render(<ImageAssetDropzone label="Banner" assetUrl="" onUpload={onUpload} testId="drop" />);
 
     const input = document.querySelector('input[type="file"]') as HTMLInputElement;
     const file = new File(["x"], "doc.pdf", { type: "application/pdf" });

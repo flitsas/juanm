@@ -88,11 +88,8 @@ export function RuleFormDialog({
       name: form.name.trim(),
       triggerType: form.triggerType,
       triggerDays:
-        form.triggerType === "chronological"
-          ? Number.parseInt(form.triggerDays, 10)
-          : null,
-      triggerReference:
-        form.triggerType === "chronological" ? form.triggerReference || null : null,
+        form.triggerType === "chronological" ? Number.parseInt(form.triggerDays, 10) : null,
+      triggerReference: form.triggerType === "chronological" ? form.triggerReference || null : null,
       triggerEstado: form.triggerType === "state" ? form.triggerEstado.trim() : null,
       isActive: form.isActive,
     });

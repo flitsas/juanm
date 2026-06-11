@@ -4,19 +4,21 @@ import type {
   NotifCompany,
   NotifCompanyListResult,
   NotifProvider,
-  NotifTemplate,
-  NotifTemplateListResult,
-  PreviewTemplateResult,
-  SaveProviderPayload,
-  SaveTemplatePayload,
-  TestProviderPayload,
-  TestProviderResult,
-  UpdateCompanyPayload,
   NotifQueueListResult,
   NotifRule,
   NotifRuleListResult,
   NotifSwitchState,
+  NotifTemplate,
+  NotifTemplateListResult,
+  PreviewTemplateResult,
+  SaveProviderPayload,
   SaveRulePayload,
+  SaveTemplatePayload,
+  TenantProfile,
+  TestProviderPayload,
+  TestProviderResult,
+  UpdateCompanyPayload,
+  UpdateTenantProfilePayload,
   UploadTemplateAssetResult,
 } from "../lib/notif.types";
 import { DEFAULT_TEMPLATE_VARIABLES } from "../lib/template-preview";
@@ -297,6 +299,45 @@ export async function uploadTemplateAsset(
   return response.json() as Promise<UploadTemplateAssetResult>;
 }
 
+export async function fetchTenantProfile(init?: RequestInit): Promise<TenantProfile> {
+  const response = await fetch(`${getApiBaseUrl()}/api/v1/notif/profile`, {
+    ...init,
+    headers: {
+      ...buildNotifHeaders(),
+      ...init?.headers,
+    },
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    throw await parseError(response);
+  }
+
+  return response.json() as Promise<TenantProfile>;
+}
+
+export async function updateTenantProfile(
+  payload: UpdateTenantProfilePayload,
+  init?: RequestInit,
+): Promise<TenantProfile> {
+  const response = await fetch(`${getApiBaseUrl()}/api/v1/notif/profile`, {
+    method: "PUT",
+    ...init,
+    headers: {
+      "Content-Type": "application/json",
+      ...buildNotifHeaders(),
+      ...init?.headers,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    throw await parseError(response);
+  }
+
+  return response.json() as Promise<TenantProfile>;
+}
+
 export async function fetchRules(init?: RequestInit): Promise<NotifRuleListResult> {
   const response = await fetch(`${getApiBaseUrl()}/api/v1/notif/rules`, {
     ...init,
@@ -314,10 +355,7 @@ export async function fetchRules(init?: RequestInit): Promise<NotifRuleListResul
   return response.json() as Promise<NotifRuleListResult>;
 }
 
-export async function createRule(
-  payload: SaveRulePayload,
-  init?: RequestInit,
-): Promise<NotifRule> {
+export async function createRule(payload: SaveRulePayload, init?: RequestInit): Promise<NotifRule> {
   const response = await fetch(`${getApiBaseUrl()}/api/v1/notif/rules`, {
     method: "POST",
     ...init,

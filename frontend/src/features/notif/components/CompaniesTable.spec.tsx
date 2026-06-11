@@ -16,9 +16,7 @@ const company: NotifCompany = {
 
 describe("CompaniesTable", () => {
   it("renderiza filas de compañías", () => {
-    render(
-      <CompaniesTable items={[company]} onEdit={vi.fn()} onDelete={vi.fn()} />,
-    );
+    render(<CompaniesTable items={[company]} onEdit={vi.fn()} onDelete={vi.fn()} />);
     const table = screen.getByTestId("notif-companies-table");
     expect(within(table).getByText("Flit Renting")).toBeTruthy();
     expect(within(table).getByText("ops@flit.dev")).toBeTruthy();

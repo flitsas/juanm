@@ -24,6 +24,18 @@ export type UpdateCompanyPayload = CreateCompanyPayload & {
   isActive?: boolean;
 };
 
+export type TenantProfile = {
+  tenantId: string;
+  name: string;
+  contactPhone: string | null;
+  contactEmail: string | null;
+};
+
+export type UpdateTenantProfilePayload = {
+  contactPhone?: string;
+  contactEmail?: string;
+};
+
 export type NotifProvider = {
   id: string;
   providerType: string;

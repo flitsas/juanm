@@ -66,9 +66,7 @@ export function formatRuleTrigger(rule: {
 }): string {
   if (rule.triggerType === "chronological") {
     const ref =
-      rule.triggerReference === "fecha_comparendo"
-        ? "fecha comparendo"
-        : "fecha notificación";
+      rule.triggerReference === "fecha_comparendo" ? "fecha comparendo" : "fecha notificación";
     return `${rule.triggerDays ?? 0} días desde ${ref}`;
   }
   if (rule.triggerType === "state") {

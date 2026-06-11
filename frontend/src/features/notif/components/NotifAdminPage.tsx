@@ -5,13 +5,14 @@ import { useState } from "react";
 import { PageHeaderCard } from "@/components/shell/PageHeaderCard";
 import { useNotifCompanies, useNotifCompanyMutations } from "../api/use-companies";
 import { useNotifProvider } from "../api/use-provider";
-import { isSuperAdmin } from "../lib/role-context";
 import type { NotifCompany } from "../lib/notif.types";
+import { isSuperAdmin } from "../lib/role-context";
 import { CompaniesTable } from "./CompaniesTable";
 import { CompanyFormDialog } from "./CompanyFormDialog";
 import { ProviderForm } from "./ProviderForm";
 import { RulesSection } from "./RulesSection";
 import { TemplatesSection } from "./TemplatesSection";
+import { TenantProfilePanel } from "./TenantProfilePanel";
 
 type AdminTab = "companies" | "provider" | "templates" | "rules";
 
@@ -76,11 +77,7 @@ export function NotifAdminPage() {
         }
       />
 
-      <div
-        className="flex flex-wrap gap-2"
-        role="tablist"
-        aria-label="Secciones de notificaciones"
-      >
+      <div className="flex flex-wrap gap-2" role="tablist" aria-label="Secciones de notificaciones">
         {superAdmin ? (
           <button
             type="button"
@@ -191,7 +188,10 @@ export function NotifAdminPage() {
       ) : null}
 
       {tab === "provider" ? (
-        <ProviderForm provider={providerQuery.data} isLoading={providerQuery.isLoading} />
+        <div className="space-y-6">
+          <TenantProfilePanel />
+          <ProviderForm provider={providerQuery.data} isLoading={providerQuery.isLoading} />
+        </div>
       ) : null}
 
       {tab === "templates" ? <TemplatesSection /> : null}

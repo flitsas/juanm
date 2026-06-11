@@ -106,10 +106,7 @@ export function TemplateEditor({ template, saving, onCancel, onSaved }: Template
   };
 
   return (
-    <div
-      className="grid gap-6 lg:grid-cols-2"
-      data-testid="notif-template-editor"
-    >
+    <div className="grid gap-6 lg:grid-cols-2" data-testid="notif-template-editor">
       <div className="space-y-4 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm">
         <h2 className="text-lg font-semibold text-[var(--deep)]">
           {template ? "Editar plantilla" : "Nueva plantilla"}

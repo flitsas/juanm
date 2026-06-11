@@ -18,13 +18,7 @@ const templates = [
 describe("RuleFormDialog", () => {
   it("muestra validación si falta plantilla al guardar", () => {
     render(
-      <RuleFormDialog
-        open
-        rule={null}
-        templates={[]}
-        onOpenChange={vi.fn()}
-        onSubmit={vi.fn()}
-      />,
+      <RuleFormDialog open rule={null} templates={[]} onOpenChange={vi.fn()} onSubmit={vi.fn()} />,
     );
     fireEvent.change(screen.getByLabelText("Nombre"), { target: { value: "R1" } });
     fireEvent.click(screen.getByTestId("rule-form-submit"));

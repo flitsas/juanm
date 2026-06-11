@@ -72,9 +72,7 @@ export function hasProviderErrors(errors: ProviderFieldErrors): boolean {
   return Object.keys(errors).length > 0;
 }
 
-export function buildProviderCredentials(
-  state: ProviderFormState,
-): Record<string, unknown> | null {
+export function buildProviderCredentials(state: ProviderFormState): Record<string, unknown> | null {
   switch (state.providerType) {
     case "api":
       return {

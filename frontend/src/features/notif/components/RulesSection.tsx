@@ -7,6 +7,7 @@ import { useNotifTemplates } from "../api/use-templates";
 import type { NotifRule } from "../lib/notif.types";
 import { formatRuleTrigger } from "../lib/rule-validation";
 import { DispatchSwitchPanel } from "./DispatchSwitchPanel";
+import { QueuePanel } from "./QueuePanel";
 import { RuleFormDialog } from "./RuleFormDialog";
 
 export function RulesSection() {
@@ -175,6 +176,8 @@ export function RulesSection() {
           </table>
         </div>
       ) : null}
+
+      <QueuePanel />
 
       <RuleFormDialog
         open={dialogOpen}
