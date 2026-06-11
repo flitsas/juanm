@@ -1,6 +1,19 @@
-import type { ComparendoMaestraFilters } from "../lib/comparendo-maestra.types";
+"use client";
 
-const ESTADOS = ["", "Pendiente", "Impugnado", "Pagado", "Prescrito"] as const;
+import { Search } from "lucide-react";
+import { Calendar } from "primereact/calendar";
+import { Dropdown } from "primereact/dropdown";
+import { InputText } from "primereact/inputtext";
+import type { ComparendoMaestraFilters } from "../lib/comparendo-maestra.types";
+import { formatFilterDate, parseFilterDate } from "../lib/filter-date";
+
+const ESTADO_OPTIONS = [
+  { label: "Todos", value: "" },
+  { label: "Pendiente", value: "Pendiente" },
+  { label: "Impugnado", value: "Impugnado" },
+  { label: "Pagado", value: "Pagado" },
+  { label: "Prescrito", value: "Prescrito" },
+];
 
 type DgcMaestraFiltersProps = {
   filters: ComparendoMaestraFilters;
@@ -12,74 +25,98 @@ export function DgcMaestraFilters({ filters, secretarias, onChange }: DgcMaestra
   const update = (patch: Partial<ComparendoMaestraFilters>) =>
     onChange({ ...filters, ...patch, page: 1 });
 
+  const secretariaOptions = [
+    { label: "Todas", value: "" },
+    ...secretarias.map((secretaria) => ({
+      label: secretaria,
+      value: secretaria,
+    })),
+  ];
+
   return (
     <div className="flex flex-wrap items-end gap-3" data-testid="dgc-maestra-filters">
-      <label className="min-w-[260px] flex-1">
-        <span className="sr-only">Búsqueda global</span>
-        <input
+      <div className="relative min-w-[260px] flex-1">
+        <Search
+          className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-[var(--muted-foreground)]"
+          aria-hidden
+        />
+        <InputText
           type="search"
           value={filters.search}
           onChange={(e) => update({ search: e.target.value })}
           placeholder="Buscar por comparendo, placa, documento o infractor…"
-          className="h-11 w-full rounded-full border border-[var(--border)] bg-[var(--card)] px-4 text-sm outline-none focus:ring-2 focus:ring-[var(--action)]"
+          className="flit-field-input flit-field-input--search w-full"
           aria-label="Búsqueda global"
         />
-      </label>
+      </div>
 
-      <label>
-        <span className="mb-1 block text-xs text-[var(--muted-foreground)]">Estado</span>
-        <select
+      <div className="flex min-w-[9rem] flex-col gap-1">
+        <label htmlFor="dgc-filter-estado" className="text-xs text-[var(--muted-foreground)]">
+          Estado
+        </label>
+        <Dropdown
+          inputId="dgc-filter-estado"
           value={filters.estado}
-          onChange={(e) => update({ estado: e.target.value })}
-          className="h-11 min-w-[9rem] rounded-full border border-[var(--border)] bg-[var(--card)] px-3 text-sm"
+          options={ESTADO_OPTIONS}
+          onChange={(e) => update({ estado: (e.value as string) ?? "" })}
+          className="flit-dropdown w-full"
+          panelClassName="flit-dropdown-panel"
           aria-label="Filtrar por estado"
-        >
-          {ESTADOS.map((estado) => (
-            <option key={estado || "todos"} value={estado}>
-              {estado || "Todos"}
-            </option>
-          ))}
-        </select>
-      </label>
+        />
+      </div>
 
-      <label>
-        <span className="mb-1 block text-xs text-[var(--muted-foreground)]">Secretaría</span>
-        <select
+      <div className="flex min-w-[10rem] flex-col gap-1">
+        <label htmlFor="dgc-filter-secretaria" className="text-xs text-[var(--muted-foreground)]">
+          Secretaría
+        </label>
+        <Dropdown
+          inputId="dgc-filter-secretaria"
           value={filters.secretaria}
-          onChange={(e) => update({ secretaria: e.target.value })}
-          className="h-11 min-w-[10rem] rounded-full border border-[var(--border)] bg-[var(--card)] px-3 text-sm"
+          options={secretariaOptions}
+          onChange={(e) => update({ secretaria: (e.value as string) ?? "" })}
+          className="flit-dropdown w-full"
+          panelClassName="flit-dropdown-panel"
           aria-label="Filtrar por secretaría"
-        >
-          <option value="">Todas</option>
-          {secretarias.map((s) => (
-            <option key={s} value={s}>
-              {s.slice(0, 8)}…
-            </option>
-          ))}
-        </select>
-      </label>
+        />
+      </div>
 
-      <label>
-        <span className="mb-1 block text-xs text-[var(--muted-foreground)]">Desde</span>
-        <input
-          type="date"
-          value={filters.fechaDesde}
-          onChange={(e) => update({ fechaDesde: e.target.value })}
-          className="h-11 rounded-full border border-[var(--border)] bg-[var(--card)] px-3 text-sm"
+      <div className="flex flex-col gap-1">
+        <label htmlFor="dgc-filter-desde" className="text-xs text-[var(--muted-foreground)]">
+          Desde
+        </label>
+        <Calendar
+          inputId="dgc-filter-desde"
+          value={parseFilterDate(filters.fechaDesde)}
+          onChange={(e) => update({ fechaDesde: formatFilterDate(e.value as Date | null) })}
+          dateFormat="dd/mm/yy"
+          showIcon
+          showButtonBar
+          appendTo={typeof document !== "undefined" ? document.body : undefined}
+          className="flit-calendar"
+          inputClassName="flit-field-input flit-field-input--calendar"
+          panelClassName="flit-datepicker-panel"
           aria-label="Fecha desde"
         />
-      </label>
+      </div>
 
-      <label>
-        <span className="mb-1 block text-xs text-[var(--muted-foreground)]">Hasta</span>
-        <input
-          type="date"
-          value={filters.fechaHasta}
-          onChange={(e) => update({ fechaHasta: e.target.value })}
-          className="h-11 rounded-full border border-[var(--border)] bg-[var(--card)] px-3 text-sm"
+      <div className="flex flex-col gap-1">
+        <label htmlFor="dgc-filter-hasta" className="text-xs text-[var(--muted-foreground)]">
+          Hasta
+        </label>
+        <Calendar
+          inputId="dgc-filter-hasta"
+          value={parseFilterDate(filters.fechaHasta)}
+          onChange={(e) => update({ fechaHasta: formatFilterDate(e.value as Date | null) })}
+          dateFormat="dd/mm/yy"
+          showIcon
+          showButtonBar
+          appendTo={typeof document !== "undefined" ? document.body : undefined}
+          className="flit-calendar"
+          inputClassName="flit-field-input flit-field-input--calendar"
+          panelClassName="flit-datepicker-panel"
           aria-label="Fecha hasta"
         />
-      </label>
+      </div>
     </div>
   );
 }

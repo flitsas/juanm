@@ -89,3 +89,219 @@ body {
 .flit-btn-primary.p-button:not(:disabled):hover {
   background: color-mix(in oklab, var(--action) 88%, black);
 }
+
+/* Campos PrimeReact — alineados con flitready-suite (rounded-full, h-11) */
+.flit-field-input.p-inputtext {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--deep);
+  font-family: "Poppins", sans-serif;
+  font-size: 0.875rem;
+  height: 2.75rem;
+  padding: 0 1rem;
+  box-shadow: none;
+}
+
+.flit-field-input.p-inputtext:enabled:focus {
+  border-color: var(--action);
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--action) 25%, transparent);
+}
+
+.flit-field-input.flit-field-input--search.p-inputtext {
+  padding-left: 2.75rem;
+}
+
+.flit-field-input.flit-field-input--calendar.p-inputtext {
+  min-width: 9.5rem;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-right: none;
+}
+
+.flit-dropdown.p-dropdown {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--card);
+  height: 2.75rem;
+  align-items: center;
+}
+
+.flit-dropdown.p-dropdown:not(.p-disabled):hover {
+  border-color: color-mix(in oklab, var(--action) 40%, var(--border));
+}
+
+.flit-dropdown.p-dropdown.p-focus {
+  border-color: var(--action);
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--action) 25%, transparent);
+}
+
+.flit-dropdown .p-dropdown-label {
+  font-family: "Poppins", sans-serif;
+  font-size: 0.875rem;
+  color: var(--deep);
+  padding: 0 1rem;
+}
+
+.flit-dropdown .p-dropdown-trigger {
+  color: var(--muted-foreground);
+  width: 2.25rem;
+}
+
+.flit-dropdown-panel.p-dropdown-panel {
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: var(--card);
+  box-shadow: 0 12px 32px rgba(22, 39, 68, 0.12);
+  font-family: "Poppins", sans-serif;
+  overflow: hidden;
+}
+
+.flit-dropdown-panel .p-dropdown-item {
+  font-size: 0.875rem;
+  color: var(--deep);
+  padding: 0.625rem 1rem;
+}
+
+.flit-dropdown-panel .p-dropdown-item.p-highlight {
+  background: color-mix(in oklab, var(--action) 12%, white);
+  color: var(--action);
+}
+
+.flit-calendar.p-calendar {
+  display: inline-flex;
+  align-items: stretch;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--card);
+  overflow: hidden;
+  height: 2.75rem;
+}
+
+.flit-calendar.p-calendar.p-focus-within {
+  border-color: var(--action);
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--action) 25%, transparent);
+}
+
+.flit-calendar.p-calendar .p-inputtext {
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  height: 100%;
+}
+
+.flit-calendar.p-calendar .p-inputtext:enabled:focus {
+  border: none;
+  box-shadow: none;
+}
+
+.flit-calendar .p-datepicker-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  color: var(--muted-foreground);
+  background: transparent;
+  border: none;
+  border-left: 1px solid var(--border);
+}
+
+.flit-calendar .p-datepicker-trigger:hover {
+  background: var(--muted);
+  color: var(--deep);
+}
+
+/* Panel portaleado a body — no hereda .flit-calendar */
+.flit-datepicker-panel.p-datepicker {
+  margin-top: 0.35rem;
+  padding: 0.75rem;
+  min-width: 18rem;
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: var(--card);
+  color: var(--deep);
+  font-family: "Poppins", sans-serif;
+  box-shadow: 0 16px 40px rgba(22, 39, 68, 0.16);
+}
+
+.flit-datepicker-panel .p-datepicker-header {
+  padding: 0 0 0.75rem;
+  border: none;
+  background: var(--card);
+  color: var(--deep);
+  font-weight: 600;
+}
+
+.flit-datepicker-panel .p-datepicker-header .p-datepicker-title .p-datepicker-month,
+.flit-datepicker-panel .p-datepicker-header .p-datepicker-title .p-datepicker-year {
+  color: var(--deep);
+  font-weight: 600;
+}
+
+.flit-datepicker-panel .p-datepicker-header .p-datepicker-prev,
+.flit-datepicker-panel .p-datepicker-header .p-datepicker-next {
+  color: var(--deep);
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+}
+
+.flit-datepicker-panel .p-datepicker-header .p-datepicker-prev:hover,
+.flit-datepicker-panel .p-datepicker-header .p-datepicker-next:hover {
+  background: var(--muted);
+}
+
+.flit-datepicker-panel table {
+  margin: 0;
+  font-size: 0.8125rem;
+}
+
+.flit-datepicker-panel table th {
+  padding: 0.35rem;
+  color: var(--muted-foreground);
+  font-weight: 500;
+}
+
+.flit-datepicker-panel table td {
+  padding: 0.15rem;
+}
+
+.flit-datepicker-panel table td > span {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  color: var(--deep);
+}
+
+.flit-datepicker-panel table td > span:not(.p-disabled):hover {
+  background: var(--muted);
+}
+
+.flit-datepicker-panel table td > span.p-highlight {
+  background: var(--action);
+  color: white;
+}
+
+.flit-datepicker-panel table td.p-datepicker-today > span {
+  box-shadow: inset 0 0 0 1px var(--action);
+}
+
+.flit-datepicker-panel .p-datepicker-buttonbar {
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+}
+
+.flit-datepicker-panel .p-datepicker-buttonbar .p-button {
+  font-family: "Poppins", sans-serif;
+  font-size: 0.8125rem;
+  border-radius: 999px;
+  padding: 0.35rem 0.85rem;
+}
+
+.flit-datepicker-panel .p-datepicker-buttonbar .p-button.p-button-text {
+  color: var(--action);
+}
+
+.p-connected-overlay {
+  z-index: 60;
+}

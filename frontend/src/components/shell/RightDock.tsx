@@ -75,7 +75,7 @@ export function RightDock() {
     <>
       <div
         aria-hidden
-        className="pointer-events-none fixed top-1/2 right-0 z-[90] -translate-y-1/2 rounded-l-2xl"
+        className="pointer-events-none fixed top-1/2 right-0 z-30 -translate-y-1/2 rounded-l-2xl"
         style={{
           width: "30px",
           height: "calc(var(--dock-h, 480px) + 30px)",
@@ -84,7 +84,7 @@ export function RightDock() {
       />
       <nav
         aria-label="Navegación principal"
-        className="fixed top-1/2 right-1 z-[100] flex -translate-y-1/2 flex-col items-center gap-1.5 rounded-2xl border border-[var(--border)]/60 bg-[var(--card)]/95 px-2 py-3 shadow-xl backdrop-blur"
+        className="fixed top-1/2 right-1 z-40 flex -translate-y-1/2 flex-col items-center gap-1.5 rounded-2xl border border-[var(--border)]/60 bg-[var(--card)]/95 px-2 py-3 shadow-xl backdrop-blur"
         style={{ boxShadow: "0 18px 50px -16px rgba(0,62,255,0.35)" }}
         data-testid="flit-right-dock"
       >

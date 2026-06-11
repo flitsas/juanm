@@ -2,6 +2,7 @@
 
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { dgcQueryKeys } from "../api/query-keys";
 import { upsertContraventor } from "../api/upsert-contraventor";
 import { useComparendoDetail } from "../api/use-comparendo-detail";
@@ -30,7 +31,12 @@ export function DgcDetailPanel({
   onUpdated,
 }: DgcDetailPanelProps) {
   const queryClient = useQueryClient();
+  const [mounted, setMounted] = useState(false);
   const [tab, setTab] = useState<DetailPanelTab>("detalle");
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const detailQuery = useComparendoDetail(comparendoId);
   const emailsQuery = useEmailLogs(comparendoId);
@@ -93,8 +99,6 @@ export function DgcDetailPanel({
     }
   };
 
-  if (!comparendoId) return null;
-
   const loading = detailQuery.isLoading || emailsQuery.isLoading;
   const error =
     detailQuery.isError || emailsQuery.isError
@@ -104,10 +108,12 @@ export function DgcDetailPanel({
   const emails = emailsQuery.data?.items ?? [];
   const dp = formatDpReadonly(item?.dp);
 
-  return (
+  if (!comparendoId || !mounted) return null;
+
+  return createPortal(
     <>
       <div
-        className="fixed inset-0 z-40 bg-black/30"
+        className="fixed inset-0 z-50 bg-black/30"
         aria-hidden="true"
         onClick={onClose}
         data-testid="dgc-detail-backdrop"
@@ -321,7 +327,8 @@ export function DgcDetailPanel({
           setSelectedEmailId(null);
         }}
       />
-    </>
+    </>,
+    document.body,
   );
 }
 

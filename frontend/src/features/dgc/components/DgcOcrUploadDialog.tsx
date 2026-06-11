@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { confirmOcrItem, uploadOcrLote } from "../api/ocr-api";
 import { isAcceptedOcrFile, OCR_ACCEPT_ATTRIBUTE } from "../lib/accepted-ocr-mime-types";
 import { mapOcrItemToForm } from "../lib/map-ocr-item-to-form";
@@ -26,15 +26,17 @@ export function DgcOcrUploadDialog({ open, onOpenChange, onConfirmed }: DgcOcrUp
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [entries, setEntries] = useState<BufferEntry[]>([]);
   const [dragOver, setDragOver] = useState(false);
+  const entriesRef = useRef(entries);
+  entriesRef.current = entries;
 
   const reset = useCallback(() => {
-    for (const entry of entries) {
+    for (const entry of entriesRef.current) {
       if (entry.form.previewUrl) URL.revokeObjectURL(entry.form.previewUrl);
     }
-    setEntries([]);
-    setUploadError(null);
-    setUploading(false);
-  }, [entries]);
+    setEntries((prev) => (prev.length === 0 ? prev : []));
+    setUploadError((prev) => (prev === null ? prev : null));
+    setUploading((prev) => (prev === false ? prev : false));
+  }, []);
 
   useEffect(() => {
     if (!open) reset();
