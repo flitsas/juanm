@@ -11,9 +11,5 @@ export default function HomePage() {
     router.replace(getSession() ? "/dashboard" : "/login");
   }, [router]);
 
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-[var(--flit-bg-app)] text-[var(--flit-text-secondary)]">
-      Redirigiendo…
-    </div>
-  );
+  return null;
 }

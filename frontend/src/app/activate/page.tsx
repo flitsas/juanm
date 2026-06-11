@@ -18,7 +18,7 @@ function ActivateFallback() {
 
 export default function ActivatePage() {
   return (
-    <AuthShell>
+    <AuthShell intro={false}>
       <Suspense fallback={<ActivateFallback />}>
         <ActivateAccountForm />
       </Suspense>

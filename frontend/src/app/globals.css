@@ -169,3 +169,62 @@ body {
   scrollbar-width: thin;
   scrollbar-color: var(--flit-lime) transparent;
 }
+
+/* ===== Animaciones FLIT (DESIGNS/flitready-suite) ===== */
+
+@keyframes flit-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.04);
+  }
+}
+
+@keyframes flit-shoot {
+  0% {
+    transform: translate3d(-20vw, 120vh, 0) rotate(-45deg);
+    opacity: 0;
+  }
+  8% {
+    opacity: var(--op, 0.9);
+  }
+  60% {
+    opacity: var(--op, 0.9);
+  }
+  100% {
+    transform: translate3d(120vw, -20vh, 0) rotate(-45deg);
+    opacity: 0;
+  }
+}
+
+@keyframes flit-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes flit-slide-in-right {
+  from {
+    transform: translateX(28px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.flit-brand-pulse {
+  animation: flit-pulse 3.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flit-brand-pulse {
+    animation: none;
+  }
+}
