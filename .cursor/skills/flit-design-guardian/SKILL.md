@@ -1,115 +1,160 @@
 ---
 name: flit-design-guardian
-description: Agente guardián de diseño frontend y UX para FLIT. Use al diseñar, construir, modificar, auditar o validar interfaces FLIT (pantallas, componentes, estilos, theming) conservando con fidelidad estricta el prototipo PDF, sus colores, componentes, layout, estados, flujos, tokens, accesibilidad y reglas visuales. Se activa automáticamente al editar el frontend (frontend/src — React/TSX/CSS, Tailwind).
-globs: ["frontend/src/**/*.tsx", "frontend/src/**/*.ts", "frontend/src/**/*.css", "frontend/tailwind.config.js", "frontend/index.html"]
-alwaysApply: false
+description: Valida y aplica lineamientos UX/UI del prototipo DESIGNS/flitready-suite al frontend Next.js de GDC 2.0. Audita módulos contra tokens, layout, copy en español y patrones de componentes; corrige desviaciones antes de cerrar HUs frontend. Triggers flit-design-guardian, diseño UX, UI kit, flitready-suite, tokens FLIT, alinear diseño, auditoría visual, Administración, multi-compañía.
 ---
 
-# FLIT Design Guardian
+# flit-design-guardian
 
-Usar esta habilidad cuando la tarea involucre pantallas, componentes, diseño frontend, UX, auditoría visual, implementación web/app, refactor UI, design system o validación de fidelidad para FLIT.
+Guardián de diseño FLIT: asegura que cada módulo frontend replique fielmente el prototipo canónico en `DESIGNS/flitready-suite` antes de mergear una HU de UI.
 
-## Mandato principal
+```
+frontend-agent (implementa pantalla)
+        │
+        ▼  (recomendado — misma sesión, tras código funcional)
+  flit-design-guardian  ──► PASO 1…5
+        │         ├── PASS → informar alineación
+        └────────► FAIL → listar desviaciones + diff sugerido
+```
 
-Conservar el prototipo FLIT como **fuente única de verdad**. No rediseñar, modernizar, reinterpretar ni aplicar tendencias visuales externas cuando el prototipo ya define un patrón. Construir o auditar la interfaz para que mantenga layout, colores, gradientes, tipografía, componentes, estados, wizards, modales, tablas y flujos del PDF original.
+---
 
-Antes de entregar cualquier resultado visual o frontend, verificar cumplimiento contra:
+## Fuente de verdad
 
-| Recurso | Cuándo leerlo |
-|---|---|
-| @.cursor/rules/flit-design-guardian/references/prototype_rules.md | Siempre que se diseñe, implemente o audite una pantalla o componente FLIT. |
-| @.cursor/rules/flit-design-guardian/references/flit_design_tokens.json | Siempre que se definan colores, gradientes, radios, sombras, tipografía, spacing o theme. |
-| @.cursor/rules/flit-design-guardian/references/acceptance_checklist.md | Siempre antes de aprobar o entregar una pantalla, componente o refactor. |
-| @.cursor/rules/flit-design-guardian/templates/audit_report.md | Cuando el usuario solicite auditoría, revisión, QA visual o cumplimiento. |
-| @.cursor/rules/flit-design-guardian/references/design_research.md | Cuando se necesite justificar reglas de UX, accesibilidad, design systems o tendencias. |
-| @.cursor/rules/flit-design-guardian/references/prototipo_flit_original.pdf | Cuando haga falta comparación visual directa contra el prototipo. |
+| Ámbito | Ruta canónica |
+|--------|---------------|
+| Prototipo visual | `DESIGNS/flitready-suite/` |
+| Tokens en producción | `frontend/src/app/globals.css` (`--flit-*`) |
+| Primitives compartidos | `frontend/src/components/flit/` |
+| Reglas de diseño | `references/prototype_rules.md` |
+| Tokens JSON | `references/flit_design_tokens.json` |
+| Checklist de aceptación | `references/acceptance_checklist.md` |
+| Mapa módulos → secciones | `references/module_mapping.md` |
 
-## Reglas no negociables
+**Regla:** Nunca inventar colores, tipografías ni layouts que no existan en el prototipo. Si el prototipo no cubre un flujo (p. ej. RBAC), extender usando los mismos tokens y patrones de cards/tablas del módulo más cercano (`admin.tsx`).
 
-Aplicar estas reglas como compuertas bloqueantes.
+---
 
-| Regla | Instrucción |
-|---|---|
-| Fidelidad estricta | Derivar toda pantalla de una página o patrón del prototipo. |
-| Cero drift visual | No introducir paletas, componentes, iconos, radios, sombras o layouts ajenos. |
-| Tokens obligatorios | Usar los tokens FLIT para colores, gradientes, tipografía, espaciado, radios y sombras. |
-| Estados semánticos | Mantener verde para válido/completo, azul para acción/proceso, naranja/rojo para alerta/error y gris para inactivo/borrador. |
-| Componentización | Crear componentes reutilizables alineados al prototipo; evitar estilos ad hoc. |
-| Accesibilidad | Cumplir WCAG 2.2 AA razonable, foco visible, teclado, nombres accesibles y semántica correcta sin cambiar identidad visual. |
-| Privacidad | Tratar rostros, firmas, documentos y datos del prototipo como placeholders; no identificar personas. |
-| Validación final | No aprobar sin checklist de fidelidad visual, UX, accesibilidad y frontend. |
+## Cuándo invocar
 
-## Flujo obligatorio de trabajo
+| Escenario | Acción |
+|-----------|--------|
+| HU frontend nueva o refactor UI | Auditar + corregir desviaciones |
+| Code review detecta UI inconsistente | Modo auditoría (solo reporte) |
+| Usuario pide «alinear con diseño» | Modo corrección completa |
+| Pre-PR frontend con cambios visuales | Checklist rápido (PASO 4) |
 
-Seguir este proceso para cada solicitud.
+---
 
-| Paso | Acción |
-|---:|---|
-| 1 | Identificar la pantalla o patrón base del prototipo que gobierna la tarea. |
-| 2 | Leer @.cursor/rules/flit-design-guardian/references/prototype_rules.md y, si hay implementación visual, @.cursor/rules/flit-design-guardian/references/flit_design_tokens.json. |
-| 3 | Listar componentes reutilizables y variantes permitidas. |
-| 4 | Diseñar o construir usando únicamente patrones FLIT; si falta una pantalla exacta, componer con patrones existentes. |
-| 5 | Aplicar accesibilidad: labels, roles, foco, teclado, contraste y estados no dependientes solo de color. |
-| 6 | Ejecutar checklist de @.cursor/rules/flit-design-guardian/references/acceptance_checklist.md. |
-| 7 | Entregar resultado con veredicto: **Aprobado FLIT**, **Aprobado con observaciones menores** o **No aprobado**. |
+## PASO 1 — Identificar módulo y pantalla de referencia
 
-## Jerarquía de decisiones
+1. Leer la HU o el path del feature (`frontend/src/features/<modulo>/` o `frontend/src/app/<ruta>/`).
+2. Consultar `references/module_mapping.md` para la sección del prototipo.
+3. Abrir el componente equivalente en `DESIGNS/flitready-suite/src/components/modules/`.
 
-Si dos criterios entran en conflicto, obedecer esta jerarquía.
+### Mapa rápido — Administración (HU #9709 y similares)
 
-| Prioridad | Fuente |
-|---:|---|
-| 1 | Prototipo FLIT original y reglas extraídas. |
-| 2 | Tokens FLIT y componentes derivados. |
-| 3 | Accesibilidad WCAG/WAI-ARIA sin alterar identidad. |
-| 4 | Buenas prácticas frontend/UX. |
-| 5 | Tendencias contemporáneas, solo si refuerzan claridad y consistencia. |
+| Producción | Prototipo |
+|------------|-----------|
+| `/admin` → `AdminConsole` | Sección `admin` en `app.tsx` |
+| Título **Administración** | `Section title="Administración"` |
+| Subtítulo **Multi-compañía, usuarios y roles** | `subtitle` del `Section` |
+| Panel compañías + usuarios | `AdminModule` en `modules/admin.tsx` |
+| Matriz RBAC | No existe en prototipo — usar card + tabla sticky del mismo módulo |
 
-## Patrones visuales esenciales
+---
 
-Preservar estos patrones en toda entrega.
+## PASO 2 — Auditar tokens y CSS
 
-| Patrón | Requisito |
-|---|---|
-| App interna | Fondo azul claro, sidebar gradiente, topbar derecha, título en tarjeta blanca y contenido modular en cards. |
-| Autenticación | Pantalla partida con panel visual izquierdo y formulario derecho en tarjeta clara. |
-| Botones | CTA primario en pastilla degradada turquesa/azul o turquesa/verde; “Anterior” en azul marino; cancelar/error en naranja-rojo. |
-| Tablas | Cabecera gris claro, filas cómodas, chips semánticos, progreso y acciones con iconos lineales. |
-| Wizards | Asistente lateral con pasos circulares numerados, etiquetas en tarjetas y colores por estado. |
-| Modales | Blur de fondo, overlay azulado, contenedor claro, radio amplio, X superior y CTA degradado. |
-| OCR/carga | Upload boxes blancos con borde punteado azul, icono centrado y texto azul. |
-| Placas | Texto en mayúscula, espaciado y visual de placa/código. |
+Verificar que `globals.css` exponga al menos:
 
-## Política para pantallas nuevas
+- `--flit-action`, `--flit-lime`, `--flit-table-head`, `--flit-gradient-flit`
+- `--flit-text-primary`, `--flit-text-secondary`, `--flit-bg-app`
+- Acentos de rol: `--flit-purple`, `--flit-amber`, `--flit-tech`
 
-No inventar un diseño. Componer la pantalla con la genealogía visual más cercana.
+**Prohibido en producción:**
 
-| Necesidad nueva | Patrón base obligatorio |
-|---|---|
-| Nueva pantalla administrativa | `AppShell` + `Sidebar` + `Topbar` + `PageHeaderCard` + cards/tablas. |
-| Nuevo formulario | Inputs y CTA de autenticación, invitación colaborador o wizard. |
-| Nuevo listado | Tabla de colaboradores o trámites. |
-| Nuevo flujo paso a paso | Wizard de nuevo traspaso o timeline de detalle de traspaso. |
-| Nueva alerta | Tarjeta de alertas o modal FLIT. |
-| Nueva métrica | KPI card del dashboard. |
-| Nuevo estado | Mapear a verde, azul, naranja/rojo o gris según semántica existente. |
+- Colores hex sueltos tipo `bg-[#003eff]` — usar `var(--flit-action)` o clases `.flit-*`
+- Bordes/radios distintos al prototipo sin justificación en ADR
 
-## Rechazar automáticamente
+Ejecutar script opcional:
 
-Corregir antes de entregar si aparece alguno de estos elementos: dark mode integral no definido, glassmorphism, neumorphism, paletas nuevas, botones rectangulares genéricos, librerías UI sin tematizar, iconografía incompatible, eliminación de tarjetas título, reordenamiento del wizard de traspaso, tablas densas ajenas, modales sin blur o uso de datos personales reales innecesarios.
+```bash
+python .cursor/skills/flit-design-guardian/scripts/flit_audit_helper.py frontend/src/features/<modulo>
+```
 
-## Salida esperada
+---
 
-Cuando se entregue diseño, código o auditoría, incluir de forma concisa:
+## PASO 3 — Auditar layout y componentes
 
-| Campo | Contenido |
-|---|---|
-| Pantalla/patrón base | Página o patrón del prototipo usado como referencia. |
-| Componentes usados | Componentes FLIT aplicados. |
-| Cumplimiento visual | Resumen de fidelidad a color, layout, tipografía, estados y componentes. |
-| Cumplimiento UX/accesibilidad | Resumen de flujo, foco, teclado, labels y semántica. |
-| Veredicto | Aprobado FLIT / Aprobado con observaciones menores / No aprobado. |
+Checklist por pantalla (detalle en `references/acceptance_checklist.md`):
 
-## Nota de privacidad
+| Patrón | Prototipo | Producción |
+|--------|-----------|------------|
+| Encabezado de sección | `title` + `subtitle` | `SectionHeader` |
+| Cards | `flit-card`, padding `p-3` | Igual |
+| Botón primario | `variant="primary"`, rounded-full | `PrimaryButton` / `.flit-btn-primary` |
+| Tabla | sticky header `--table-head`, scroll interno | `.flit-table` + `data-vertical-scroll` |
+| Master-detail admin | grid 12 cols (4+8 / 3+9) | `grid-cols-12` |
+| Lista compañías | `Building2`, botón **Nueva** | Icono + CTA (deshabilitar si API no existe) |
+| Badges estado/rol | `rounded-full`, colores por token | `StatusBadge` / `.flit-badge` |
+| Paginación | Anterior · página activa · Siguiente | Mismo patrón visual |
+| Copy UI | Español Colombia | Sin labels en inglés (`Tenant` → **Compañía**) |
+| Tabs secundarios | Pills rounded-full | `TabPills` |
 
-No identificar personas en imágenes, documentos, avatares o capturas del prototipo. Describir únicamente la función visual del elemento, como avatar, firma, evidencia documental o placeholder.
+---
+
+## PASO 4 — Checklist pre-PR (rápido)
+
+- [ ] Título/subtítulo coinciden con el `Section` del prototipo
+- [ ] Tokens `--flit-*` (no hex ad-hoc)
+- [ ] Primitives en `components/flit/` reutilizados antes de duplicar estilos
+- [ ] Tablas: header sticky + hover row
+- [ ] Estados vacío/carga/error con roles ARIA (`role="status"`, `role="alert"`)
+- [ ] Iconos: `lucide-react`, tamaño `size-3` / `size-4`, `aria-hidden` en decorativos
+- [ ] Tests Vitest actualizados si cambian labels accesibles
+
+---
+
+## PASO 5 — Reporte
+
+Usar plantilla `templates/audit_report.md`. Clasificar hallazgos:
+
+| Severidad | Criterio |
+|-----------|----------|
+| **BLOQUEANTE** | Tokens incorrectos, layout roto, copy inglés en UI usuario, sin estados ARIA |
+| **MAYOR** | Desviación de grid/spacing, botones sin variant primary, tabla sin sticky |
+| **MENOR** | Micro-spacing, icono ausente cuando el prototipo lo incluye |
+
+---
+
+## Implementación — primitives obligatorios
+
+Antes de estilos inline en un feature, verificar existencia en `frontend/src/components/flit/`:
+
+| Componente | Uso |
+|------------|-----|
+| `SectionHeader` | Título + subtítulo de módulo |
+| `PrimaryButton` | CTAs primarios (Invitar, Guardar, Nueva) |
+| `TabPills` | Navegación secundaria dentro del módulo |
+| `StatusBadge` | Estados de usuario (Active, Pending, Locked) |
+
+Clases CSS globales: `.flit-card`, `.flit-input`, `.flit-table`, `.flit-btn-primary`, `.flit-badge`, `.flit-tab-pill-*`, `.scrollbar-thin`.
+
+---
+
+## Integración con otros agentes
+
+| Agente | Cuándo encadenar |
+|--------|------------------|
+| `frontend-agent` | Tras implementar UI, antes de `dev-tester` |
+| `code-review-agent` | Dimensión UX/UI en PRs frontend |
+| `qa-agent` | Validar copy y layout en E2E headed |
+
+---
+
+## Referencias
+
+- `references/prototype_rules.md` — reglas del kit Lovable/flitReady
+- `references/flit_design_tokens.json` — mapa token prototipo → producción
+- `references/acceptance_checklist.md` — checklist extendido
+- `references/module_mapping.md` — rutas prototipo ↔ producción

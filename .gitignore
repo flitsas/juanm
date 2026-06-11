@@ -22,6 +22,7 @@ coverage/
 .env.local
 .env.*.local
 .env.user-identity
+**/appsettings.Development.local.json
 .env.renting
 .env.verifik
 infra/secrets/*
@@ -52,7 +53,10 @@ temp/
 playwright-report/
 test-results/
 
+# Design files
+DESIGNS/
+.tmp/
+
 # Python
 __pycache__/
 *.py[cod]
-

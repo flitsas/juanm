@@ -70,11 +70,13 @@ pnpm dev
 
 |----------|-----|
 
-| Frontend (Next.js) | http://localhost:4001 |
+| Frontend (Next.js) | http://localhost:40103 |
 
-| API (core-api) | http://localhost:4002 |
+| Gateway (YARP) | http://localhost:40203 |
 
-| Health check | http://localhost:4002/health |
+| API (core-api) | http://localhost:40303 |
+
+| Health check | http://localhost:40203/health |
 
 
 

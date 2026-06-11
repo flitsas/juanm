@@ -1,11 +1,13 @@
+using Gdc.Infrastructure.Auth;
 using Gdc.Infrastructure.Dgc;
 using Gdc.Infrastructure.Dgc.Renting;
 using Gdc.Infrastructure.Notif;
 using Gdc.Infrastructure.Notif.EmailSenders;
-using Gdc.Modules.Notif.Application.Abstractions;
 using Gdc.Infrastructure.Persistence;
 using Gdc.Modules.Dgc.Application.Abstractions;
+using Gdc.Modules.Notif.Application.Abstractions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -17,12 +19,30 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
+        services.AddScoped<Gdc.Infrastructure.Persistence.ITenantContext, TenantContext>();
+
         var connectionString = configuration.GetConnectionString("Core")
             ?? throw new InvalidOperationException("Connection string 'Core' is not configured.");
 
-        services.AddDbContext<GdcDbContext>(options =>
-            options.UseNpgsql(connectionString, npgsql =>
-                npgsql.MigrationsHistoryTable("__ef_migrations_history", "core")));
+        if (configuration.GetValue<bool>("Testing:UseInMemoryDatabase"))
+        {
+            services.AddDbContext<GdcDbContext>(options =>
+                options.UseInMemoryDatabase(configuration["Testing:InMemoryDatabaseName"] ?? "gdc_test"));
+        }
+        else
+        {
+            services.AddDbContext<GdcDbContext>((serviceProvider, options) =>
+            {
+                var tenantContext = serviceProvider.GetRequiredService<Gdc.Infrastructure.Persistence.ITenantContext>();
+                options
+                    .UseNpgsql(connectionString, npgsql =>
+                        npgsql.MigrationsHistoryTable("__ef_migrations_history", "core"))
+                    .ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning))
+                    .AddInterceptors(new NpgsqlTenantRlsInterceptor(tenantContext));
+            });
+        }
+
+        services.AddAuthServices(configuration);
 
         services.Configure<DgcOcrOptions>(configuration.GetSection(DgcOcrOptions.SectionName));
         services.Configure<DgcContraventorJobOptions>(

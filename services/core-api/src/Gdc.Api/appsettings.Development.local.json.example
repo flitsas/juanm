@@ -1,0 +1,7 @@
+{
+  "_comment": "Copia a appsettings.Development.local.json (gitignored) o define las variables en .env raíz.",
+  "Smtp": {
+    "Enabled": true,
+    "EnableSsl": true
+  }
+}

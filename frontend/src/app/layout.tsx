@@ -1,10 +1,18 @@
 import type { Metadata } from "next";
+import { Poppins } from "next/font/google";
 import { Providers } from "./providers";
 import "./globals.css";
 
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-poppins",
+});
+
 export const metadata: Metadata = {
-  title: "Flit Ready",
-  description: "Plataforma GDC — Gestión de comparendos",
+  title: "GDC — Gestión De Comparendos",
+  description:
+    "Plataforma GDC (Gestión De Comparendos) — comparendos, fotomultas y administración multi-tenant.",
 };
 
 export default function RootLayout({
@@ -14,13 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" suppressHydrationWarning>
-      <head>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body style={{ fontFamily: '"Poppins", ui-sans-serif, system-ui, sans-serif' }}>
+      <body className={`${poppins.variable} font-sans antialiased`}>
         <Providers>{children}</Providers>
       </body>
     </html>

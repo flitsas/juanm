@@ -1,21 +1,46 @@
 @import "tailwindcss";
 
 :root {
+  /* Tokens FLIT — canónicos (DESIGNS/flitready-suite/src/styles.css) */
+  --flit-bg-app: #e2eaf7;
+  --flit-bg-card: #ffffff;
+  --flit-bg-hover: #f4f7fc;
+  --flit-bg-danger-soft: #fff5f3;
+  --flit-text-primary: #162744;
+  --flit-text-secondary: #59677d;
+  --flit-text-brand: #003eff;
+  --flit-border-input: #d9dee8;
+  --flit-border-focus: #003eff;
+  --flit-state-danger: #ff4000;
+  --flit-action: #003eff;
+  --flit-lime: #b3ff1f;
+  --flit-tech: #00dbd5;
+  --flit-purple: #6a1fff;
+  --flit-amber: #ffbf00;
+  --flit-table-head: #d0dcef;
+  --flit-gradient-flit: linear-gradient(-45deg, #b3ff1f 0%, #003eff 100%);
+  --flit-radius-input: 16px;
+  --flit-radius-card: 14px;
+  --flit-shadow-card: 0 8px 24px rgba(22, 39, 68, 0.08);
+  --flit-shadow-button: 0 4px 14px rgba(0, 62, 255, 0.25);
+  --font-sans: var(--font-poppins), Inter, system-ui, sans-serif;
+
+  /* Aliases shell / PrimeReact → tokens FLIT */
   --radius: 0.875rem;
-  --lime: oklch(0.93 0.23 130);
-  --action: oklch(0.48 0.27 265);
-  --deep: oklch(0.27 0.08 260);
-  --tech: oklch(0.82 0.13 195);
-  --amber-acc: oklch(0.82 0.17 85);
-  --alert: oklch(0.62 0.24 30);
-  --table-head: oklch(0.91 0.03 250);
-  --gradient-flit: linear-gradient(-45deg, #b3ff1f 0%, #003eff 100%);
-  --background: #e2eaf7;
-  --foreground: oklch(0.17 0.04 260);
-  --card: oklch(1 0 0);
-  --muted: oklch(0.96 0.01 250);
-  --muted-foreground: oklch(0.5 0.03 260);
-  --border: oklch(0.9 0.02 250);
+  --lime: var(--flit-lime);
+  --action: var(--flit-action);
+  --deep: var(--flit-text-primary);
+  --tech: var(--flit-tech);
+  --amber-acc: var(--flit-amber);
+  --alert: var(--flit-state-danger);
+  --table-head: var(--flit-table-head);
+  --gradient-flit: var(--flit-gradient-flit);
+  --background: var(--flit-bg-app);
+  --foreground: var(--flit-text-primary);
+  --card: var(--flit-bg-card);
+  --muted: var(--flit-bg-hover);
+  --muted-foreground: var(--flit-text-secondary);
+  --border: var(--flit-border-input);
 }
 
 @utility bg-gradient-flit {
@@ -30,9 +55,9 @@
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans, "Poppins", ui-sans-serif, system-ui, sans-serif);
+  background: var(--flit-bg-app);
+  color: var(--flit-text-primary);
+  font-family: var(--font-sans);
 }
 
 @keyframes blob-drift-a {
@@ -239,6 +264,28 @@ body {
   color: var(--deep);
 }
 
+.flit-table thead tr {
+  background: var(--flit-table-head);
+}
+
+.flit-table th,
+.flit-table td {
+  padding: 0.625rem 0.75rem;
+  border-bottom: 1px solid var(--flit-border-input);
+  font-size: 0.875rem;
+}
+
+.flit-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--flit-table-head);
+}
+
+.flit-table tbody tr:hover {
+  background: rgba(0, 62, 255, 0.04);
+}
+
 /* Panel portaleado a body — no hereda .flit-calendar */
 .flit-datepicker-panel.p-datepicker {
   margin-top: 0.35rem;
@@ -332,4 +379,186 @@ body {
 
 .p-connected-overlay {
   z-index: 60;
+}
+
+.flit-input {
+  display: block;
+  width: 100%;
+  height: 48px;
+  padding: 0 16px;
+  border: 1px solid var(--flit-border-input);
+  border-radius: var(--flit-radius-input);
+  background: #fff;
+  color: var(--flit-text-primary);
+  font-size: 14px;
+}
+
+.flit-input:focus {
+  outline: 2px solid var(--flit-border-focus);
+  outline-offset: 1px;
+}
+
+.flit-gradient-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 999px;
+  background: var(--flit-action);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--flit-shadow-button);
+  transition:
+    transform 120ms ease,
+    opacity 120ms ease,
+    box-shadow 120ms ease;
+}
+
+.flit-gradient-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.flit-gradient-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.flit-gradient-btn:focus-visible {
+  outline: 2px solid var(--flit-border-focus);
+  outline-offset: 2px;
+}
+
+.flit-card {
+  border-radius: var(--flit-radius-card);
+  background: var(--flit-bg-card);
+  box-shadow: var(--flit-shadow-card);
+  border: 1px solid var(--flit-border-input);
+}
+
+.flit-btn-primary {
+  border: none;
+  border-radius: 999px;
+  background: var(--flit-action);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--flit-shadow-button);
+  transition:
+    transform 120ms ease,
+    opacity 120ms ease;
+}
+
+.flit-btn-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.flit-btn-primary:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.flit-btn-primary:focus-visible {
+  outline: 2px solid var(--flit-border-focus);
+  outline-offset: 2px;
+}
+
+.flit-tab-pill {
+  border-radius: 999px;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition:
+    background 120ms ease,
+    border-color 120ms ease;
+}
+
+.flit-tab-pill-active {
+  background: var(--flit-action);
+  color: #fff;
+  border: 1px solid var(--flit-action);
+}
+
+.flit-tab-pill-inactive {
+  background: #fff;
+  color: var(--flit-text-primary);
+  border: 1px solid var(--flit-border-input);
+}
+
+.flit-tab-pill-inactive:hover {
+  border-color: color-mix(in srgb, var(--flit-action) 40%, var(--flit-border-input));
+}
+
+.flit-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  border: 1px solid;
+  padding: 0.125rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--flit-lime) transparent;
+}
+
+/* ===== Animaciones FLIT (DESIGNS/flitready-suite) ===== */
+
+@keyframes flit-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.04);
+  }
+}
+
+@keyframes flit-shoot {
+  0% {
+    transform: translate3d(-20vw, 120vh, 0) rotate(-45deg);
+    opacity: 0;
+  }
+  8% {
+    opacity: var(--op, 0.9);
+  }
+  60% {
+    opacity: var(--op, 0.9);
+  }
+  100% {
+    transform: translate3d(120vw, -20vh, 0) rotate(-45deg);
+    opacity: 0;
+  }
+}
+
+@keyframes flit-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes flit-slide-in-right {
+  from {
+    transform: translateX(28px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.flit-brand-pulse {
+  animation: flit-pulse 3.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flit-brand-pulse {
+    animation: none;
+  }
 }

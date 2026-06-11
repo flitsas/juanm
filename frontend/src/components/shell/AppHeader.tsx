@@ -8,7 +8,7 @@ export function AppHeader() {
   return (
     <header
       className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b-2 bg-[var(--background)]/85 px-6 backdrop-blur-md"
-      style={{ borderBottomColor: "var(--lime)" }}
+      style={{ borderBottomColor: "var(--flit-lime)" }}
     >
       <FlitLogoBlue href="/" />
 

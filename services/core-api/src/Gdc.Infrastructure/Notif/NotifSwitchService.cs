@@ -1,5 +1,5 @@
 using Gdc.Infrastructure.Persistence;
-using Gdc.Modules.Dgc.Application.Abstractions;
+using DgcTenantContext = Gdc.Modules.Dgc.Application.Abstractions.ITenantContext;
 using Gdc.Modules.Notif.Application.Rules;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,7 +7,7 @@ namespace Gdc.Infrastructure.Notif;
 
 public sealed class NotifSwitchService(
     GdcDbContext db,
-    ITenantContext tenantContext,
+    DgcTenantContext tenantContext,
     TimeProvider timeProvider)
 {
     public async Task<SwitchResponse> GetAsync(CancellationToken cancellationToken)
