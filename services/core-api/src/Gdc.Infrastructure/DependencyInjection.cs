@@ -1,5 +1,6 @@
 using Gdc.Infrastructure.Dgc;
 using Gdc.Infrastructure.Dgc.Renting;
+using Gdc.Infrastructure.Notif;
 using Gdc.Infrastructure.Persistence;
 using Gdc.Modules.Dgc.Application.Abstractions;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +30,7 @@ public static class DependencyInjection
         services.AddScoped<ContraventorAssociationJob>();
         services.AddScoped<ContraventorManualService>();
         services.AddScoped<EmailLogQueryService>();
+        services.AddScoped<NotifCompanyService>();
         services.AddSingleton<ContraventorWindowEvaluator>();
         services.AddSingleton(TimeProvider.System);
         services.AddDgcVehicleRegistry(configuration);

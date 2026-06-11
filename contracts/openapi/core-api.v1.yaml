@@ -269,6 +269,198 @@ paths:
                 $ref: "#/components/schemas/EmailEvidenceResponse"
         "404":
           description: Evidencia no encontrada
+  /api/v1/notif/companies:
+    get:
+      operationId: listNotifCompanies
+      summary: Lista compañías (Super Admin)
+      tags: [NOTIF Admin]
+      parameters:
+        - name: X-Role
+          in: header
+          required: true
+          schema:
+            type: string
+            enum: [super_admin, SuperAdmin]
+      responses:
+        "200":
+          description: Nómina global de empresas
+        "403":
+          description: Rol insuficiente
+    post:
+      operationId: createNotifCompany
+      summary: Crea compañía (Super Admin)
+      tags: [NOTIF Admin]
+      parameters:
+        - name: X-Role
+          in: header
+          required: true
+          schema:
+            type: string
+            enum: [super_admin, SuperAdmin]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name:
+                  type: string
+                nit:
+                  type: string
+                contactPhone:
+                  type: string
+                contactEmail:
+                  type: string
+      responses:
+        "201":
+          description: Compañía creada
+        "403":
+          description: Rol insuficiente
+  /api/v1/notif/companies/{id}:
+    get:
+      operationId: getNotifCompany
+      summary: Obtiene compañía por id (Super Admin)
+      tags: [NOTIF Admin]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: X-Role
+          in: header
+          required: true
+          schema:
+            type: string
+            enum: [super_admin, SuperAdmin]
+      responses:
+        "200":
+          description: Compañía encontrada
+        "403":
+          description: Rol insuficiente
+        "404":
+          description: No encontrada
+    put:
+      operationId: updateNotifCompany
+      summary: Actualiza compañía (Super Admin)
+      tags: [NOTIF Admin]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: X-Role
+          in: header
+          required: true
+          schema:
+            type: string
+            enum: [super_admin, SuperAdmin]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name:
+                  type: string
+                nit:
+                  type: string
+                contactPhone:
+                  type: string
+                contactEmail:
+                  type: string
+                isActive:
+                  type: boolean
+      responses:
+        "200":
+          description: Compañía actualizada
+        "403":
+          description: Rol insuficiente
+        "404":
+          description: No encontrada
+    delete:
+      operationId: deleteNotifCompany
+      summary: Elimina compañía (Super Admin, soft delete)
+      tags: [NOTIF Admin]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: X-Role
+          in: header
+          required: true
+          schema:
+            type: string
+            enum: [super_admin, SuperAdmin]
+      responses:
+        "204":
+          description: Compañía eliminada
+        "403":
+          description: Rol insuficiente
+        "404":
+          description: No encontrada
+  /api/v1/notif/profile:
+    get:
+      operationId: getNotifTenantProfile
+      summary: Perfil del tenant autenticado
+      tags: [NOTIF Admin]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Perfil del tenant
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TenantProfileResponse"
+        "404":
+          description: Tenant no encontrado
+    put:
+      operationId: updateNotifTenantProfile
+      summary: Actualiza teléfono y correo de contacto del tenant
+      tags: [NOTIF Admin]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                contactPhone:
+                  type: string
+                contactEmail:
+                  type: string
+      responses:
+        "200":
+          description: Perfil actualizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TenantProfileResponse"
+        "404":
+          description: Tenant no encontrado
   /health:
     get:
       operationId: getHealth
@@ -431,3 +623,45 @@ components:
         database:
           type: string
           enum: [connected, unavailable]
+    CompanyResponse:
+      type: object
+      required: [id, name, isActive, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        nit:
+          type: string
+          nullable: true
+        contactPhone:
+          type: string
+          nullable: true
+        contactEmail:
+          type: string
+          nullable: true
+        isActive:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+          nullable: true
+    TenantProfileResponse:
+      type: object
+      required: [tenantId, name]
+      properties:
+        tenantId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        contactPhone:
+          type: string
+          nullable: true
+        contactEmail:
+          type: string
+          nullable: true

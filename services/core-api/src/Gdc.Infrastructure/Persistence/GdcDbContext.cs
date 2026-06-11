@@ -32,6 +32,8 @@ public sealed class GdcDbContext(DbContextOptions<GdcDbContext> options) : DbCon
 
     public DbSet<EmailSendLog> EmailSendLogs => Set<EmailSendLog>();
 
+    public DbSet<TenantCompany> TenantCompanies => Set<TenantCompany>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasDefaultSchema("core");

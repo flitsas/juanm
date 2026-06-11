@@ -12,6 +12,7 @@ public static class NotifModelBuilderExtensions
         modelBuilder.ApplyConfiguration(new NotificationRuleConfiguration());
         modelBuilder.ApplyConfiguration(new EmailQueueConfiguration());
         modelBuilder.ApplyConfiguration(new EmailSendLogConfiguration());
+        modelBuilder.ApplyConfiguration(new TenantCompanyConfiguration());
         return modelBuilder;
     }
 }

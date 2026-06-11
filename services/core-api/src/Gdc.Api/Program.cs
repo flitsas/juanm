@@ -5,6 +5,7 @@ using Gdc.Infrastructure;
 using Gdc.Infrastructure.Dgc;
 using Gdc.Infrastructure.Persistence;
 using Gdc.Modules.Dgc.Application.Abstractions;
+using Gdc.Modules.Notif.Application.Abstractions;
 using Microsoft.EntityFrameworkCore;
 
 DotEnvLoader.LoadRentingEnvFromRepoRoot();
@@ -15,6 +16,7 @@ builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddHostedService<ContraventorAssociationHostedService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ITenantContext, HeaderTenantContext>();
+builder.Services.AddScoped<IUserRoleContext, HeaderUserRoleContext>();
 builder.Services.AddOpenApi();
 
 builder.Services.AddCors(options =>
@@ -55,5 +57,6 @@ app.MapGet("/health", async (GdcDbContext db, CancellationToken ct) =>
 app.MapDgcOcrEndpoints();
 app.MapDgcComparendoEndpoints();
 app.MapDgcEmailLogEndpoints();
+app.MapNotifCompanyEndpoints();
 
 app.Run();
