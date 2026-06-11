@@ -67,16 +67,8 @@ export function DgcOcrBufferForm({
           value={form.infractorNombre}
           onChange={(v) => patch({ infractorNombre: v })}
         />
-        <Field
-          label="Documento"
-          value={form.documento}
-          onChange={(v) => patch({ documento: v })}
-        />
-        <Field
-          label="Placa"
-          value={form.placa}
-          onChange={(v) => patch({ placa: v })}
-        />
+        <Field label="Documento" value={form.documento} onChange={(v) => patch({ documento: v })} />
+        <Field label="Placa" value={form.placa} onChange={(v) => patch({ placa: v })} />
         <Field
           label="Infracción"
           value={form.infraccionCodigo}
@@ -88,11 +80,7 @@ export function DgcOcrBufferForm({
           value={form.fechaComparendo}
           onChange={(v) => patch({ fechaComparendo: v })}
         />
-        <Field
-          label="Total"
-          value={form.totalValor}
-          onChange={(v) => patch({ totalValor: v })}
-        />
+        <Field label="Total" value={form.totalValor} onChange={(v) => patch({ totalValor: v })} />
       </div>
 
       <div className="mt-4 flex justify-end">

@@ -8,8 +8,8 @@ import { useComparendoDetail } from "../api/use-comparendo-detail";
 import { useEmailEvidence, useEmailLogs } from "../api/use-email-logs";
 import type { ComparendoMaestraItem } from "../lib/comparendo-maestra.types";
 import {
-  DETAIL_PANEL_TABS,
   type ContraventorForm,
+  DETAIL_PANEL_TABS,
   type DetailPanelTab,
 } from "../lib/detail-panel.types";
 import { formatDpReadonly } from "../lib/format-dp-readonly";
@@ -114,7 +114,6 @@ export function DgcDetailPanel({
       />
       <aside
         className="fixed inset-y-0 right-0 z-50 flex w-full max-w-lg flex-col border-l border-[var(--border)] bg-[var(--card)] shadow-2xl"
-        role="complementary"
         aria-label="Panel de detalle del comparendo"
         data-testid="dgc-detail-panel"
       >
@@ -188,10 +187,7 @@ export function DgcDetailPanel({
                 label="Fecha notificación"
                 value={formatMaestraCell(item, "fechaNotificacion")}
               />
-              <DetailRow
-                label="Días restantes"
-                value={formatMaestraCell(item, "diasRestantes")}
-              />
+              <DetailRow label="Días restantes" value={formatMaestraCell(item, "diasRestantes")} />
               <DetailRow label="Total" value={formatMaestraCell(item, "total")} />
               <DetailRow label="Pago" value={item.pago ?? "—"} />
               <DetailRow label="Fuente" value={item.fuente} />
@@ -235,9 +231,7 @@ export function DgcDetailPanel({
                 <span className="mb-1 block text-xs text-[var(--muted-foreground)]">Nombre *</span>
                 <input
                   value={contraventorForm.nombre}
-                  onChange={(e) =>
-                    setContraventorForm((f) => ({ ...f, nombre: e.target.value }))
-                  }
+                  onChange={(e) => setContraventorForm((f) => ({ ...f, nombre: e.target.value }))}
                   className="h-10 w-full rounded-xl border border-[var(--border)] px-3"
                 />
               </label>
@@ -258,9 +252,7 @@ export function DgcDetailPanel({
                 <input
                   type="email"
                   value={contraventorForm.correo}
-                  onChange={(e) =>
-                    setContraventorForm((f) => ({ ...f, correo: e.target.value }))
-                  }
+                  onChange={(e) => setContraventorForm((f) => ({ ...f, correo: e.target.value }))}
                   className="h-10 w-full rounded-xl border border-[var(--border)] px-3"
                 />
               </label>
@@ -323,9 +315,7 @@ export function DgcDetailPanel({
         open={evidenceOpen}
         html={evidenceQuery.data?.htmlEvidencia ?? null}
         loading={evidenceQuery.isLoading}
-        error={
-          evidenceQuery.isError ? "No se pudo cargar la evidencia HTML." : null
-        }
+        error={evidenceQuery.isError ? "No se pudo cargar la evidencia HTML." : null}
         onClose={() => {
           setEvidenceOpen(false);
           setSelectedEmailId(null);

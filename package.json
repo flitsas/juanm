@@ -2,9 +2,6 @@
   "name": "gdc-monorepo",
   "private": true,
   "packageManager": "pnpm@11.5.0",
-  "pnpm": {
-    "onlyBuiltDependencies": ["esbuild", "sharp"]
-  },
   "scripts": {
     "install:all": "pnpm install && dotnet restore services/core-api/Gdc.CoreApi.slnx",
     "dev": "pnpm run --parallel dev:api dev:web dev:python-ml",

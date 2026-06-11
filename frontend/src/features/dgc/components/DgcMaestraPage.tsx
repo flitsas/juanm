@@ -1,22 +1,19 @@
 "use client";
 
 import { useQueryClient } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
 import { Button } from "primereact/button";
+import { useEffect, useMemo, useState } from "react";
 import { PageHeaderCard } from "@/components/shell/PageHeaderCard";
 import { dgcQueryKeys } from "../api/query-keys";
 import { useComparendosMaestra } from "../api/use-comparendos-maestra";
-import {
-  DEFAULT_FILTERS,
-  type ComparendoMaestraFilters,
-} from "../lib/comparendo-maestra.types";
+import type { ComparendoMaestraItem } from "../lib/comparendo-maestra.types";
+import { type ComparendoMaestraFilters, DEFAULT_FILTERS } from "../lib/comparendo-maestra.types";
 import { MAESTRA_COLUMNS } from "../lib/comparendo-maestra-columns";
+import { DgcDetailPanel } from "./DgcDetailPanel";
 import { DgcMaestraEmptyState } from "./DgcMaestraEmptyState";
 import { DgcMaestraFilters } from "./DgcMaestraFilters";
 import { DgcMaestraTable } from "./DgcMaestraTable";
-import { DgcDetailPanel } from "./DgcDetailPanel";
 import { DgcOcrUploadDialog } from "./DgcOcrUploadDialog";
-import type { ComparendoMaestraItem } from "../lib/comparendo-maestra.types";
 
 export function DgcMaestraPage() {
   const queryClient = useQueryClient();
@@ -81,11 +78,7 @@ export function DgcMaestraPage() {
         onUpdated={invalidateMaestra}
       />
 
-      <DgcMaestraFilters
-        filters={filters}
-        secretarias={secretarias}
-        onChange={setFilters}
-      />
+      <DgcMaestraFilters filters={filters} secretarias={secretarias} onChange={setFilters} />
 
       {isLoading ? (
         <div

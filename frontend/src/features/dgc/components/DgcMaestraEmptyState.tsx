@@ -14,8 +14,8 @@ export function DgcMaestraEmptyState({ onClearFilters }: DgcMaestraEmptyStatePro
       <div>
         <h2 className="text-lg font-bold text-[var(--deep)]">Sin comparendos</h2>
         <p className="mt-2 max-w-md text-sm text-[var(--muted-foreground)]">
-          No hay comparendos para este tenant. Carga comparendos vía OCR o registro manual
-          para comenzar a gestionar la maestra DGC.
+          No hay comparendos para este tenant. Carga comparendos vía OCR o registro manual para
+          comenzar a gestionar la maestra DGC.
         </p>
       </div>
       {onClearFilters ? (

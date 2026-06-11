@@ -9,7 +9,12 @@ export function useComparendoDetail(comparendoId: string | null) {
     queryKey: comparendoId
       ? dgcQueryKeys.comparendoDetail(comparendoId)
       : ["dgc", "comparendos", "detail", "idle"],
-    queryFn: () => fetchComparendoDetail(comparendoId!),
+    queryFn: () => {
+      if (!comparendoId) {
+        throw new Error("comparendoId is required");
+      }
+      return fetchComparendoDetail(comparendoId);
+    },
     enabled: Boolean(comparendoId),
   });
 }

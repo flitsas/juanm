@@ -7,7 +7,7 @@ export type DpReadonlyDisplay = {
 const URL_PATTERN = /^https?:\/\//i;
 
 export function formatDpReadonly(dp: string | null | undefined): DpReadonlyDisplay {
-  if (!dp || !dp.trim()) {
+  if (!dp?.trim()) {
     return { label: "Sin trámite DP asociado", href: null, isLink: false };
   }
 

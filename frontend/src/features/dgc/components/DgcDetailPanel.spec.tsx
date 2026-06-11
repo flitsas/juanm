@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import { renderWithQueryClient } from "@/test/render-with-query-client";
 import type { ComparendoMaestraItem } from "../lib/comparendo-maestra.types";
 import { DgcDetailPanel } from "./DgcDetailPanel";
+
 vi.mock("../api/fetch-comparendo-detail", () => ({
   fetchComparendoDetail: vi.fn().mockResolvedValue({
     id: "cmp-1",
@@ -75,11 +76,7 @@ const summary: ComparendoMaestraItem = {
 describe("DgcDetailPanel", () => {
   it("renderiza las tres pestañas del detalle", async () => {
     renderWithQueryClient(
-      <DgcDetailPanel
-        comparendoId="cmp-1"
-        summaryItem={summary}
-        onClose={vi.fn()}
-      />,
+      <DgcDetailPanel comparendoId="cmp-1" summaryItem={summary} onClose={vi.fn()} />,
     );
 
     expect(screen.getByTestId("dgc-detail-tabs")).toBeTruthy();
@@ -90,11 +87,7 @@ describe("DgcDetailPanel", () => {
 
   it("muestra sección DP solo lectura en pestaña Detalle", async () => {
     renderWithQueryClient(
-      <DgcDetailPanel
-        comparendoId="cmp-1"
-        summaryItem={summary}
-        onClose={vi.fn()}
-      />,
+      <DgcDetailPanel comparendoId="cmp-1" summaryItem={summary} onClose={vi.fn()} />,
     );
 
     expect(await screen.findByTestId("dgc-dp-readonly")).toBeTruthy();
@@ -103,11 +96,7 @@ describe("DgcDetailPanel", () => {
 
   it("abre modal con HTML de evidencia desde log de correos", async () => {
     renderWithQueryClient(
-      <DgcDetailPanel
-        comparendoId="cmp-1"
-        summaryItem={summary}
-        onClose={vi.fn()}
-      />,
+      <DgcDetailPanel comparendoId="cmp-1" summaryItem={summary} onClose={vi.fn()} />,
     );
 
     fireEvent.click(screen.getByRole("tab", { name: "Log de correos" }));

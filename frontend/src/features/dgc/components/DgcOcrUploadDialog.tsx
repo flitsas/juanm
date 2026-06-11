@@ -2,13 +2,10 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { confirmOcrItem, uploadOcrLote } from "../api/ocr-api";
-import { OCR_ACCEPT_ATTRIBUTE, isAcceptedOcrFile } from "../lib/accepted-ocr-mime-types";
+import { isAcceptedOcrFile, OCR_ACCEPT_ATTRIBUTE } from "../lib/accepted-ocr-mime-types";
 import { mapOcrItemToForm } from "../lib/map-ocr-item-to-form";
-import {
-  hasOcrBufferErrors,
-  validateOcrBufferForm,
-} from "../lib/ocr-buffer-validation";
 import type { OcrBufferFieldErrors, OcrBufferForm } from "../lib/ocr.types";
+import { hasOcrBufferErrors, validateOcrBufferForm } from "../lib/ocr-buffer-validation";
 import { DgcOcrBufferForm } from "./DgcOcrBufferForm";
 
 type DgcOcrUploadDialogProps = {
@@ -24,11 +21,7 @@ type BufferEntry = {
   confirmed: boolean;
 };
 
-export function DgcOcrUploadDialog({
-  open,
-  onOpenChange,
-  onConfirmed,
-}: DgcOcrUploadDialogProps) {
+export function DgcOcrUploadDialog({ open, onOpenChange, onConfirmed }: DgcOcrUploadDialogProps) {
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [entries, setEntries] = useState<BufferEntry[]>([]);
@@ -62,7 +55,11 @@ export function DgcOcrUploadDialog({
         f.type.startsWith("image/") ? URL.createObjectURL(f) : null,
       );
       const newEntries = result.items.map((item, index) => ({
-        form: mapOcrItemToForm(item, files[index]?.name ?? item.archivoUri, previewByIndex[index] ?? null),
+        form: mapOcrItemToForm(
+          item,
+          files[index]?.name ?? item.archivoUri,
+          previewByIndex[index] ?? null,
+        ),
         errors: {} as OcrBufferFieldErrors,
         confirming: false,
         confirmed: false,
@@ -81,9 +78,7 @@ export function DgcOcrUploadDialog({
 
     const errors = validateOcrBufferForm(entry.form);
     if (hasOcrBufferErrors(errors)) {
-      setEntries((prev) =>
-        prev.map((e, i) => (i === index ? { ...e, errors } : e)),
-      );
+      setEntries((prev) => prev.map((e, i) => (i === index ? { ...e, errors } : e)));
       return;
     }
 
@@ -94,9 +89,7 @@ export function DgcOcrUploadDialog({
     try {
       await confirmOcrItem(entry.form);
       setEntries((prev) =>
-        prev.map((e, i) =>
-          i === index ? { ...e, confirming: false, confirmed: true } : e,
-        ),
+        prev.map((e, i) => (i === index ? { ...e, confirming: false, confirmed: true } : e)),
       );
       onConfirmed?.();
     } catch (err) {
@@ -140,9 +133,12 @@ export function DgcOcrUploadDialog({
           </button>
         </div>
 
+        {/* biome-ignore lint/a11y/noStaticElementInteractions: zona de drop para input file oculto */}
         <div
           className={`mt-4 rounded-2xl border-2 border-dashed p-10 text-center transition ${
-            dragOver ? "border-[var(--action)] bg-[var(--action)]/5" : "border-[var(--border)] bg-[var(--muted)]/40"
+            dragOver
+              ? "border-[var(--action)] bg-[var(--action)]/5"
+              : "border-[var(--border)] bg-[var(--muted)]/40"
           }`}
           onDragOver={(e) => {
             e.preventDefault();
@@ -159,7 +155,9 @@ export function DgcOcrUploadDialog({
           <p className="text-sm font-medium text-[var(--deep)]">
             Arrastra archivos PDF, PNG o JPG aquí
           </p>
-          <p className="mt-1 text-xs text-[var(--muted-foreground)]">o selecciónalos desde tu equipo</p>
+          <p className="mt-1 text-xs text-[var(--muted-foreground)]">
+            o selecciónalos desde tu equipo
+          </p>
           <label className="mt-4 inline-block cursor-pointer rounded-full bg-[var(--action)] px-5 py-2.5 text-sm font-medium text-white">
             Seleccionar archivos
             <input

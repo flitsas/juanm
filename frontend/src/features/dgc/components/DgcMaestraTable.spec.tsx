@@ -1,7 +1,7 @@
 import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { MAESTRA_COLUMNS } from "../lib/comparendo-maestra-columns";
 import type { ComparendoMaestraItem } from "../lib/comparendo-maestra.types";
+import { MAESTRA_COLUMNS } from "../lib/comparendo-maestra-columns";
 import { DgcMaestraTable } from "./DgcMaestraTable";
 
 const item: ComparendoMaestraItem = {

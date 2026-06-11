@@ -2,20 +2,10 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import {
-  resolveActiveNavId,
-  SHELL_NAV_ITEMS,
-  type ShellNavItem,
-} from "./nav-config";
 import { FlitIsotipo } from "./FlitLogo";
+import { resolveActiveNavId, SHELL_NAV_ITEMS, type ShellNavItem } from "./nav-config";
 
-function DockIconButton({
-  item,
-  active,
-}: {
-  item: ShellNavItem;
-  active: boolean;
-}) {
+function DockIconButton({ item, active }: { item: ShellNavItem; active: boolean }) {
   const router = useRouter();
   const Icon = item.icon;
   const baseClass =

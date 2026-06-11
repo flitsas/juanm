@@ -1,10 +1,6 @@
 const ACCEPTED_EXTENSIONS = [".pdf", ".png", ".jpg", ".jpeg"] as const;
 
-const ACCEPTED_MIME_TYPES = new Set([
-  "application/pdf",
-  "image/png",
-  "image/jpeg",
-]);
+const ACCEPTED_MIME_TYPES = new Set(["application/pdf", "image/png", "image/jpeg"]);
 
 export function isAcceptedOcrFile(file: File): boolean {
   const lower = file.name.toLowerCase();

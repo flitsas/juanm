@@ -1,12 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import {
-  BarChart3,
-  Building2,
-  FileText,
-  FileWarning,
-  LayoutDashboard,
-  Scale,
-} from "lucide-react";
+import { BarChart3, Building2, FileText, FileWarning, LayoutDashboard, Scale } from "lucide-react";
 
 export type ShellNavItem = {
   id: string;

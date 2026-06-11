@@ -1,5 +1,5 @@
-import { MAESTRA_COLUMNS } from "../lib/comparendo-maestra-columns";
 import type { ComparendoMaestraItem } from "../lib/comparendo-maestra.types";
+import { MAESTRA_COLUMNS } from "../lib/comparendo-maestra-columns";
 import { formatMaestraCell } from "../lib/format-maestra-cell";
 
 const estadoClass: Record<string, string> = {

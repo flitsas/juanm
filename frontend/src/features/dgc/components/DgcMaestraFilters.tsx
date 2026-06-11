@@ -8,11 +8,7 @@ type DgcMaestraFiltersProps = {
   onChange: (next: ComparendoMaestraFilters) => void;
 };
 
-export function DgcMaestraFilters({
-  filters,
-  secretarias,
-  onChange,
-}: DgcMaestraFiltersProps) {
+export function DgcMaestraFilters({ filters, secretarias, onChange }: DgcMaestraFiltersProps) {
   const update = (patch: Partial<ComparendoMaestraFilters>) =>
     onChange({ ...filters, ...patch, page: 1 });
 

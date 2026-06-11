@@ -65,6 +65,7 @@ export function DgcEmailEvidenceModal({
             <div
               data-testid="email-evidence-html"
               className="prose max-w-none rounded-xl border border-[var(--border)] bg-white p-4 text-sm text-[var(--deep)]"
+              // biome-ignore lint/security/noDangerouslySetInnerHtml: HTML sanitizado con DOMPurify antes de renderizar
               dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
             />
           ) : null}

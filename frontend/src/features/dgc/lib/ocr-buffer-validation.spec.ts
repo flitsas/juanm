@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { hasOcrBufferErrors, validateOcrBufferForm } from "./ocr-buffer-validation";
 import type { OcrBufferForm } from "./ocr.types";
+import { hasOcrBufferErrors, validateOcrBufferForm } from "./ocr-buffer-validation";
 
 const baseForm: OcrBufferForm = {
   itemId: "item-1",

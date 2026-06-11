@@ -41,12 +41,7 @@ export type OcrBufferForm = {
 
 export type OcrBufferFieldErrors = Partial<
   Record<
-    | "numeroComparendo"
-    | "estado"
-    | "infractorNombre"
-    | "documento"
-    | "placa"
-    | "totalValor",
+    "numeroComparendo" | "estado" | "infractorNombre" | "documento" | "placa" | "totalValor",
     string
   >
 >;

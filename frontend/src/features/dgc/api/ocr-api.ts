@@ -29,9 +29,7 @@ export async function uploadOcrLote(files: File[]): Promise<OcrLoteUploadResult>
   return response.json() as Promise<OcrLoteUploadResult>;
 }
 
-export async function confirmOcrItem(
-  form: OcrBufferForm,
-): Promise<{ comparendoId: string }> {
+export async function confirmOcrItem(form: OcrBufferForm): Promise<{ comparendoId: string }> {
   const body = {
     numeroComparendo: form.numeroComparendo.trim(),
     estado: form.estado.trim(),
@@ -43,17 +41,14 @@ export async function confirmOcrItem(
     totalValor: Number.parseFloat(form.totalValor) || 0,
   };
 
-  const response = await fetch(
-    `${getApiBaseUrl()}/api/v1/dgc/ocr/items/${form.itemId}/confirm`,
-    {
-      method: "POST",
-      headers: {
-        ...tenantHeaders(),
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
+  const response = await fetch(`${getApiBaseUrl()}/api/v1/dgc/ocr/items/${form.itemId}/confirm`, {
+    method: "POST",
+    headers: {
+      ...tenantHeaders(),
+      "Content-Type": "application/json",
     },
-  );
+    body: JSON.stringify(body),
+  });
 
   if (response.status === 409) {
     const payload = (await response.json()) as { code?: string; message?: string };
