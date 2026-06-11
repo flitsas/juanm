@@ -15,6 +15,6 @@ describe("ShootingStars", () => {
 
   it("marca el contenedor como decorativo", () => {
     const { container } = render(<ShootingStars />);
-    expect(container.firstChild?.getAttribute("aria-hidden")).toBe("true");
+    expect(container.firstElementChild?.getAttribute("aria-hidden")).toBe("true");
   });
 });
