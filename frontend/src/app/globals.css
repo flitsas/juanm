@@ -90,6 +90,34 @@ body {
   background: color-mix(in oklab, var(--action) 88%, black);
 }
 
+.flit-btn-secondary.p-button {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--deep);
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  padding: 0.625rem 1.25rem;
+}
+
+.flit-btn-secondary.p-button:not(:disabled):hover {
+  background: var(--muted);
+}
+
+.flit-btn-danger.p-button {
+  background: color-mix(in oklab, var(--alert) 12%, white);
+  border: 1px solid color-mix(in oklab, var(--alert) 35%, var(--border));
+  border-radius: 999px;
+  color: var(--alert);
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+}
+
+.flit-btn-danger.p-button:not(:disabled):hover {
+  background: color-mix(in oklab, var(--alert) 20%, white);
+}
+
 /* Campos PrimeReact — alineados con flitready-suite (rounded-full, h-11) */
 .flit-field-input.p-inputtext {
   border: 1px solid var(--border);
