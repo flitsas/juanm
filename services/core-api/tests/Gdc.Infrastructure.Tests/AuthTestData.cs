@@ -9,8 +9,8 @@ namespace Gdc.Infrastructure.Tests;
 
 public static class AuthTestData
 {
-    public static readonly Guid TenantId = Guid.Parse("22222222-2222-4222-8222-222222222201");
-    public static readonly Guid TenantBId = Guid.Parse("22222222-2222-4222-8222-222222222202");
+    public static readonly Guid TenantId = Guid.Parse("22222222-2222-2222-2222-222222222222");
+    public static readonly Guid TenantBId = Guid.Parse("11111111-1111-1111-1111-111111111111");
     public static readonly Guid UserId = Guid.Parse("33333333-3333-4333-8333-333333333301");
     public static readonly Guid UserBId = Guid.Parse("33333333-3333-4333-8333-333333333302");
     public static readonly Guid SuperAdminUserId = Guid.Parse("33333333-3333-4333-8333-333333333303");
@@ -37,7 +37,7 @@ public static class AuthTestData
         context.Tenants.Add(new Tenant
         {
             Id = TenantId,
-            Name = "Tenant Test",
+            Name = "FLIT Dev Tenant",
             IsActive = true,
             CreatedAt = now,
             UpdatedAt = now,
@@ -71,7 +71,7 @@ public static class AuthTestData
         context.Tenants.Add(new Tenant
         {
             Id = TenantBId,
-            Name = "Tenant B",
+            Name = "FLIT Test Tenant",
             IsActive = true,
             CreatedAt = now,
             UpdatedAt = now,

@@ -1,5 +1,5 @@
-import { NotifAdminPage } from "@/features/notif/components/NotifAdminPage";
+import { redirect } from "next/navigation";
 
-export default function NotifAdminPageRoute() {
-  return <NotifAdminPage />;
+export default function NotifAdminRedirectPage() {
+  redirect("/admin?tab=notificaciones");
 }

@@ -19,7 +19,7 @@ export function AdminNavLink() {
       href="/admin"
       className="text-sm font-medium text-[var(--flit-text-brand)] underline-offset-2 hover:underline"
     >
-      Consola Super Admin
+      Administración
     </Link>
   );
 }

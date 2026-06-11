@@ -41,6 +41,24 @@
   --muted: var(--flit-bg-hover);
   --muted-foreground: var(--flit-text-secondary);
   --border: var(--flit-border-input);
+  --ambient-opacity: 0.18;
+}
+
+.dark {
+  /* flitready-suite/src/styles.css */
+  --flit-bg-app: #0b1426;
+  --flit-bg-card: #1b2a47;
+  --flit-bg-hover: #243352;
+  --flit-bg-danger-soft: #2a1a18;
+  --flit-text-primary: #f5f7fb;
+  --flit-text-secondary: #a8b4cc;
+  --flit-text-brand: #b3ff1f;
+  --flit-border-input: rgba(255, 255, 255, 0.12);
+  --flit-border-focus: #00dbd5;
+  --flit-table-head: #243352;
+  --flit-shadow-card: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --flit-shadow-button: 0 4px 14px rgba(0, 62, 255, 0.35);
+  --ambient-opacity: 0.1;
 }
 
 @utility bg-gradient-flit {
@@ -161,6 +179,45 @@ body {
   box-shadow: 0 0 0 2px color-mix(in oklab, var(--action) 25%, transparent);
 }
 
+/* PrimeReact Password + IconField (sin theme completo de PrimeReact) */
+.p-password.p-password {
+  display: flex;
+  width: 100%;
+}
+
+.p-icon-field {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+.p-icon-field > .p-input-icon {
+  position: absolute;
+  top: 50%;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+
+.p-icon-field-right > .p-input-icon:last-of-type {
+  right: 1rem;
+}
+
+.p-icon-field-right > .p-inputtext {
+  width: 100%;
+  padding-right: 2.75rem;
+}
+
+.p-password .p-password-show-icon,
+.p-password .p-password-hide-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
 .flit-field-input.flit-field-input--search.p-inputtext {
   padding-left: 2.75rem;
 }
@@ -262,6 +319,33 @@ body {
 .flit-calendar .p-datepicker-trigger:hover {
   background: var(--muted);
   color: var(--deep);
+}
+
+.flit-input-number.p-inputnumber {
+  display: flex;
+  width: 100%;
+}
+
+.flit-input-number.p-inputnumber .p-inputnumber-input {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--deep);
+  font-family: "Poppins", sans-serif;
+  font-size: 0.875rem;
+  height: 2.75rem;
+  padding: 0 1rem;
+  width: 100%;
+  box-shadow: none;
+}
+
+.flit-input-number.p-inputnumber .p-inputnumber-input:enabled:focus {
+  border-color: var(--action);
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--action) 25%, transparent);
+}
+
+.flit-field-input.p-inputmask {
+  width: 100%;
 }
 
 .flit-table thead tr {
@@ -388,7 +472,7 @@ body {
   padding: 0 16px;
   border: 1px solid var(--flit-border-input);
   border-radius: var(--flit-radius-input);
-  background: #fff;
+  background: var(--flit-bg-card);
   color: var(--flit-text-primary);
   font-size: 14px;
 }
@@ -480,7 +564,7 @@ body {
 }
 
 .flit-tab-pill-inactive {
-  background: #fff;
+  background: var(--flit-bg-card);
   color: var(--flit-text-primary);
   border: 1px solid var(--flit-border-input);
 }

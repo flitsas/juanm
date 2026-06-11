@@ -2,6 +2,38 @@ import Image from "next/image";
 import Link from "next/link";
 import { FLIT_BRAND } from "@/lib/flit-brand";
 
+type FlitLogoProps = {
+  className?: string;
+  showTagline?: boolean;
+};
+
+/**
+ * Logo blanco/lime — flitready-suite flit-logo.tsx (panel gradiente login).
+ */
+export function FlitLogo({ className, showTagline = false }: FlitLogoProps) {
+  return (
+    <div className={className}>
+      <Image
+        src={FLIT_BRAND.logo}
+        alt="Flit Ready"
+        width={560}
+        height={160}
+        className="pointer-events-none h-auto w-full select-none"
+        priority
+        draggable={false}
+      />
+      {showTagline ? (
+        <div
+          className="mt-2 text-center text-sm font-light tracking-wide text-white/90"
+          aria-hidden
+        >
+          {"\n"}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 type FlitLogoBlueProps = {
   className?: string;
   href?: string;
@@ -15,7 +47,7 @@ export function FlitLogoBlue({ className, href = "/" }: FlitLogoBlueProps) {
       alt="Flit Ready"
       width={180}
       height={56}
-      className={`h-14 w-auto select-none ${className ?? ""}`}
+      className={`pointer-events-none h-14 w-auto select-none dark:brightness-0 dark:invert ${className ?? ""}`}
       priority
       draggable={false}
     />

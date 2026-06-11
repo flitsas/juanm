@@ -55,7 +55,6 @@ describe("InviteUserForm", () => {
     fireEvent.change(screen.getByLabelText(/correo/i), {
       target: { value: "invited@example.com" },
     });
-    fireEvent.change(screen.getByLabelText(/compañía/i), { target: { value: "t1" } });
     fireEvent.click(screen.getByRole("button", { name: /invitar/i }));
 
     await waitFor(() => {

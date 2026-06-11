@@ -5,15 +5,8 @@ import { Calendar } from "primereact/calendar";
 import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
 import type { ComparendoMaestraFilters } from "../lib/comparendo-maestra.types";
+import { COMPARENDO_ESTADO_FILTER_OPTIONS } from "../lib/comparendo-estado-options";
 import { formatFilterDate, parseFilterDate } from "../lib/filter-date";
-
-const ESTADO_OPTIONS = [
-  { label: "Todos", value: "" },
-  { label: "Pendiente", value: "Pendiente" },
-  { label: "Impugnado", value: "Impugnado" },
-  { label: "Pagado", value: "Pagado" },
-  { label: "Prescrito", value: "Prescrito" },
-];
 
 type DgcMaestraFiltersProps = {
   filters: ComparendoMaestraFilters;
@@ -57,7 +50,7 @@ export function DgcMaestraFilters({ filters, secretarias, onChange }: DgcMaestra
         <Dropdown
           inputId="dgc-filter-estado"
           value={filters.estado}
-          options={ESTADO_OPTIONS}
+          options={COMPARENDO_ESTADO_FILTER_OPTIONS}
           onChange={(e) => update({ estado: (e.value as string) ?? "" })}
           className="flit-dropdown w-full"
           panelClassName="flit-dropdown-panel"

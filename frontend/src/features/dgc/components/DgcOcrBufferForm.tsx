@@ -1,4 +1,13 @@
+"use client";
+
+import { Calendar } from "primereact/calendar";
+import { Dropdown } from "primereact/dropdown";
+import { InputNumber } from "primereact/inputnumber";
+import { InputText } from "primereact/inputtext";
 import type { OcrBufferFieldErrors, OcrBufferForm } from "../lib/ocr.types";
+import { COMPARENDO_ESTADO_OPTIONS } from "../lib/comparendo-estado-options";
+import { formatCurrencyField, parseCurrencyField } from "../lib/currency-field";
+import { formatFilterDate, parseFilterDate } from "../lib/filter-date";
 
 type DgcOcrBufferFormProps = {
   form: OcrBufferForm;
@@ -51,37 +60,59 @@ export function DgcOcrBufferForm({
       </div>
 
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        <Field
+        <TextField
+          inputId={`ocr-numero-${form.itemId}`}
           label="No. Comparendo *"
           value={form.numeroComparendo}
           error={errors.numeroComparendo}
-          onChange={(v) => patch({ numeroComparendo: v })}
+          onChange={(value) => patch({ numeroComparendo: value })}
         />
-        <Field
+        <SelectField
+          inputId={`ocr-estado-${form.itemId}`}
           label="Estado *"
           value={form.estado}
+          options={[...COMPARENDO_ESTADO_OPTIONS]}
           error={errors.estado}
-          onChange={(v) => patch({ estado: v })}
+          onChange={(value) => patch({ estado: value })}
         />
-        <Field
+        <TextField
+          inputId={`ocr-infractor-${form.itemId}`}
           label="Infractor"
           value={form.infractorNombre}
-          onChange={(v) => patch({ infractorNombre: v })}
+          onChange={(value) => patch({ infractorNombre: value })}
         />
-        <Field label="Documento" value={form.documento} onChange={(v) => patch({ documento: v })} />
-        <Field label="Placa" value={form.placa} onChange={(v) => patch({ placa: v })} />
-        <Field
+        <TextField
+          inputId={`ocr-documento-${form.itemId}`}
+          label="Documento"
+          value={form.documento}
+          keyfilter="int"
+          onChange={(value) => patch({ documento: value })}
+        />
+        <TextField
+          inputId={`ocr-placa-${form.itemId}`}
+          label="Placa"
+          value={form.placa}
+          onChange={(value) => patch({ placa: value.toUpperCase() })}
+        />
+        <TextField
+          inputId={`ocr-infraccion-${form.itemId}`}
           label="Infracción"
           value={form.infraccionCodigo}
-          onChange={(v) => patch({ infraccionCodigo: v })}
+          onChange={(value) => patch({ infraccionCodigo: value })}
         />
-        <Field
+        <DateField
+          inputId={`ocr-fecha-${form.itemId}`}
           label="Fecha comparendo"
-          type="date"
           value={form.fechaComparendo}
-          onChange={(v) => patch({ fechaComparendo: v })}
+          onChange={(value) => patch({ fechaComparendo: value })}
         />
-        <Field label="Total" value={form.totalValor} onChange={(v) => patch({ totalValor: v })} />
+        <CurrencyField
+          inputId={`ocr-total-${form.itemId}`}
+          label="Total"
+          value={form.totalValor}
+          error={errors.totalValor}
+          onChange={(value) => patch({ totalValor: value })}
+        />
       </div>
 
       <div className="mt-4 flex justify-end">
@@ -99,37 +130,152 @@ export function DgcOcrBufferForm({
   );
 }
 
-function Field({
+function TextField({
+  inputId,
+  label,
+  value,
+  error,
+  keyfilter,
+  onChange,
+}: {
+  inputId: string;
+  label: string;
+  value: string;
+  error?: string;
+  keyfilter?: "int";
+  onChange: (value: string) => void;
+}) {
+  return (
+    <div className="flex flex-col gap-1">
+      <label htmlFor={inputId} className="text-xs text-[var(--muted-foreground)]">
+        {label}
+      </label>
+      <InputText
+        id={inputId}
+        value={value}
+        keyfilter={keyfilter}
+        onChange={(e) => onChange(e.target.value)}
+        className={`flit-field-input w-full ${error ? "p-invalid" : ""}`}
+        aria-invalid={Boolean(error)}
+        aria-describedby={error ? `${inputId}-error` : undefined}
+      />
+      {error ? (
+        <span id={`${inputId}-error`} className="text-xs text-[var(--alert)]" role="alert">
+          {error}
+        </span>
+      ) : null}
+    </div>
+  );
+}
+
+function SelectField({
+  inputId,
+  label,
+  value,
+  options,
+  error,
+  onChange,
+}: {
+  inputId: string;
+  label: string;
+  value: string;
+  options: { label: string; value: string }[];
+  error?: string;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <div className="flex flex-col gap-1">
+      <label htmlFor={inputId} className="text-xs text-[var(--muted-foreground)]">
+        {label}
+      </label>
+      <Dropdown
+        inputId={inputId}
+        value={value}
+        options={options}
+        onChange={(e) => onChange((e.value as string) ?? "")}
+        className={`flit-dropdown w-full ${error ? "p-invalid" : ""}`}
+        panelClassName="flit-dropdown-panel"
+        aria-invalid={Boolean(error)}
+        aria-describedby={error ? `${inputId}-error` : undefined}
+      />
+      {error ? (
+        <span id={`${inputId}-error`} className="text-xs text-[var(--alert)]" role="alert">
+          {error}
+        </span>
+      ) : null}
+    </div>
+  );
+}
+
+function DateField({
+  inputId,
+  label,
+  value,
+  onChange,
+}: {
+  inputId: string;
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <div className="flex flex-col gap-1">
+      <label htmlFor={inputId} className="text-xs text-[var(--muted-foreground)]">
+        {label}
+      </label>
+      <Calendar
+        inputId={inputId}
+        value={parseFilterDate(value)}
+        onChange={(e) => onChange(formatFilterDate(e.value as Date | null))}
+        dateFormat="dd/mm/yy"
+        showIcon
+        showButtonBar
+        appendTo={typeof document !== "undefined" ? document.body : undefined}
+        className="flit-calendar w-full"
+        inputClassName="flit-field-input flit-field-input--calendar w-full"
+        panelClassName="flit-datepicker-panel"
+      />
+    </div>
+  );
+}
+
+function CurrencyField({
+  inputId,
   label,
   value,
   error,
   onChange,
-  type = "text",
 }: {
+  inputId: string;
   label: string;
   value: string;
   error?: string;
   onChange: (value: string) => void;
-  type?: string;
 }) {
   return (
-    <label className="block text-sm">
-      <span className="mb-1 block text-xs text-[var(--muted-foreground)]">{label}</span>
-      <input
-        type={type}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className={`h-10 w-full rounded-xl border px-3 text-sm outline-none focus:ring-2 focus:ring-[var(--action)] ${
-          error ? "border-[var(--alert)]" : "border-[var(--border)]"
-        }`}
-        aria-invalid={error ? true : undefined}
-        aria-describedby={error ? `${label}-error` : undefined}
+    <div className="flex flex-col gap-1">
+      <label htmlFor={inputId} className="text-xs text-[var(--muted-foreground)]">
+        {label}
+      </label>
+      <InputNumber
+        inputId={inputId}
+        value={parseCurrencyField(value)}
+        onValueChange={(e) => onChange(formatCurrencyField(e.value as number | null))}
+        mode="currency"
+        currency="COP"
+        locale="es-CO"
+        minFractionDigits={0}
+        maxFractionDigits={0}
+        className={`flit-input-number w-full ${error ? "p-invalid" : ""}`}
+        inputClassName="flit-field-input w-full"
+        aria-invalid={Boolean(error)}
+        aria-describedby={error ? `${inputId}-error` : undefined}
       />
       {error ? (
-        <span id={`${label}-error`} className="mt-1 block text-xs text-[var(--alert)]" role="alert">
+        <span id={`${inputId}-error`} className="text-xs text-[var(--alert)]" role="alert">
           {error}
         </span>
       ) : null}
-    </label>
+    </div>
   );
 }

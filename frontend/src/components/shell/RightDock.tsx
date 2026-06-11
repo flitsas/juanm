@@ -11,7 +11,7 @@ function DockIconButton({ item, active }: { item: ShellNavItem; active: boolean 
   const baseClass =
     "relative z-[1] grid h-11 w-11 place-items-center rounded-full transition-all duration-180";
   const activeClass = active
-    ? "bg-[color-mix(in_oklab,var(--action)_18%,white)] text-[var(--action)]"
+    ? "bg-[color-mix(in_oklab,var(--action)_18%,var(--card))] text-[var(--action)]"
     : "text-[var(--deep)]/70 hover:bg-[var(--muted)]";
 
   const tooltip = item.enabled

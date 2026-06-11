@@ -55,8 +55,8 @@ export const SHELL_NAV_ITEMS: ShellNavItem[] = [
   {
     id: "admin",
     label: "Admin",
-    description: "Multi-compañía y configuración NOTIF.",
-    href: "/admin/notificaciones",
+    description: "Multi-compañía, usuarios, roles y NOTIF.",
+    href: "/admin",
     icon: Building2,
     enabled: true,
   },

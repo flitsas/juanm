@@ -14,10 +14,11 @@ describe("nav-config", () => {
     expect(resolveActiveNavId("/")).toBe("dashboard");
   });
 
-  it("habilita Admin NOTIF en /admin/notificaciones", () => {
+  it("habilita Admin unificado en /admin", () => {
     const admin = SHELL_NAV_ITEMS.find((item) => item.id === "admin");
     expect(admin?.enabled).toBe(true);
-    expect(admin?.href).toBe("/admin/notificaciones");
+    expect(admin?.href).toBe("/admin");
+    expect(resolveActiveNavId("/admin")).toBe("admin");
     expect(resolveActiveNavId("/admin/notificaciones")).toBe("admin");
   });
 });

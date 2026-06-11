@@ -83,6 +83,46 @@ function notifPath(url: string): string {
 export async function installNotifApiMocks(page: Page) {
   resetNotifMocks();
 
+  await page.addInitScript(() => {
+    window.localStorage.setItem(
+      "gdc-auth-session",
+      JSON.stringify({
+        accessToken: "e2e-token",
+        userId: "33333333-3333-4333-8333-333333333303",
+        tenantId: "22222222-2222-2222-2222-222222222222",
+        email: "superadmin@example.com",
+        role: "SuperAdmin",
+        expiresAt: "2099-01-01T00:00:00Z",
+      }),
+    );
+  });
+
+  await page.route("**/auth/admin/users", async (route: Route) => {
+    if (route.request().method() !== "GET") {
+      return route.fallback();
+    }
+
+    return route.fulfill({
+      status: 200,
+      json: [
+        {
+          id: "33333333-3333-4333-8333-333333333301",
+          tenantId: mockCompany.id,
+          email: "operator@example.com",
+          status: "Active",
+          role: "Operator",
+        },
+        {
+          id: "33333333-3333-4333-8333-333333333303",
+          tenantId: mockCompany.id,
+          email: "superadmin@example.com",
+          status: "Active",
+          role: "SuperAdmin",
+        },
+      ],
+    });
+  });
+
   await page.route("**/api/v1/notif/**", async (route: Route) => {
     const path = notifPath(route.request().url());
     const method = route.request().method();

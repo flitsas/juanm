@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { Dropdown } from "primereact/dropdown";
+import { InputText } from "primereact/inputtext";
+import { useMemo, useState } from "react";
 import { PrimaryButton } from "@/components/flit/primary-button";
 import { inviteUser } from "../api/admin-api";
 import type { TenantGroup } from "../types";
@@ -23,6 +25,11 @@ export function InviteUserForm({
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  const tenantOptions = useMemo(
+    () => tenants.map((tenant) => ({ label: tenant.label, value: tenant.tenantId })),
+    [tenants],
+  );
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,13 +80,13 @@ export function InviteUserForm({
           >
             Correo electrónico
           </label>
-          <input
+          <InputText
             id="invite-email"
             type="email"
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="flit-input"
+            className="flit-field-input w-full"
             placeholder="nuevo@empresa.co"
           />
         </div>
@@ -91,19 +98,15 @@ export function InviteUserForm({
           >
             Compañía
           </label>
-          <select
-            id="invite-compania"
-            required
+          <Dropdown
+            inputId="invite-compania"
             value={tenantId}
-            onChange={(e) => setTenantId(e.target.value)}
-            className="flit-input"
-          >
-            {tenants.map((t) => (
-              <option key={t.tenantId} value={t.tenantId}>
-                {t.label}
-              </option>
-            ))}
-          </select>
+            options={tenantOptions}
+            onChange={(e) => setTenantId((e.value as string) ?? "")}
+            className="flit-dropdown w-full"
+            panelClassName="flit-dropdown-panel"
+            disabled={tenants.length === 0}
+          />
         </div>
       </div>
 

@@ -3,7 +3,9 @@
 import { Button } from "primereact/button";
 import { Checkbox } from "primereact/checkbox";
 import { Dropdown } from "primereact/dropdown";
+import { InputNumber } from "primereact/inputnumber";
 import { InputText } from "primereact/inputtext";
+import { Password } from "primereact/password";
 import { useEffect, useState } from "react";
 import { useNotifProviderMutations } from "../api/use-provider";
 import type { NotifProvider, ProviderType } from "../lib/notif.types";
@@ -186,12 +188,15 @@ export function ProviderForm({ provider, isLoading }: ProviderFormProps) {
               <label htmlFor="api-key" className="text-xs text-[var(--muted-foreground)]">
                 API Key (opcional)
               </label>
-              <InputText
+              <Password
                 id="api-key"
-                type="password"
+                inputId="api-key"
                 value={form.apiKey}
                 onChange={(e) => update({ apiKey: e.target.value })}
-                className="flit-field-input w-full"
+                toggleMask
+                feedback={false}
+                className="w-full"
+                inputClassName="flit-field-input w-full"
               />
             </div>
           </>
@@ -202,12 +207,15 @@ export function ProviderForm({ provider, isLoading }: ProviderFormProps) {
             <label htmlFor="sendgrid-key" className="text-xs text-[var(--muted-foreground)]">
               SendGrid API Key
             </label>
-            <InputText
+            <Password
               id="sendgrid-key"
-              type="password"
+              inputId="sendgrid-key"
               value={form.sendgridApiKey}
               onChange={(e) => update({ sendgridApiKey: e.target.value })}
-              className="flit-field-input w-full"
+              toggleMask
+              feedback={false}
+              className="w-full"
+              inputClassName={`flit-field-input w-full ${errors.sendgridApiKey ? "p-invalid" : ""}`}
               aria-invalid={Boolean(errors.sendgridApiKey)}
             />
             {errors.sendgridApiKey ? (
@@ -241,11 +249,17 @@ export function ProviderForm({ provider, isLoading }: ProviderFormProps) {
               <label htmlFor="smtp-port" className="text-xs text-[var(--muted-foreground)]">
                 Puerto
               </label>
-              <InputText
-                id="smtp-port"
-                value={form.smtpPort}
-                onChange={(e) => update({ smtpPort: e.target.value })}
-                className="flit-field-input w-full"
+              <InputNumber
+                inputId="smtp-port"
+                value={form.smtpPort ? Number(form.smtpPort) : null}
+                onValueChange={(e) =>
+                  update({ smtpPort: e.value === null ? "" : String(e.value) })
+                }
+                useGrouping={false}
+                min={1}
+                max={65535}
+                className="flit-input-number w-full"
+                inputClassName="flit-field-input w-full"
               />
             </div>
             <div className="flex flex-col gap-1">
@@ -269,12 +283,14 @@ export function ProviderForm({ provider, isLoading }: ProviderFormProps) {
               <label htmlFor="smtp-pass" className="text-xs text-[var(--muted-foreground)]">
                 Contraseña
               </label>
-              <InputText
-                id="smtp-pass"
-                type="password"
+              <Password
+                inputId="smtp-pass"
                 value={form.smtpPassword}
                 onChange={(e) => update({ smtpPassword: e.target.value })}
-                className="flit-field-input w-full"
+                toggleMask
+                feedback={false}
+                className="w-full"
+                inputClassName={`flit-field-input w-full ${errors.smtpPassword ? "p-invalid" : ""}`}
                 aria-invalid={Boolean(errors.smtpPassword)}
               />
               {errors.smtpPassword ? (

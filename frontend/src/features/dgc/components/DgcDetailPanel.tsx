@@ -1,6 +1,8 @@
 "use client";
 
 import { useQueryClient } from "@tanstack/react-query";
+import { Button } from "primereact/button";
+import { InputText } from "primereact/inputtext";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { dgcQueryKeys } from "../api/query-keys";
@@ -235,31 +237,39 @@ export function DgcDetailPanel({
 
               <label className="block">
                 <span className="mb-1 block text-xs text-[var(--muted-foreground)]">Nombre *</span>
-                <input
+                <InputText
+                  id="contraventor-nombre"
                   value={contraventorForm.nombre}
-                  onChange={(e) => setContraventorForm((f) => ({ ...f, nombre: e.target.value }))}
-                  className="h-10 w-full rounded-xl border border-[var(--border)] px-3"
+                  onChange={(e) =>
+                    setContraventorForm((form) => ({ ...form, nombre: e.target.value }))
+                  }
+                  className="flit-field-input w-full"
                 />
               </label>
               <label className="block">
                 <span className="mb-1 block text-xs text-[var(--muted-foreground)]">
                   Documento *
                 </span>
-                <input
+                <InputText
+                  id="contraventor-documento"
                   value={contraventorForm.documento}
+                  keyfilter="int"
                   onChange={(e) =>
-                    setContraventorForm((f) => ({ ...f, documento: e.target.value }))
+                    setContraventorForm((form) => ({ ...form, documento: e.target.value }))
                   }
-                  className="h-10 w-full rounded-xl border border-[var(--border)] px-3"
+                  className="flit-field-input w-full"
                 />
               </label>
               <label className="block">
                 <span className="mb-1 block text-xs text-[var(--muted-foreground)]">Correo</span>
-                <input
+                <InputText
+                  id="contraventor-correo"
                   type="email"
                   value={contraventorForm.correo}
-                  onChange={(e) => setContraventorForm((f) => ({ ...f, correo: e.target.value }))}
-                  className="h-10 w-full rounded-xl border border-[var(--border)] px-3"
+                  onChange={(e) =>
+                    setContraventorForm((form) => ({ ...form, correo: e.target.value }))
+                  }
+                  className="flit-field-input w-full"
                 />
               </label>
 
@@ -269,14 +279,14 @@ export function DgcDetailPanel({
                 </p>
               ) : null}
 
-              <button
+              <Button
                 type="button"
+                label={savingContraventor ? "Guardando…" : "Guardar contraventor"}
+                className="flit-btn-primary"
                 disabled={savingContraventor}
+                loading={savingContraventor}
                 onClick={() => void saveContraventor()}
-                className="rounded-full bg-[var(--action)] px-5 py-2 text-sm font-medium text-white disabled:opacity-50"
-              >
-                {savingContraventor ? "Guardando…" : "Guardar contraventor"}
-              </button>
+              />
             </div>
           ) : null}
 

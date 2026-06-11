@@ -5,6 +5,7 @@ import { addLocale, locale, PrimeReactProvider } from "primereact/api";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 import { useState } from "react";
+import { ThemeProvider } from "@/components/shell/theme-provider";
 import { createQueryClient } from "@/lib/query-client";
 
 addLocale("es", {
@@ -53,19 +54,21 @@ export function Providers({ children }: ProvidersProps) {
   const [queryClient] = useState(() => createQueryClient());
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <PrimeReactProvider
-        value={{
-          ripple: true,
-          pt: {
-            tooltip: {
-              root: { className: "flit-dock-tooltip-panel" },
+    <ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <PrimeReactProvider
+          value={{
+            ripple: true,
+            pt: {
+              tooltip: {
+                root: { className: "flit-dock-tooltip-panel" },
+              },
             },
-          },
-        }}
-      >
-        {children}
-      </PrimeReactProvider>
-    </QueryClientProvider>
+          }}
+        >
+          {children}
+        </PrimeReactProvider>
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 }

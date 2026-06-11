@@ -1,3 +1,4 @@
+import { getSession } from "@/features/auth/lib/session";
 import { getUserRole } from "../lib/role-context";
 import { getTenantId } from "../lib/tenant-context";
 
@@ -6,6 +7,11 @@ export function buildNotifHeaders(options?: { superAdmin?: boolean }): HeadersIn
     Accept: "application/json",
     "X-Tenant-Id": getTenantId(),
   };
+
+  const token = getSession()?.accessToken;
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
 
   if (options?.superAdmin) {
     headers["X-Role"] = getUserRole();

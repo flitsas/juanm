@@ -10,7 +10,7 @@ describe("admin-api", () => {
     const users = [
       {
         id: "11111111-1111-4111-8111-111111111111",
-        tenantId: "22222222-2222-4222-8222-222222222201",
+        tenantId: "22222222-2222-2222-2222-222222222222",
         email: "a@example.com",
         status: "Active",
       },
@@ -46,7 +46,7 @@ describe("admin-api", () => {
     await expect(
       inviteUser("jwt-super", {
         email: "dup@example.com",
-        tenantId: "22222222-2222-4222-8222-222222222201",
+        tenantId: "22222222-2222-2222-2222-222222222222",
       }),
     ).rejects.toThrow(/registrado/i);
   });
@@ -54,7 +54,7 @@ describe("admin-api", () => {
   it("inviteUser crea usuario pending", async () => {
     const created = {
       userId: "33333333-3333-4333-8333-333333333333",
-      tenantId: "22222222-2222-4222-8222-222222222201",
+      tenantId: "22222222-2222-2222-2222-222222222222",
       email: "new@example.com",
       status: "Pending",
     };
@@ -69,7 +69,7 @@ describe("admin-api", () => {
 
     const result = await inviteUser("jwt-super", {
       email: "new@example.com",
-      tenantId: "22222222-2222-4222-8222-222222222201",
+      tenantId: "22222222-2222-2222-2222-222222222222",
     });
     expect(result.status).toBe("Pending");
   });

@@ -21,7 +21,7 @@ export function SuperAdminGuard({ children }: SuperAdminGuardProps) {
       return;
     }
     if (!isSuperAdmin(session)) {
-      router.replace("/dashboard");
+      router.replace("/");
       return;
     }
     setReady(true);
