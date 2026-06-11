@@ -4,9 +4,271 @@ info:
   version: 1.0.0
   description: API principal del backend GDC 2.0 (.NET 10 + EF Core + PostgreSQL)
 servers:
-  - url: http://localhost:4002
+  - url: http://localhost:40203
     description: Desarrollo local
 paths:
+  /api/v1/dgc/ocr/lotes:
+    post:
+      operationId: uploadOcrLote
+      summary: Carga individual o masiva de comparendos (PDF/PNG/JPG) con buffer OCR
+      tags: [DGC OCR]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                files:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        "201":
+          description: Lote OCR creado con ítems en buffer pending
+  /api/v1/dgc/ocr/lotes/{loteId}/items:
+    get:
+      operationId: getOcrLoteItems
+      summary: Lista ítems del buffer de validación
+      tags: [DGC OCR]
+      parameters:
+        - name: loteId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Ítems OCR del lote
+  /api/v1/dgc/ocr/items/{itemId}/confirm:
+    post:
+      operationId: confirmOcrItem
+      summary: Confirma guardado desde buffer; rechaza duplicado por número de comparendo
+      tags: [DGC OCR]
+      parameters:
+        - name: itemId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ConfirmOcrItemRequest"
+      responses:
+        "201":
+          description: Comparendo persistido
+        "409":
+          description: Duplicado (DGC_DUPLICATE)
+  /api/v1/dgc/comparendos:
+    get:
+      operationId: listComparendosMaestra
+      summary: Maestra DGC con 15 columnas, filtros y paginación
+      tags: [DGC Maestra]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: estado
+          in: query
+          schema:
+            type: string
+        - name: placa
+          in: query
+          schema:
+            type: string
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: secretaria
+          in: query
+          schema:
+            type: string
+        - name: fechaDesde
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: fechaHasta
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: sortBy
+          in: query
+          schema:
+            type: string
+        - name: sortDir
+          in: query
+          schema:
+            type: string
+            enum: [asc, desc]
+      responses:
+        "200":
+          description: Listado paginado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ComparendoMaestraListResult"
+  /api/v1/dgc/comparendos/{id}:
+    get:
+      operationId: getComparendoMaestra
+      summary: Detalle comparendo con días restantes recalculados
+      tags: [DGC Maestra]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Detalle maestra
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ComparendoMaestraItem"
+        "404":
+          description: No encontrado
+  /api/v1/dgc/comparendos/{id}/contraventor:
+    put:
+      operationId: upsertContraventor
+      summary: Asociación manual de contraventor (contingencia RF07)
+      tags: [DGC Contraventor]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [nombre, documento]
+              properties:
+                nombre:
+                  type: string
+                documento:
+                  type: string
+                correo:
+                  type: string
+                  format: email
+      responses:
+        "200":
+          description: Contraventor asociado manualmente
+        "400":
+          description: Datos inválidos
+        "404":
+          description: Comparendo no encontrado
+  /api/v1/dgc/comparendos/{id}/emails:
+    get:
+      operationId: listEmailLogsByComparendo
+      summary: Log de tracking de correos enviados al contraventor
+      tags: [DGC Email Log]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Historial de envíos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmailLogListResult"
+        "404":
+          description: Comparendo no encontrado
+  /api/v1/dgc/emails/{id}/evidence:
+    get:
+      operationId: getEmailEvidence
+      summary: Evidencia HTML del mensaje enviado
+      tags: [DGC Email Log]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: HTML completo del correo
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmailEvidenceResponse"
+        "404":
+          description: Evidencia no encontrada
   /health:
     get:
       operationId: getHealth
@@ -21,6 +283,142 @@ paths:
                 $ref: "#/components/schemas/HealthResponse"
 components:
   schemas:
+    ConfirmOcrItemRequest:
+      type: object
+      required: [numeroComparendo, estado, totalValor]
+      properties:
+        numeroComparendo:
+          type: string
+        estado:
+          type: string
+        infractorNombre:
+          type: string
+        documento:
+          type: string
+        placa:
+          type: string
+        infraccionCodigo:
+          type: string
+        fechaComparendo:
+          type: string
+          format: date
+        totalValor:
+          type: number
+    ComparendoMaestraItem:
+      type: object
+      required: [id, estado, numeroComparendo, total, fuente]
+      properties:
+        id:
+          type: string
+          format: uuid
+        estado:
+          type: string
+        numeroComparendo:
+          type: string
+        infractor:
+          type: string
+          nullable: true
+        documento:
+          type: string
+          nullable: true
+        placa:
+          type: string
+          nullable: true
+        infraccion:
+          type: string
+          nullable: true
+        fechaComparendo:
+          type: string
+          format: date
+          nullable: true
+        fechaNotificacion:
+          type: string
+          format: date
+          nullable: true
+        diasRestantes:
+          type: integer
+          nullable: true
+        secretaria:
+          type: string
+          nullable: true
+        total:
+          type: number
+        pago:
+          type: string
+          nullable: true
+        contraventor:
+          type: string
+          nullable: true
+        contraventorNombre:
+          type: string
+          nullable: true
+        contraventorDocumento:
+          type: string
+          nullable: true
+        contraventorCorreo:
+          type: string
+          format: email
+          nullable: true
+        dp:
+          type: string
+          nullable: true
+        fuente:
+          type: string
+          enum: [ocr, manual, import]
+    ComparendoMaestraListResult:
+      type: object
+      required: [items, page, pageSize, totalCount, totalPages]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/ComparendoMaestraItem"
+        page:
+          type: integer
+        pageSize:
+          type: integer
+        totalCount:
+          type: integer
+        totalPages:
+          type: integer
+    EmailLogItem:
+      type: object
+      required: [id, sentAt, origen, destino, tipoAlerta, estadoEntrega]
+      properties:
+        id:
+          type: string
+          format: uuid
+        sentAt:
+          type: string
+          format: date-time
+        origen:
+          type: string
+        destino:
+          type: string
+        cc:
+          type: string
+          nullable: true
+        tipoAlerta:
+          type: string
+        estadoEntrega:
+          type: string
+    EmailLogListResult:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/EmailLogItem"
+    EmailEvidenceResponse:
+      type: object
+      required: [id, htmlEvidencia]
+      properties:
+        id:
+          type: string
+          format: uuid
+        htmlEvidencia:
+          type: string
     HealthResponse:
       type: object
       required: [status, env, database]

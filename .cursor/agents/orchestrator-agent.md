@@ -52,6 +52,7 @@ Cuando el workflow o el usuario pide una tarea, delegar **siempre** al agente in
 |-----------------------|-------------------|
 | Desarrollar un requerimiento nuevo | `.cursor/workflows/requirement-to-delivery.md` |
 | Implementar una Historia de Usuario ya existente | `.cursor/workflows/implement-story.md` |
+| Implementar un Feature completo (rama única, PR sin merge) | `.cursor/workflows/implement-feature.md` |
 | Revisar un PR | `.cursor/workflows/review-pr.md` |
 | Descomponer un Feature en HUs | `.cursor/workflows/decompose-feature.md` |
 | Desplegar a un ambiente | `.cursor/workflows/deploy-env.md` |
@@ -121,7 +122,7 @@ Por cada fase:
 | Gate | Cuándo | Qué hacer |
 |------|--------|-----------|
 | **Activar HU** | Antes de iniciar implementación de cualquier HU | Pedir confirmación explícita. Si el usuario dice "hazlo igual", **no hacerlo**. Explicar que es una regla de proceso. |
-| **Merge de PR** | Antes de cualquier merge a develop | Pedir confirmación explícita + verificar que hay reviewer humano asignado. |
+| **Merge de PR** | Antes de cualquier merge a develop | Pedir confirmación explícita + verificar que hay reviewer humano asignado. **Omitir** si el usuario activó modo `implement-feature.md` (entrega solo PR). |
 | **Cerrar Feature** | Al finalizar todas las HUs del flujo | Informar que es exclusivo del Product Owner humano. No intentarlo. |
 
 ---

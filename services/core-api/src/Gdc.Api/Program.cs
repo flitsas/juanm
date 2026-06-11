@@ -1,10 +1,20 @@
+using Gdc.Api.Configuration;
+using Gdc.Api.Endpoints;
+using Gdc.Api.Tenancy;
 using Gdc.Infrastructure;
+using Gdc.Infrastructure.Dgc;
 using Gdc.Infrastructure.Persistence;
+using Gdc.Modules.Dgc.Application.Abstractions;
 using Microsoft.EntityFrameworkCore;
+
+DotEnvLoader.LoadRentingEnvFromRepoRoot();
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddHostedService<ContraventorAssociationHostedService>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ITenantContext, HeaderTenantContext>();
 builder.Services.AddOpenApi();
 
 builder.Services.AddCors(options =>
@@ -14,7 +24,7 @@ builder.Services.AddCors(options =>
         policy
             .WithOrigins(
                 builder.Configuration["Cors:Origins"]?.Split(';', StringSplitOptions.RemoveEmptyEntries)
-                ?? ["http://localhost:4001"])
+                ?? ["http://localhost:40103"])
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
@@ -41,5 +51,9 @@ app.MapGet("/health", async (GdcDbContext db, CancellationToken ct) =>
 })
 .WithName("HealthCheck")
 .WithTags("System");
+
+app.MapDgcOcrEndpoints();
+app.MapDgcComparendoEndpoints();
+app.MapDgcEmailLogEndpoints();
 
 app.Run();

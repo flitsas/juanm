@@ -22,6 +22,8 @@ coverage/
 .env.local
 .env.*.local
 .env.user-identity
+.env.renting
+.env.verifik
 infra/secrets/*
 !infra/secrets/.gitkeep
 
@@ -38,8 +40,19 @@ Thumbs.db
 # Logs & temp
 *.log
 tmp/
+tmp-build-api/
+tmp-build-infra/
+tmp-ocr-test.json
+
+# OCR tessdata (descargar con scripts/setup-ocr-windows.ps1)
+services/python-ml/tessdata/*.traineddata
 temp/
 
 # Playwright
 playwright-report/
 test-results/
+
+# Python
+__pycache__/
+*.py[cod]
+

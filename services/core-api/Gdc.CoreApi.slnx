@@ -2,6 +2,7 @@
   <Folder Name="/src/">
     <Project Path="src/Gdc.Api/Gdc.Api.csproj" />
     <Project Path="src/Gdc.Infrastructure/Gdc.Infrastructure.csproj" />
+    <Project Path="src/Gdc.Modules.Dgc/Gdc.Modules.Dgc.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Gdc.Api.Tests/Gdc.Api.Tests.csproj" />

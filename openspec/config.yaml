@@ -8,6 +8,7 @@ context: |
   Gestión: Azure DevOps (Feature → US → Task → Bug)
   Convenciones: agent-templates/conventions.md, branches feature/AB-####-slug
   OpenSpec es solo diseño local; implementación vía orquestador FLIT + ADO
+  Entrega vialix (implement-feature): rama feature/AB-{feature_id}-slug, commits HU{id}:, PR a develop sin merge automático
 
 # Per-artifact rules (optional)
 # Add custom rules for specific artifacts.

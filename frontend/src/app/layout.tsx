@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
+import { Providers } from "./providers";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "GDC 2.0",
-  description: "Plataforma GDC — React 19 + Next.js 16",
+  title: "Flit Ready",
+  description: "Plataforma GDC — Gestión de comparendos",
 };
 
 export default function RootLayout({
@@ -12,8 +13,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es">
-      <body>{children}</body>
+    <html lang="es" suppressHydrationWarning>
+      <head>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body style={{ fontFamily: '"Poppins", ui-sans-serif, system-ui, sans-serif' }}>
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }
