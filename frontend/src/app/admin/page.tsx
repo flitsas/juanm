@@ -2,8 +2,8 @@ import { AdminConsole } from "@/features/auth/components/admin-console";
 import { SuperAdminGuard } from "@/features/auth/components/super-admin-guard";
 
 export const metadata = {
-  title: "Super Admin · GDC 2.0",
-  description: "Consola de usuarios y matriz RBAC",
+  title: "Administración · GDC 2.0",
+  description: "Multi-compañía, usuarios y roles",
 };
 
 export default function AdminPage() {

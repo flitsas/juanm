@@ -6,5 +6,5 @@ public sealed class PasswordRecoverySettings
 
     public int ResetTokenHours { get; set; } = 48;
 
-    public string ResetBaseUrl { get; set; } = "http://localhost:4001/reset";
+    public string ResetBaseUrl { get; set; } = "http://localhost:40103/reset";
 }

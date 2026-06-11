@@ -132,7 +132,7 @@ internal static class PasswordRecoveryTestSettings
         Microsoft.Extensions.Options.Options.Create(new PasswordRecoverySettings
         {
             ResetTokenHours = 48,
-            ResetBaseUrl = "http://localhost:4001/reset",
+            ResetBaseUrl = "http://localhost:40103/reset",
         });
 
     public static readonly IJwtTokenService Jwt = new JwtTokenService(

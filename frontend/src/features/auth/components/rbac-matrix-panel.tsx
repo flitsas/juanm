@@ -1,9 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { PrimaryButton } from "@/components/flit/primary-button";
 import { getRbacMatrix, updateRbacMatrix } from "../api/admin-api";
 import type { RbacMatrix } from "../types";
-import { GradientButton } from "./gradient-button";
 import { EmptyState, ErrorState, LoadingState } from "./ui-state";
 
 type RbacMatrixPanelProps = {
@@ -92,35 +92,41 @@ export function RbacMatrixPanel({ accessToken }: RbacMatrixPanelProps) {
 
   if (!matrix || matrix.permissions.length === 0) {
     return (
-      <EmptyState
-        title="Sin permisos configurados"
-        description="No hay permisos disponibles en la matriz RBAC."
-      />
+      <div className="flit-card p-6">
+        <EmptyState
+          title="Sin permisos configurados"
+          description="No hay permisos disponibles en la matriz RBAC."
+        />
+      </div>
     );
   }
 
   return (
-    <div className="flit-card flex flex-col min-h-0">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--flit-border-input)] p-4">
+    <div className="flit-card flex min-h-0 flex-col">
+      <div className="flex flex-wrap items-center justify-between gap-3 p-3">
         <div>
           <h2 className="text-sm font-bold text-[var(--flit-text-primary)]">Matriz RBAC</h2>
           <p className="text-xs font-light text-[var(--flit-text-secondary)]">
             Asigna permisos funcionales por rol
           </p>
         </div>
-        <GradientButton type="button" onClick={onSave} disabled={saving} className="h-9 w-auto px-5 text-sm">
+        <PrimaryButton type="button" onClick={onSave} disabled={saving} size="sm">
           {saving ? "Guardando…" : "Guardar cambios"}
-        </GradientButton>
+        </PrimaryButton>
       </div>
 
-      {error ? <div className="p-4"><ErrorState message={error} /></div> : null}
+      {error ? (
+        <div className="px-3 pb-3">
+          <ErrorState message={error} />
+        </div>
+      ) : null}
       {success ? (
-        <p role="status" className="px-4 pt-4 text-sm text-[var(--flit-text-brand)]">
+        <p role="status" className="px-3 pb-3 text-sm text-[var(--flit-text-brand)]">
           {success}
         </p>
       ) : null}
 
-      <div className="overflow-auto p-4" data-vertical-scroll>
+      <div className="scrollbar-thin overflow-auto px-3 pb-3" data-vertical-scroll>
         <table className="flit-table w-full min-w-[640px]">
           <thead>
             <tr>

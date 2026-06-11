@@ -4,6 +4,8 @@
 :root {
   --flit-bg-app: #e2eaf7;
   --flit-bg-card: #ffffff;
+  --flit-bg-hover: #f4f7fc;
+  --flit-bg-danger-soft: #fff5f3;
   --flit-text-primary: #162744;
   --flit-text-secondary: #59677d;
   --flit-text-brand: #003eff;
@@ -11,9 +13,14 @@
   --flit-border-focus: #003eff;
   --flit-state-danger: #ff4000;
   --flit-action: #003eff;
+  --flit-lime: #b3ff1f;
+  --flit-tech: #00dbd5;
+  --flit-purple: #6a1fff;
+  --flit-amber: #ffbf00;
+  --flit-table-head: #d0dcef;
   --flit-gradient-flit: linear-gradient(-45deg, #b3ff1f 0%, #003eff 100%);
   --flit-radius-input: 16px;
-  --flit-radius-card: 18px;
+  --flit-radius-card: 14px;
   --flit-shadow-card: 0 8px 24px rgba(22, 39, 68, 0.08);
   --flit-shadow-button: 0 4px 14px rgba(0, 62, 255, 0.25);
   --font-sans: var(--font-poppins), Inter, system-ui, sans-serif;
@@ -77,8 +84,67 @@ body {
   border: 1px solid var(--flit-border-input);
 }
 
+.flit-btn-primary {
+  border: none;
+  border-radius: 999px;
+  background: var(--flit-action);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--flit-shadow-button);
+  transition: transform 120ms ease, opacity 120ms ease;
+}
+
+.flit-btn-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.flit-btn-primary:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.flit-btn-primary:focus-visible {
+  outline: 2px solid var(--flit-border-focus);
+  outline-offset: 2px;
+}
+
+.flit-tab-pill {
+  border-radius: 999px;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background 120ms ease, border-color 120ms ease;
+}
+
+.flit-tab-pill-active {
+  background: var(--flit-action);
+  color: #fff;
+  border: 1px solid var(--flit-action);
+}
+
+.flit-tab-pill-inactive {
+  background: #fff;
+  color: var(--flit-text-primary);
+  border: 1px solid var(--flit-border-input);
+}
+
+.flit-tab-pill-inactive:hover {
+  border-color: color-mix(in srgb, var(--flit-action) 40%, var(--flit-border-input));
+}
+
+.flit-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  border: 1px solid;
+  padding: 0.125rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
 .flit-table thead tr {
-  background: #d0dcef;
+  background: var(--flit-table-head);
 }
 
 .flit-table th,
@@ -88,6 +154,18 @@ body {
   font-size: 0.875rem;
 }
 
+.flit-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--flit-table-head);
+}
+
 .flit-table tbody tr:hover {
   background: rgba(0, 62, 255, 0.04);
+}
+
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--flit-lime) transparent;
 }

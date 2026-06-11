@@ -9,8 +9,9 @@ const OK = "✓";
 const DIM = "·";
 
 const DEV_PORTS = [
-  { port: 4001, label: "frontend (Next.js)" },
-  { port: 4002, label: "core-api (.NET)" },
+  { port: 40103, label: "frontend (Next.js)" },
+  { port: 40203, label: "gateway (YARP)" },
+  { port: 40303, label: "core-api (.NET)" },
   { port: 5432, label: "postgres (docker)" },
 ];
 

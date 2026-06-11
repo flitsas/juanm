@@ -40,7 +40,7 @@ export function ErrorState({ message }: ErrorStateProps) {
   return (
     <p
       role="alert"
-      className="rounded-[var(--flit-radius-input)] border border-[var(--flit-state-danger)] bg-[#FFF5F3] px-4 py-3 text-sm text-[var(--flit-state-danger)]"
+      className="rounded-[var(--flit-radius-input)] border border-[var(--flit-state-danger)] bg-[var(--flit-bg-danger-soft)] px-4 py-3 text-sm text-[var(--flit-state-danger)]"
     >
       {message}
     </p>

@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { SectionHeader } from "@/components/flit/section-header";
+import { TabPills } from "@/components/flit/tab-pills";
 import { listAdminUsers } from "../api/admin-api";
 import { groupUsersByTenant } from "../lib/tenants";
 import { getSession } from "../lib/session";
@@ -11,6 +13,11 @@ import { TenantUsersPanel } from "./tenant-users-panel";
 import { EmptyState, ErrorState, LoadingState } from "./ui-state";
 
 type AdminTab = "users" | "rbac";
+
+const ADMIN_TABS: { id: AdminTab; label: string }[] = [
+  { id: "users", label: "Usuarios y compañías" },
+  { id: "rbac", label: "Matriz RBAC" },
+];
 
 export function AdminConsole() {
   const session = getSession();
@@ -43,13 +50,11 @@ export function AdminConsole() {
 
   return (
     <div className="min-h-screen bg-[var(--flit-bg-app)] p-4 md:p-8">
-      <header className="mx-auto mb-6 flex max-w-7xl flex-wrap items-center justify-between gap-4">
-        <div>
-          <p className="text-sm font-medium text-[var(--flit-text-brand)]">GDC 2.0 · Super Admin</p>
-          <h1 className="mt-1 text-2xl font-bold text-[var(--flit-text-primary)]">
-            Consola de administración
-          </h1>
-        </div>
+      <header className="mx-auto mb-6 flex max-w-7xl flex-wrap items-center justify-between gap-4 border-b border-[var(--flit-border-input)] pb-4">
+        <SectionHeader
+          title="Administración"
+          subtitle="Multi-compañía, usuarios y roles"
+        />
         <div className="flex items-center gap-3">
           <Link
             href="/dashboard"
@@ -62,30 +67,12 @@ export function AdminConsole() {
       </header>
 
       <div className="mx-auto max-w-7xl">
-        <nav aria-label="Secciones de administración" className="mb-4 flex gap-2">
-          <button
-            type="button"
-            onClick={() => setTab("users")}
-            className={`rounded-full px-4 py-2 text-sm font-medium ${
-              tab === "users"
-                ? "bg-[var(--flit-action)] text-white"
-                : "border border-[var(--flit-border-input)] bg-white text-[var(--flit-text-primary)]"
-            }`}
-          >
-            Usuarios
-          </button>
-          <button
-            type="button"
-            onClick={() => setTab("rbac")}
-            className={`rounded-full px-4 py-2 text-sm font-medium ${
-              tab === "rbac"
-                ? "bg-[var(--flit-action)] text-white"
-                : "border border-[var(--flit-border-input)] bg-white text-[var(--flit-text-primary)]"
-            }`}
-          >
-            Matriz RBAC
-          </button>
-        </nav>
+        <TabPills
+          tabs={ADMIN_TABS}
+          active={tab}
+          onChange={setTab}
+          ariaLabel="Secciones de administración"
+        />
 
         {tab === "users" ? (
           loading ? (
@@ -96,7 +83,7 @@ export function AdminConsole() {
             <div className="flit-card p-6">
               <EmptyState
                 title="Sin usuarios registrados"
-                description="Aún no hay usuarios en el sistema. Invita el primero desde un tenant existente."
+                description="Aún no hay usuarios en el sistema. Invita el primero desde una compañía existente."
               />
             </div>
           ) : (

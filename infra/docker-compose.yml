@@ -1,7 +1,7 @@
 # Local development stack (post ADR-0014/15/16/17, 2026-05-27).
 #
 # Servicios:
-#   - Infra: postgres + redis + rabbitmq + minio + minio-init + mailhog
+#   - Infra: postgres + redis + rabbitmq + minio + minio-init
 #   - Observabilidad: otel-collector + prometheus + loki + tempo + grafana
 #   - Proxy: caddy (TLS automático, sirve api.flit.co, files.flit.co, admin.flit.co)
 #   - Apps: core-api-gateway (YARP, .NET), core-api (Flit.Api, .NET), python-ml, web (Next.js)
@@ -13,9 +13,9 @@
 # Secretos: generar localmente con scripts/gen-secrets.sh. NO commitear .env.
 #
 # Puertos HOST (DEV, esquema 4xxx): ver docs/designs/port-allocation-flit.md
-#   4001 Front | 4002 Gateway | 4003 Flit.Api interno | 4012 python-ml
+#   40103 Front | 40203 Gateway | 40303 Flit.Api interno | 4012 python-ml
 #   5432 Postgres | 4006 Redis | 4007 RabbitMQ | 4008 RabbitMQ UI
-#   4009 MinIO API | 4010 MinIO Console | 4011 MailHog SMTP
+#   4009 MinIO API | 4010 MinIO Console
 
 name: flit-platform
 
@@ -140,18 +140,6 @@ services:
     networks: [flit-net]
 
   # ============================================================================
-  # MailHog — servidor SMTP de desarrollo
-  # ============================================================================
-  mailhog:
-    image: mailhog/mailhog:latest
-    container_name: flit-mailhog
-    ports:
-      - "4011:1025"
-      - "4018:8025"
-    restart: unless-stopped
-    networks: [flit-net]
-
-  # ============================================================================
   # Observabilidad (ADR-0002 §9)
   # ============================================================================
   otel-collector:
@@ -238,7 +226,7 @@ services:
       RateLimit__PerIpPermitsPerMinute: 600
       RateLimit__LoginEndpointPermitsPerMinute: 10
     ports:
-      - "4002:8080"
+      - "40203:8080"
     depends_on:
       core-api:
         condition: service_started
@@ -265,7 +253,7 @@ services:
       RabbitMq__Uri: amqp://flit:flit_local@rabbitmq:5672
       Redis__Connection: redis:6379
     ports:
-      - "4003:8081"
+      - "40303:8081"
     depends_on:
       postgres:
         condition: service_healthy
@@ -304,9 +292,9 @@ services:
       context: ..
       dockerfile: frontend/Dockerfile
     environment:
-      NEXT_PUBLIC_API_URL: http://localhost:4002
+      NEXT_PUBLIC_API_URL: http://localhost:40203
     ports:
-      - "4001:3000"
+      - "40103:3000"
     depends_on: [core-api-gateway]
     restart: unless-stopped
     networks: [flit-net]

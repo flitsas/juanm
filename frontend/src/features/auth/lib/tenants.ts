@@ -11,7 +11,7 @@ export function groupUsersByTenant(users: UserSummary[]): TenantGroup[] {
 
   return Array.from(map.entries()).map(([tenantId, tenantUsers]) => ({
     tenantId,
-    label: `Tenant ${tenantId.slice(0, 8)}…`,
+    label: `Compañía ${tenantId.slice(0, 8)}…`,
     users: tenantUsers,
   }));
 }

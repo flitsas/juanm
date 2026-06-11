@@ -1,6 +1,9 @@
 "use client";
 
+import { Building2, Pencil, Plus, Users } from "lucide-react";
 import { useMemo, useState } from "react";
+import { PrimaryButton } from "@/components/flit/primary-button";
+import { StatusBadge } from "@/components/flit/status-badge";
 import type { TenantGroup, UserSummary } from "../types";
 import { InviteUserForm } from "./invite-user-form";
 
@@ -13,11 +16,10 @@ type TenantUsersPanelProps = {
   onInvited: () => void;
 };
 
-const statusClass: Record<string, string> = {
-  Active: "bg-[var(--flit-action)]/15 text-[var(--flit-action)] border-[var(--flit-action)]/40",
-  Pending: "bg-amber-100 text-amber-800 border-amber-300",
-  Locked: "bg-red-100 text-[var(--flit-state-danger)] border-red-300",
-};
+function displayNameFromEmail(email: string): string {
+  const local = email.split("@")[0] ?? email;
+  return local.replace(/[._-]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+}
 
 export function TenantUsersPanel({
   accessToken,
@@ -40,15 +42,26 @@ export function TenantUsersPanel({
   const selectTenant = (tenantId: string) => {
     setActiveTenantId(tenantId);
     setPage(1);
+    setShowInvite(false);
   };
 
   return (
     <div className="grid min-h-0 grid-cols-12 gap-4">
       <div className="flit-card col-span-12 flex min-h-0 flex-col lg:col-span-4 xl:col-span-3">
-        <div className="border-b border-[var(--flit-border-input)] p-3">
-          <p className="text-sm font-bold text-[var(--flit-text-primary)]">Tenants</p>
+        <div className="flex items-center justify-between p-3">
+          <div className="flex items-center gap-2 text-sm font-bold text-[var(--flit-text-primary)]">
+            <Building2 className="size-4 text-[var(--flit-action)]" aria-hidden="true" />
+            Compañías
+          </div>
+          <PrimaryButton size="sm" disabled title="Próximamente">
+            <Plus className="size-3.5" aria-hidden="true" />
+            Nueva
+          </PrimaryButton>
         </div>
-        <div className="flex-1 space-y-1.5 overflow-y-auto p-3" data-vertical-scroll>
+        <div
+          className="scrollbar-thin flex-1 space-y-1.5 overflow-y-auto px-3 pb-3"
+          data-vertical-scroll
+        >
           {tenants.map((tenant) => {
             const isActive = tenant.tenantId === activeTenantId;
             return (
@@ -56,18 +69,23 @@ export function TenantUsersPanel({
                 key={tenant.tenantId}
                 type="button"
                 onClick={() => selectTenant(tenant.tenantId)}
+                aria-current={isActive ? "true" : undefined}
                 className={`w-full rounded-xl border p-2.5 text-left transition-all ${
                   isActive
                     ? "border-[var(--flit-action)] bg-[var(--flit-action)]/5 shadow-sm"
-                    : "border-[var(--flit-border-input)] hover:border-[var(--flit-action)]/40 hover:bg-[#f4f7fc]"
+                    : "border-[var(--flit-border-input)] hover:border-[var(--flit-action)]/40 hover:bg-[var(--flit-bg-hover)]"
                 }`}
               >
                 <div className="text-sm font-medium leading-tight">{tenant.label}</div>
-                <div className="mt-1 font-mono text-[11px] text-[var(--flit-text-secondary)]">
+                <div className="mt-0.5 font-mono text-[11px] text-[var(--flit-text-secondary)]">
                   {tenant.tenantId}
                 </div>
-                <div className="mt-1.5 text-[11px] text-[var(--flit-text-secondary)]">
-                  {tenant.users.length} {tenant.users.length === 1 ? "usuario" : "usuarios"}
+                <div className="mt-1.5 flex items-center justify-between text-[11px] text-[var(--flit-text-secondary)]">
+                  <span className="inline-flex items-center gap-1">
+                    <Users className="size-3" aria-hidden="true" />
+                    {tenant.users.length}{" "}
+                    {tenant.users.length === 1 ? "usuario" : "usuarios"}
+                  </span>
                 </div>
               </button>
             );
@@ -76,7 +94,7 @@ export function TenantUsersPanel({
       </div>
 
       <div className="flit-card col-span-12 flex min-h-0 flex-col lg:col-span-8 xl:col-span-9">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--flit-border-input)] p-3">
+        <div className="flex flex-wrap items-center justify-between gap-3 p-3">
           <div>
             <p className="text-sm font-bold text-[var(--flit-text-primary)]">
               Usuarios de {activeTenant?.label ?? "—"}
@@ -85,48 +103,68 @@ export function TenantUsersPanel({
               {filtered.length} {filtered.length === 1 ? "miembro" : "miembros"} asociados
             </p>
           </div>
-          <button
-            type="button"
+          <PrimaryButton
+            size="sm"
             onClick={() => setShowInvite((v) => !v)}
-            className="flit-gradient-btn h-8 px-4 text-xs"
+            aria-expanded={showInvite}
           >
-            {showInvite ? "Cerrar invitación" : "+ Invitar usuario"}
-          </button>
+            <Plus className="size-3.5" aria-hidden="true" />
+            {showInvite ? "Cerrar invitación" : "Invitar usuario"}
+          </PrimaryButton>
         </div>
 
         {showInvite ? (
-          <div className="border-b border-[var(--flit-border-input)] p-3">
-            <InviteUserForm accessToken={accessToken} tenants={tenants} onInvited={onInvited} />
+          <div className="border-t border-[var(--flit-border-input)] p-3">
+            <InviteUserForm
+              accessToken={accessToken}
+              tenants={tenants}
+              defaultTenantId={activeTenantId}
+              onInvited={() => {
+                onInvited();
+                setShowInvite(false);
+              }}
+            />
           </div>
         ) : null}
 
-        <div className="flex-1 overflow-auto p-3" data-vertical-scroll>
+        <div className="scrollbar-thin flex-1 overflow-auto px-3 pb-3" data-vertical-scroll>
           <table className="flit-table w-full">
             <thead>
               <tr>
+                <th className="text-left">Nombre</th>
                 <th className="text-left">Email</th>
                 <th className="text-left">Estado</th>
+                <th className="text-right">Acciones</th>
               </tr>
             </thead>
             <tbody>
               {slice.map((user) => (
                 <tr key={user.id}>
-                  <td className="text-sm">{user.email}</td>
+                  <td className="font-medium">{displayNameFromEmail(user.email)}</td>
+                  <td className="text-xs">{user.email}</td>
                   <td>
-                    <span
-                      className={`inline-flex rounded-full border px-2.5 py-0.5 text-xs capitalize ${
-                        statusClass[user.status] ?? "border-[var(--flit-border-input)]"
-                      }`}
+                    <StatusBadge status={user.status} />
+                  </td>
+                  <td className="text-right">
+                    <button
+                      type="button"
+                      disabled
+                      title="Próximamente"
+                      className="inline-flex items-center gap-1 text-xs text-[var(--flit-action)] opacity-50"
                     >
-                      {user.status}
-                    </span>
+                      <Pencil className="size-3" aria-hidden="true" />
+                      Editar
+                    </button>
                   </td>
                 </tr>
               ))}
               {slice.length === 0 ? (
                 <tr>
-                  <td colSpan={2} className="py-8 text-center text-sm text-[var(--flit-text-secondary)]">
-                    Este tenant aún no tiene usuarios.
+                  <td
+                    colSpan={4}
+                    className="py-8 text-center text-sm text-[var(--flit-text-secondary)]"
+                  >
+                    Esta compañía aún no tiene usuarios.
                   </td>
                 </tr>
               ) : null}
@@ -134,7 +172,7 @@ export function TenantUsersPanel({
           </table>
         </div>
 
-        <div className="flex items-center justify-between border-t border-[var(--flit-border-input)] p-3 text-xs text-[var(--flit-text-secondary)]">
+        <div className="mt-2 flex items-center justify-between border-t border-[var(--flit-border-input)] p-3 text-xs text-[var(--flit-text-secondary)]">
           <span>
             Página {page} de {totalPages}
           </span>
@@ -143,7 +181,7 @@ export function TenantUsersPanel({
               type="button"
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page === 1}
-              className="rounded-md border border-[var(--flit-border-input)] px-2.5 py-1 hover:bg-[#f4f7fc] disabled:opacity-50"
+              className="rounded-md border border-[var(--flit-border-input)] px-2.5 py-1 hover:bg-[var(--flit-bg-hover)] disabled:opacity-50"
             >
               Anterior
             </button>
@@ -154,7 +192,7 @@ export function TenantUsersPanel({
               type="button"
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={page === totalPages}
-              className="rounded-md border border-[var(--flit-border-input)] px-2.5 py-1 hover:bg-[#f4f7fc] disabled:opacity-50"
+              className="rounded-md border border-[var(--flit-border-input)] px-2.5 py-1 hover:bg-[var(--flit-bg-hover)] disabled:opacity-50"
             >
               Siguiente
             </button>
