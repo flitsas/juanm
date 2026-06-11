@@ -60,5 +60,6 @@ app.MapDgcEmailLogEndpoints();
 app.MapNotifCompanyEndpoints();
 app.MapNotifProviderEndpoints();
 app.MapNotifTemplateEndpoints();
+app.MapNotifRuleEndpoints();
 
 app.Run();

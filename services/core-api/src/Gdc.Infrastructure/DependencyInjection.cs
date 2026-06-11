@@ -35,6 +35,14 @@ public static class DependencyInjection
         services.AddScoped<NotifCompanyService>();
         services.AddScoped<NotifProviderService>();
         services.AddScoped<NotifTemplateService>();
+        services.AddScoped<NotifRuleService>();
+        services.AddScoped<NotifQueueService>();
+        services.AddScoped<NotifSwitchService>();
+        services.AddScoped<NotifDispatchJob>();
+        services.AddScoped<IDgcComparendoReader, DgcComparendoReader>();
+        services.AddScoped<IEmailLogWriter, DgcEmailLogWriter>();
+        services.Configure<NotifDispatchOptions>(configuration.GetSection(NotifDispatchOptions.SectionName));
+        services.AddHostedService<NotifDispatchHostedService>();
         services.Configure<NotifEncryptionOptions>(configuration.GetSection(NotifEncryptionOptions.SectionName));
         services.AddSingleton<IEmailCredentialEncryptor, AesEmailCredentialEncryptor>();
         services.AddSingleton<IEmailSenderFactory, EmailSenderFactory>();

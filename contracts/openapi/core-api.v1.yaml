@@ -711,6 +711,170 @@ paths:
           description: URL del asset
         "400":
           description: Formato no permitido
+  /api/v1/notif/rules:
+    get:
+      operationId: listNotifRules
+      summary: Lista reglas de comunicación del tenant
+      tags: [NOTIF Rules]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Reglas configuradas
+    post:
+      operationId: createNotifRule
+      summary: Crea regla cronológica o estatal
+      tags: [NOTIF Rules]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateNotifRuleRequest"
+      responses:
+        "201":
+          description: Regla creada
+        "400":
+          description: Validación fallida
+  /api/v1/notif/rules/{id}:
+    get:
+      operationId: getNotifRule
+      summary: Obtiene regla por id
+      tags: [NOTIF Rules]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Regla encontrada
+        "404":
+          description: No encontrada
+    put:
+      operationId: updateNotifRule
+      summary: Actualiza regla
+      tags: [NOTIF Rules]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateNotifRuleRequest"
+      responses:
+        "200":
+          description: Regla actualizada
+        "400":
+          description: Validación fallida
+        "404":
+          description: No encontrada
+    delete:
+      operationId: deleteNotifRule
+      summary: Elimina regla (soft delete)
+      tags: [NOTIF Rules]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Eliminada
+        "404":
+          description: No encontrada
+  /api/v1/notif/queue:
+    get:
+      operationId: listNotifQueue
+      summary: Lista cola de envíos del tenant
+      tags: [NOTIF Queue]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Items en cola
+  /api/v1/notif/switch:
+    get:
+      operationId: getNotifSwitch
+      summary: Estado del switch operativo On/Off
+      tags: [NOTIF Switch]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Estado actual
+    put:
+      operationId: updateNotifSwitch
+      summary: Activa o pausa encolado de nuevos envíos
+      tags: [NOTIF Switch]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateNotifSwitchRequest"
+      responses:
+        "200":
+          description: Switch actualizado
+        "400":
+          description: Sin proveedor activo
   /health:
     get:
       operationId: getHealth
@@ -953,3 +1117,37 @@ components:
           type: string
           format: date-time
           nullable: true
+    CreateNotifRuleRequest:
+      type: object
+      required: [emailTemplateId, name, triggerType]
+      properties:
+        emailTemplateId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        triggerType:
+          type: string
+          enum: [chronological, state]
+        triggerDays:
+          type: integer
+          nullable: true
+        triggerReference:
+          type: string
+          enum: [fecha_comparendo, fecha_notificacion]
+          nullable: true
+        triggerEstado:
+          type: string
+          nullable: true
+        isActive:
+          type: boolean
+          default: true
+    UpdateNotifRuleRequest:
+      allOf:
+        - $ref: "#/components/schemas/CreateNotifRuleRequest"
+    UpdateNotifSwitchRequest:
+      type: object
+      required: [dispatchEnabled]
+      properties:
+        dispatchEnabled:
+          type: boolean
