@@ -161,7 +161,7 @@ namespace Gdc.Infrastructure.Migrations
 
                 ALTER TABLE gdc.derechos_peticion
                     ADD CONSTRAINT fk_derechos_peticion_comparendos
-                    FOREIGN KEY (comparendo_id) REFERENCES dgc.compareendos(id);
+                    FOREIGN KEY (comparendo_id) REFERENCES dgc.comparendos(id);
 
                 ALTER TABLE gdc.pdf_templates ENABLE ROW LEVEL SECURITY;
                 ALTER TABLE gdc.pdf_template_fields ENABLE ROW LEVEL SECURITY;
