@@ -26,12 +26,11 @@ const sampleFields: PdfTemplateField[] = [
 describe("mapping-validation", () => {
   it("isMappingComplete detecta tags sin variable", () => {
     expect(isMappingComplete(sampleFields)).toBe(false);
-    expect(
-      isMappingComplete([
-        { ...sampleFields[0] },
-        { ...sampleFields[1], systemVariable: "comparendo.estado" },
-      ]),
-    ).toBe(true);
+    const completeFields: PdfTemplateField[] = [
+      sampleFields[0]!,
+      { ...sampleFields[1]!, systemVariable: "comparendo.estado" },
+    ];
+    expect(isMappingComplete(completeFields)).toBe(true);
   });
 
   it("validateMappings exige opciones para tipo choice", () => {
@@ -60,7 +59,8 @@ describe("mapping-validation", () => {
     const mappings = buildMappingsFromFields(sampleFields, {
       f2: { systemVariable: "comparendo.estado", choiceOptions: ["A", "B"] },
     });
-    expect(mappings[1].systemVariable).toBe("comparendo.estado");
-    expect(mappings[1].choiceOptions).toEqual(["A", "B"]);
+    const estadoMapping = mappings.find((m) => m.fieldId === "f2");
+    expect(estadoMapping?.systemVariable).toBe("comparendo.estado");
+    expect(estadoMapping?.choiceOptions).toEqual(["A", "B"]);
   });
 });
