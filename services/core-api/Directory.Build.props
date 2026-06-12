@@ -14,8 +14,10 @@
     <WarningsAsErrors />
     <!-- CA1014: CLSCompliant unnecessary in modern code.
          CA1000: Result Pattern y Either monads requieren factories estaticas en tipos genericos.
-         CA1707: underscore en nombres de test (Method_Scenario_Outcome) es convencion xUnit. -->
-    <NoWarn>$(NoWarn);CA1014;CA1000;CA1707</NoWarn>
+         CA1707: underscore en nombres de test (Method_Scenario_Outcome) es convencion xUnit.
+         CA1711: 'Queue' es terminologia de dominio valida (EmailQueue = cola de envios),
+                 no el sufijo de coleccion que la regla intenta evitar. -->
+    <NoWarn>$(NoWarn);CA1014;CA1000;CA1707;CA1711</NoWarn>
     <AnalysisLevel>latest-Recommended</AnalysisLevel>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <InvariantGlobalization>true</InvariantGlobalization>

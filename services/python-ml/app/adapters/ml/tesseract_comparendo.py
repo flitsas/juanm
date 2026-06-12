@@ -62,11 +62,12 @@ def _pdf_to_image(content: bytes) -> tuple[Image.Image | None, str | None]:
         from pdf2image import convert_from_bytes
 
         _, poppler_path = configure_ocr_runtime()
-        kwargs = {"first_page": 1, "last_page": 1, "dpi": 300}
         if poppler_path:
-            kwargs["poppler_path"] = poppler_path
-
-        pages = convert_from_bytes(content, **kwargs)
+            pages = convert_from_bytes(
+                content, first_page=1, last_page=1, dpi=300, poppler_path=poppler_path
+            )
+        else:
+            pages = convert_from_bytes(content, first_page=1, last_page=1, dpi=300)
         if pages:
             return pages[0], None
         return None, "pdf2image no produjo páginas."
@@ -104,8 +105,7 @@ def _extract_text(image: Image.Image) -> tuple[str, float, str | None]:
         return (
             "",
             0.0,
-            "Tesseract OCR no está instalado. "
-            "Windows: winget install UB-Mannheim.TesseractOCR",
+            "Tesseract OCR no está instalado. Windows: winget install UB-Mannheim.TesseractOCR",
         )
 
     try:
