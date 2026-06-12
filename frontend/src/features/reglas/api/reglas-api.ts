@@ -1,9 +1,14 @@
 import { getApiBaseUrl } from "@/lib/api-base-url";
 import type {
   ReglasContactListResult,
+  ReglasMatchListResult,
+  ReglasProcessResult,
   ReglasRule,
   ReglasRuleListResult,
+  ReglasRun,
+  ReglasRunListResult,
   SaveReglasRulePayload,
+  TriggerReglasRunResult,
 } from "../lib/reglas.types";
 import { buildReglasHeaders } from "./reglas-headers";
 
@@ -80,4 +85,64 @@ export async function fetchReglasContacts(init?: RequestInit): Promise<ReglasCon
   });
   if (!response.ok) throw await parseError(response);
   return response.json() as Promise<ReglasContactListResult>;
+}
+
+export async function fetchReglasRuns(init?: RequestInit): Promise<ReglasRunListResult> {
+  const response = await fetch(`${getApiBaseUrl()}/api/v1/reglas/runs`, {
+    ...init,
+    headers: { ...buildReglasHeaders(), ...init?.headers },
+    cache: "no-store",
+  });
+  if (!response.ok) throw await parseError(response);
+  return response.json() as Promise<ReglasRunListResult>;
+}
+
+export async function triggerReglasRun(init?: RequestInit): Promise<TriggerReglasRunResult> {
+  const response = await fetch(`${getApiBaseUrl()}/api/v1/reglas/runs`, {
+    method: "POST",
+    ...init,
+    headers: { ...buildReglasHeaders(), ...init?.headers },
+  });
+  if (!response.ok) throw await parseError(response);
+  return response.json() as Promise<TriggerReglasRunResult>;
+}
+
+export async function fetchReglasRun(id: string, init?: RequestInit): Promise<ReglasRun> {
+  const response = await fetch(`${getApiBaseUrl()}/api/v1/reglas/runs/${id}`, {
+    ...init,
+    headers: { ...buildReglasHeaders(), ...init?.headers },
+    cache: "no-store",
+  });
+  if (!response.ok) throw await parseError(response);
+  return response.json() as Promise<ReglasRun>;
+}
+
+export async function fetchReglasMatches(
+  params?: { runId?: string; ruleId?: string },
+  init?: RequestInit,
+): Promise<ReglasMatchListResult> {
+  const search = new URLSearchParams();
+  if (params?.runId) search.set("runId", params.runId);
+  if (params?.ruleId) search.set("ruleId", params.ruleId);
+  const qs = search.toString();
+  const response = await fetch(
+    `${getApiBaseUrl()}/api/v1/reglas/matches${qs ? `?${qs}` : ""}`,
+    {
+      ...init,
+      headers: { ...buildReglasHeaders(), ...init?.headers },
+      cache: "no-store",
+    },
+  );
+  if (!response.ok) throw await parseError(response);
+  return response.json() as Promise<ReglasMatchListResult>;
+}
+
+export async function processReglasRun(id: string, init?: RequestInit): Promise<ReglasProcessResult> {
+  const response = await fetch(`${getApiBaseUrl()}/api/v1/reglas/runs/${id}/process`, {
+    method: "POST",
+    ...init,
+    headers: { ...buildReglasHeaders(), ...init?.headers },
+  });
+  if (!response.ok) throw await parseError(response);
+  return response.json() as Promise<ReglasProcessResult>;
 }
