@@ -17,7 +17,7 @@ public class PasswordRecoveryEndpointsTests
         await factory.SeedAsync(AuthTestData.SeedActiveUserAsync);
         var client = factory.CreateClient();
 
-        var response = await client.PostAsJsonAsync("/auth/password/forgot", new
+        var response = await client.PostAsJsonAsync("/api/v1/auth/password/forgot", new
         {
             email = "not-registered@example.com",
         });
@@ -32,7 +32,7 @@ public class PasswordRecoveryEndpointsTests
         await factory.SeedAsync(AuthTestData.SeedActiveUserAsync);
         var client = factory.CreateClient();
 
-        var response = await client.PostAsJsonAsync("/auth/password/forgot", new
+        var response = await client.PostAsJsonAsync("/api/v1/auth/password/forgot", new
         {
             email = AuthTestData.Email,
         });
@@ -48,17 +48,17 @@ public class PasswordRecoveryEndpointsTests
         await factory.SeedAsync(AuthTestData.SeedActiveUserAsync);
         var client = factory.CreateClient();
 
-        await client.PostAsJsonAsync("/auth/password/forgot", new { email = AuthTestData.Email });
+        await client.PostAsJsonAsync("/api/v1/auth/password/forgot", new { email = AuthTestData.Email });
         var token = factory.GetPasswordResetTokenFromLastEmail();
 
-        var reset = await client.PostAsJsonAsync("/auth/password/reset", new
+        var reset = await client.PostAsJsonAsync("/api/v1/auth/password/reset", new
         {
             token,
             password = "ResetPass1",
         });
         Assert.Equal(HttpStatusCode.OK, reset.StatusCode);
 
-        var login = await client.PostAsJsonAsync("/auth/login", new
+        var login = await client.PostAsJsonAsync("/api/v1/auth/login", new
         {
             email = AuthTestData.Email,
             password = "ResetPass1",
@@ -78,12 +78,12 @@ public class PasswordRecoveryEndpointsTests
         authed.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", adminToken);
 
         var response = await authed.PutAsJsonAsync(
-            $"/auth/users/{AuthTestData.UserId}/password",
+            $"/api/v1/auth/users/{AuthTestData.UserId}/password",
             new { password = "AdminNew1!" });
 
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
 
-        var login = await client.PostAsJsonAsync("/auth/login", new
+        var login = await client.PostAsJsonAsync("/api/v1/auth/login", new
         {
             email = AuthTestData.Email,
             password = "AdminNew1!",
@@ -100,14 +100,14 @@ public class PasswordRecoveryEndpointsTests
 
         for (var i = 0; i < 6; i++)
         {
-            await client.PostAsJsonAsync("/auth/login", new
+            await client.PostAsJsonAsync("/api/v1/auth/login", new
             {
                 email = AuthTestData.Email,
                 password = "wrong",
             });
         }
 
-        var response = await client.PostAsJsonAsync("/auth/login", new
+        var response = await client.PostAsJsonAsync("/api/v1/auth/login", new
         {
             email = AuthTestData.Email,
             password = "wrong",
@@ -120,7 +120,7 @@ public class PasswordRecoveryEndpointsTests
 
     private static async Task<string> LoginAsync(HttpClient client, string email)
     {
-        var login = await client.PostAsJsonAsync("/auth/login", new
+        var login = await client.PostAsJsonAsync("/api/v1/auth/login", new
         {
             email,
             password = AuthTestData.Password,

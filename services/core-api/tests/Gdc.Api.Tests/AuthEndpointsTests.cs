@@ -17,7 +17,7 @@ public class AuthEndpointsTests
         await factory.SeedAsync(AuthTestData.SeedActiveUserAsync);
         var client = factory.CreateClient();
 
-        var response = await client.PostAsJsonAsync("/auth/login", new
+        var response = await client.PostAsJsonAsync("/api/v1/auth/login", new
         {
             email = AuthTestData.Email,
             password = AuthTestData.Password,
@@ -38,7 +38,7 @@ public class AuthEndpointsTests
         await factory.SeedAsync(AuthTestData.SeedActiveUserAsync);
         var client = factory.CreateClient();
 
-        var response = await client.PostAsJsonAsync("/auth/login", new
+        var response = await client.PostAsJsonAsync("/api/v1/auth/login", new
         {
             email = AuthTestData.Email,
             password = "invalid",
@@ -56,7 +56,7 @@ public class AuthEndpointsTests
         await factory.SeedAsync(AuthTestData.SeedActiveUserAsync);
         var client = factory.CreateClient();
 
-        var login = await client.PostAsJsonAsync("/auth/login", new
+        var login = await client.PostAsJsonAsync("/api/v1/auth/login", new
         {
             email = AuthTestData.Email,
             password = AuthTestData.Password,
@@ -68,10 +68,10 @@ public class AuthEndpointsTests
         authed.DefaultRequestHeaders.Authorization =
             new AuthenticationHeaderValue("Bearer", loginBody.AccessToken);
 
-        var logout = await authed.PostAsync("/auth/logout", null);
+        var logout = await authed.PostAsync("/api/v1/auth/logout", null);
         Assert.Equal(HttpStatusCode.NoContent, logout.StatusCode);
 
-        var reuse = await authed.PostAsync("/auth/logout", null);
+        var reuse = await authed.PostAsync("/api/v1/auth/logout", null);
         Assert.Equal(HttpStatusCode.Unauthorized, reuse.StatusCode);
     }
 

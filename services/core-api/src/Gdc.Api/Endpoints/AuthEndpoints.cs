@@ -111,7 +111,7 @@ public static class AuthEndpoints
                 };
             }
 
-            return Results.Created($"/auth/users/{success.UserId}", success);
+            return Results.Created($"/api/v1/auth/users/{success.UserId}", success);
         })
         .WithName("AuthInviteUser")
         .RequireAuthorization(AuthPolicies.SuperAdmin);
