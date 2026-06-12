@@ -3,6 +3,8 @@ using Gdc.Infrastructure.Dgc;
 using Gdc.Infrastructure.Dgc.Renting;
 using Gdc.Infrastructure.Notif;
 using Gdc.Infrastructure.Notif.EmailSenders;
+using Gdc.Infrastructure.Plantillas;
+using Gdc.Modules.Plantillas.Application.Abstractions;
 using Gdc.Infrastructure.Persistence;
 using Gdc.Modules.Dgc.Application.Abstractions;
 using Gdc.Modules.Notif.Application.Abstractions;
@@ -55,6 +57,9 @@ public static class DependencyInjection
         services.AddScoped<NotifCompanyService>();
         services.AddScoped<NotifProviderService>();
         services.AddScoped<NotifTemplateService>();
+        services.AddSingleton<IBinaryAssetStore, PdfBinaryAssetStore>();
+        services.AddSingleton<IAcroFormFieldExtractor, PdfSharpAcroFormFieldExtractor>();
+        services.AddScoped<GdcPlantillaService>();
         services.AddScoped<NotifRuleService>();
         services.AddScoped<NotifQueueService>();
         services.AddScoped<NotifSwitchService>();
