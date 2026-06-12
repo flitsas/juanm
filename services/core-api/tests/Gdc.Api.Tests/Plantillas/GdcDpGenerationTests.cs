@@ -13,6 +13,7 @@ namespace Gdc.Api.Tests.Plantillas;
 /// var service = PlantillasTestHelpers.CreateDpService(db);
 /// var response = await service.GenerateAsync(comparendoId, new GenerateDerechoPeticionRequest(templateId), ct);
 /// </summary>
+[Collection("Plantillas")]
 public sealed class GdcDpGenerationTests
 {
     [Fact]

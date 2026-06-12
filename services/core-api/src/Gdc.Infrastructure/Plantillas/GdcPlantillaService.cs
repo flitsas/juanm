@@ -13,6 +13,7 @@ public sealed class GdcPlantillaService(
     DgcTenantContext tenantContext,
     IBinaryAssetStore binaryAssetStore,
     IAcroFormFieldExtractor acroFormExtractor,
+    GdcDpService dpService,
     TimeProvider timeProvider)
 {
     private static readonly HashSet<string> AcceptedContentTypes = new(StringComparer.OrdinalIgnoreCase)
@@ -181,7 +182,22 @@ public sealed class GdcPlantillaService(
             field.UpdatedBy = tenantContext.UserId;
         }
 
+        var bumpVersion = template.IsActive;
+        if (bumpVersion)
+        {
+            template.Version++;
+            template.UpdatedAt = timeProvider.GetUtcNow();
+            template.UpdatedBy = tenantContext.UserId;
+        }
+
         await db.SaveChangesAsync(cancellationToken);
+
+        if (bumpVersion)
+        {
+            GdcPdfCompilationHelper.EnsureTemplateReadyForCompilation(template);
+            await dpService.RegenerateNoEnviadoDpsForTemplateAsync(template, cancellationToken);
+        }
+
         return ToDetailDto(template);
     }
 

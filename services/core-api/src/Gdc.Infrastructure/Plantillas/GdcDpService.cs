@@ -18,26 +18,43 @@ public sealed class GdcDpService(
     TimeProvider timeProvider,
     ILogger<GdcDpService> logger)
 {
+    private const string DownloadPathPrefix = "/api/v1/gdc/derechos-peticion";
+
+    public async Task<DerechoPeticionListResponse> ListByComparendoAsync(
+        Guid comparendoId,
+        CancellationToken cancellationToken)
+    {
+        var tenantId = tenantContext.TenantId;
+        var items = await db.DerechosPeticion
+            .AsNoTracking()
+            .Where(d => d.ComparendoId == comparendoId && d.TenantId == tenantId && d.DeletedAt == null)
+            .OrderByDescending(d => d.GeneratedAt)
+            .Select(d => new DerechoPeticionListItemDto(
+                d.Id,
+                d.ComparendoId,
+                d.PdfTemplateId,
+                d.TemplateVersion,
+                d.Estado,
+                d.GeneratedAt,
+                $"{DownloadPathPrefix}/{d.Id}/download"))
+            .ToListAsync(cancellationToken);
+
+        return new DerechoPeticionListResponse(items);
+    }
+
     public async Task<GenerateDerechoPeticionResponse?> GenerateAsync(
         Guid comparendoId,
         GenerateDerechoPeticionRequest request,
         CancellationToken cancellationToken)
     {
         var tenantId = tenantContext.TenantId;
-        var snapshot = await compilationSource.GetByIdAsync(comparendoId, tenantId, cancellationToken);
+        var snapshot = await RequireComparendoSnapshotAsync(comparendoId, tenantId, cancellationToken);
         if (snapshot is null)
         {
             return null;
         }
 
-        if (snapshot.PendienteContraventor || snapshot.Contraventor is null)
-        {
-            logger.LogWarning(
-                "GDC_CONTRAVENTOR_REQUIRED: comparendo {ComparendoId} tenant {TenantId} blocked DP generation",
-                comparendoId,
-                tenantId);
-            throw new InvalidOperationException("GDC_CONTRAVENTOR_REQUIRED");
-        }
+        EnsureContraventorPresent(comparendoId, tenantId, snapshot);
 
         var template = await db.PdfTemplates
             .Include(t => t.Fields)
@@ -50,49 +67,15 @@ public sealed class GdcDpService(
             throw new ArgumentException($"Template {request.TemplateId} not found.");
         }
 
-        if (!template.IsActive)
-        {
-            throw new ArgumentException("Template must be active before generating a Derecho de Petición.");
-        }
+        GdcPdfCompilationHelper.EnsureTemplateReadyForCompilation(template);
 
-        var unmapped = template.Fields
-            .Where(f => string.IsNullOrWhiteSpace(f.SystemVariable))
-            .Select(f => f.AcroformName)
-            .ToList();
-
-        if (unmapped.Count > 0)
-        {
-            throw new ArgumentException(
-                $"Template mapping incomplete: {string.Join(", ", unmapped)}.");
-        }
-
-        var variableValues = ComparendoVariableValuesBuilder.Build(snapshot);
-        var acroformValues = new Dictionary<string, string>();
-        foreach (var field in template.Fields)
-        {
-            var systemKey = field.SystemVariable!;
-            if (!variableValues.TryGetValue(systemKey, out var value))
-            {
-                throw new ArgumentException($"No value resolved for system variable '{systemKey}'.");
-            }
-
-            acroformValues[field.AcroformName] = value;
-        }
-
-        var templatePdf = await binaryAssetStore.GetAsync(tenantId, template.StorageKey, cancellationToken);
-        if (templatePdf is null)
-        {
-            throw new InvalidOperationException("Template PDF could not be loaded from storage.");
-        }
-
-        await using var templateStream = new MemoryStream(templatePdf);
-        var compiledPdf = pdfCompiler.FillAcroFormFields(templateStream, acroformValues);
-        await using var compiledStream = new MemoryStream(compiledPdf);
-        var outputKey = await binaryAssetStore.SaveAsync(
+        var outputKey = await GdcPdfCompilationHelper.CompileAndStoreAsync(
+            template,
+            snapshot,
             tenantId,
-            "derechos-peticion",
-            compiledStream,
-            $"{comparendoId:N}.pdf",
+            comparendoId,
+            binaryAssetStore,
+            pdfCompiler,
             cancellationToken);
 
         var now = timeProvider.GetUtcNow();
@@ -121,5 +104,139 @@ public sealed class GdcDpService(
             dp.Estado,
             dp.OutputStorageKey,
             dp.GeneratedAt);
+    }
+
+    public async Task<TransitionDerechoPeticionEstadoResponse?> TransitionEstadoAsync(
+        Guid derechoPeticionId,
+        TransitionDerechoPeticionEstadoRequest request,
+        CancellationToken cancellationToken)
+    {
+        var tenantId = tenantContext.TenantId;
+        var dp = await db.DerechosPeticion
+            .FirstOrDefaultAsync(
+                d => d.Id == derechoPeticionId && d.TenantId == tenantId && d.DeletedAt == null,
+                cancellationToken);
+
+        if (dp is null)
+        {
+            return null;
+        }
+
+        if (!DerechoPeticionEstadoTransitions.IsValidState(request.Estado))
+        {
+            throw new ArgumentException($"Invalid target estado '{request.Estado}'.");
+        }
+
+        if (!DerechoPeticionEstadoTransitions.CanTransition(dp.Estado, request.Estado))
+        {
+            throw new InvalidOperationException("GDC_DP_INVALID_TRANSITION");
+        }
+
+        var now = timeProvider.GetUtcNow();
+        dp.Estado = request.Estado;
+        dp.UpdatedAt = now;
+        dp.UpdatedBy = tenantContext.UserId;
+        await db.SaveChangesAsync(cancellationToken);
+
+        return new TransitionDerechoPeticionEstadoResponse(dp.Id, dp.Estado, dp.UpdatedAt);
+    }
+
+    public async Task<(byte[] Pdf, string FileName)?> GetDownloadAsync(
+        Guid derechoPeticionId,
+        CancellationToken cancellationToken)
+    {
+        var tenantId = tenantContext.TenantId;
+        var dp = await db.DerechosPeticion
+            .AsNoTracking()
+            .FirstOrDefaultAsync(
+                d => d.Id == derechoPeticionId && d.TenantId == tenantId && d.DeletedAt == null,
+                cancellationToken);
+
+        if (dp is null)
+        {
+            return null;
+        }
+
+        var pdf = await binaryAssetStore.GetAsync(tenantId, dp.OutputStorageKey, cancellationToken);
+        if (pdf is null)
+        {
+            throw new InvalidOperationException("Generated PDF could not be loaded from storage.");
+        }
+
+        return (pdf, $"derecho-peticion-{dp.Id:N}.pdf");
+    }
+
+    public async Task<RegenerateNoEnviadoDpsResponse> RegenerateNoEnviadoDpsForTemplateAsync(
+        PdfTemplate template,
+        CancellationToken cancellationToken)
+    {
+        var tenantId = tenantContext.TenantId;
+        var pending = await db.DerechosPeticion
+            .Where(d =>
+                d.PdfTemplateId == template.Id
+                && d.TenantId == tenantId
+                && d.Estado == DerechoPeticionEstados.NoEnviado
+                && d.DeletedAt == null)
+            .ToListAsync(cancellationToken);
+
+        var regenerated = 0;
+        var now = timeProvider.GetUtcNow();
+
+        foreach (var dp in pending)
+        {
+            var snapshot = await compilationSource.GetByIdAsync(dp.ComparendoId, tenantId, cancellationToken);
+            if (snapshot is null || snapshot.PendienteContraventor || snapshot.Contraventor is null)
+            {
+                logger.LogWarning(
+                    "Skipping DP {DpId} regeneration — comparendo {ComparendoId} not eligible",
+                    dp.Id,
+                    dp.ComparendoId);
+                continue;
+            }
+
+            var outputKey = await GdcPdfCompilationHelper.CompileAndStoreAsync(
+                template,
+                snapshot,
+                tenantId,
+                dp.ComparendoId,
+                binaryAssetStore,
+                pdfCompiler,
+                cancellationToken);
+
+            dp.OutputStorageKey = outputKey;
+            dp.TemplateVersion = template.Version;
+            dp.GeneratedAt = now;
+            dp.UpdatedAt = now;
+            dp.UpdatedBy = tenantContext.UserId;
+            regenerated++;
+        }
+
+        if (regenerated > 0)
+        {
+            await db.SaveChangesAsync(cancellationToken);
+        }
+
+        return new RegenerateNoEnviadoDpsResponse(template.Version, regenerated);
+    }
+
+    private async Task<ComparendoCompilationSnapshot?> RequireComparendoSnapshotAsync(
+        Guid comparendoId,
+        Guid tenantId,
+        CancellationToken cancellationToken) =>
+        await compilationSource.GetByIdAsync(comparendoId, tenantId, cancellationToken);
+
+    private void EnsureContraventorPresent(
+        Guid comparendoId,
+        Guid tenantId,
+        ComparendoCompilationSnapshot snapshot)
+    {
+        if (snapshot.PendienteContraventor || snapshot.Contraventor is null)
+        {
+            logger.LogWarning(
+                "GDC_CONTRAVENTOR_REQUIRED: comparendo {ComparendoId} tenant {TenantId} blocked DP generation",
+                comparendoId,
+                tenantId);
+            throw new InvalidOperationException("GDC_CONTRAVENTOR_REQUIRED");
+        }
     }
 }

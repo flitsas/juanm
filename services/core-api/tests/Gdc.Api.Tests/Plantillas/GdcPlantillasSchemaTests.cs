@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Gdc.Api.Tests.Plantillas;
 
+[Collection("Plantillas")]
 public sealed class GdcPlantillasSchemaTests
 {
     [Fact]

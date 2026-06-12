@@ -24,13 +24,17 @@ internal static class PlantillasTestHelpers
         return new GdcDbContext(options, new TestSupport.TestTenantContext());
     }
 
-    internal static GdcPlantillaService CreatePlantillaService(GdcDbContext db) =>
-        new(
+    internal static GdcPlantillaService CreatePlantillaService(GdcDbContext db)
+    {
+        var dpService = CreateDpService(db);
+        return new GdcPlantillaService(
             db,
             new FakeTenantContext(TenantId),
             new PdfBinaryAssetStore(),
             new PdfSharpAcroFormFieldExtractor(),
+            dpService,
             TimeProvider.System);
+    }
 
     internal static GdcDpService CreateDpService(GdcDbContext db) =>
         new(

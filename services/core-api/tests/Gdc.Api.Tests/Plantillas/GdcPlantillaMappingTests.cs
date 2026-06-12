@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gdc.Api.Tests.Plantillas;
 
+[Collection("Plantillas")]
 public sealed class GdcPlantillaMappingTests
 {
     private static readonly Guid TenantId = Guid.Parse("22222222-2222-2222-2222-222222222222");
@@ -159,12 +160,7 @@ public sealed class GdcPlantillaMappingTests
     }
 
     private static GdcPlantillaService CreateService(GdcDbContext db) =>
-        new(
-            db,
-            new FakeTenantContext(TenantId),
-            new PdfBinaryAssetStore(),
-            new PdfSharpAcroFormFieldExtractor(),
-            TimeProvider.System);
+        PlantillasTestHelpers.CreatePlantillaService(db);
 
     private static GdcDbContext CreateDbContext()
     {

@@ -47,11 +47,11 @@
 
 ## HU #9755 — API ciclo de vida DP y versionamiento
 
-- [ ] 5.1 Transiciones estado (RF05)
-- [ ] 5.2 List DP por comparendo (RF04)
-- [ ] 5.3 Regenerar solo No Enviado al bump template (RF06)
-- [ ] 5.4 Download PDF generado
-- [ ] 5.5 Commit `HU9755:` + dev-tester
+- [x] 5.1 Transiciones estado (RF05)
+- [x] 5.2 List DP por comparendo (RF04)
+- [x] 5.3 Regenerar solo No Enviado al bump template (RF06)
+- [x] 5.4 Download PDF generado
+- [x] 5.5 Commit `HU9755:` + dev-tester
 
 ## HU #9756 — UI catálogo y carga plantillas
 
