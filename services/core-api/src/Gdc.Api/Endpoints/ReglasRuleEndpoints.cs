@@ -19,18 +19,34 @@ public static class ReglasRuleEndpoints
 
     private static async Task<IResult> ListRulesAsync(
         ReglasRuleService service,
-        CancellationToken cancellationToken) =>
-        Results.Ok(await service.ListAsync(cancellationToken));
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            return Results.Ok(await service.ListAsync(cancellationToken));
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Forbidden();
+        }
+    }
 
     private static async Task<IResult> GetRuleAsync(
         Guid id,
         ReglasRuleService service,
         CancellationToken cancellationToken)
     {
-        var rule = await service.GetByIdAsync(id, cancellationToken);
-        return rule is null
-            ? Results.NotFound(new { code = "REGLAS_RULE_NOT_FOUND", message = $"Rule {id} not found." })
-            : Results.Ok(rule);
+        try
+        {
+            var rule = await service.GetByIdAsync(id, cancellationToken);
+            return rule is null
+                ? Results.NotFound(new { code = "REGLAS_RULE_NOT_FOUND", message = $"Rule {id} not found." })
+                : Results.Ok(rule);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Forbidden();
+        }
     }
 
     private static async Task<IResult> CreateRuleAsync(
@@ -49,6 +65,10 @@ public static class ReglasRuleEndpoints
         {
             var rule = await service.CreateAsync(request, cancellationToken);
             return Results.Created($"/api/v1/reglas/rules/{rule.Id}", rule);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Forbidden();
         }
         catch (ArgumentException ex)
         {
@@ -76,6 +96,10 @@ public static class ReglasRuleEndpoints
                 ? Results.NotFound(new { code = "REGLAS_RULE_NOT_FOUND", message = $"Rule {id} not found." })
                 : Results.Ok(rule);
         }
+        catch (UnauthorizedAccessException)
+        {
+            return Forbidden();
+        }
         catch (ArgumentException ex)
         {
             return Results.BadRequest(new { code = "REGLAS_INVALID_RULE", message = ex.Message });
@@ -87,11 +111,23 @@ public static class ReglasRuleEndpoints
         ReglasRuleService service,
         CancellationToken cancellationToken)
     {
-        var deleted = await service.DeleteAsync(id, cancellationToken);
-        return deleted
-            ? Results.NoContent()
-            : Results.NotFound(new { code = "REGLAS_RULE_NOT_FOUND", message = $"Rule {id} not found." });
+        try
+        {
+            var deleted = await service.DeleteAsync(id, cancellationToken);
+            return deleted
+                ? Results.NoContent()
+                : Results.NotFound(new { code = "REGLAS_RULE_NOT_FOUND", message = $"Rule {id} not found." });
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Forbidden();
+        }
     }
+
+    private static IResult Forbidden() =>
+        Results.Json(
+            new { code = "REGLAS_FORBIDDEN", message = "Insufficient role for this REGLAS operation." },
+            statusCode: StatusCodes.Status403Forbidden);
 
     private static IResult ValidationProblem(FluentValidation.Results.ValidationResult validation) =>
         Results.BadRequest(new

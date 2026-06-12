@@ -136,5 +136,7 @@ public sealed class NotifCompanyTests
     private sealed class FakeRoleContext(bool isSuperAdmin) : IUserRoleContext
     {
         public bool IsSuperAdmin => isSuperAdmin;
+
+        public string? RoleCode => isSuperAdmin ? "SuperAdmin" : "Operator";
     }
 }

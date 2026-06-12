@@ -13,6 +13,7 @@ namespace Gdc.Infrastructure.Reglas;
 public sealed class ReglasOrchestrationJob(
     GdcDbContext db,
     IDgcComparendoReader comparendoReader,
+    IReglasSecretariatResolver secretariatResolver,
     IGdcPdfTemplateRenderer pdfRenderer,
     IReglasEmailDispatcher emailDispatcher,
     IEmailLogWriter emailLogWriter,
@@ -97,21 +98,15 @@ public sealed class ReglasOrchestrationJob(
             return false;
         }
 
-        SecretariatContact? contact = null;
-        if (rule.SecretariatContactId.HasValue)
-        {
-            contact = await db.SecretariatContacts
-                .AsNoTracking()
-                .FirstOrDefaultAsync(
-                    c => c.Id == rule.SecretariatContactId
-                         && c.TenantId == record.TenantId
-                         && c.DeletedAt == null,
-                    cancellationToken);
-        }
+        var contact = await secretariatResolver.ResolveAsync(
+            record.TenantId,
+            record.ComparendoId,
+            rule.SecretariatContactId,
+            cancellationToken);
 
         if (contact is null || string.IsNullOrWhiteSpace(contact.ContactEmail))
         {
-            await MarkFailedAsync(record, "Secretariat contact email is not configured for this rule.", now, cancellationToken);
+            await MarkFailedAsync(record, "Secretariat contact is not configured for this comparendo.", now, cancellationToken);
             return false;
         }
 

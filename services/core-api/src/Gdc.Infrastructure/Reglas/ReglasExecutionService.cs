@@ -9,11 +9,14 @@ namespace Gdc.Infrastructure.Reglas;
 public sealed class ReglasExecutionService(
     GdcDbContext db,
     DgcTenantContext tenantContext,
+    ReglasAccessService access,
     ReglasExecutionJob executionJob,
     ReglasOrchestrationJob orchestrationJob)
 {
     public async Task<ReglasRunListResponse> ListRunsAsync(CancellationToken cancellationToken)
     {
+        access.EnsureCanRead();
+
         var items = await db.RuleExecutionRuns
             .AsNoTracking()
             .Where(r => r.TenantId == tenantContext.TenantId && r.DeletedAt == null)
@@ -26,6 +29,8 @@ public sealed class ReglasExecutionService(
 
     public async Task<ReglasRunResponse?> GetRunAsync(Guid id, CancellationToken cancellationToken)
     {
+        access.EnsureCanRead();
+
         var run = await db.RuleExecutionRuns
             .AsNoTracking()
             .FirstOrDefaultAsync(
@@ -37,6 +42,8 @@ public sealed class ReglasExecutionService(
 
     public async Task<TriggerReglasRunResponse> TriggerManualRunAsync(CancellationToken cancellationToken)
     {
+        access.EnsureCanExecute();
+
         var (runId, matchedCount) = await executionJob.RunForTenantAsync(
             tenantContext.TenantId,
             ReglasTriggerTypes.Manual,
@@ -46,17 +53,25 @@ public sealed class ReglasExecutionService(
         return new TriggerReglasRunResponse(runId, matchedCount);
     }
 
-    public Task<ReglasProcessResponse> ProcessRunAsync(Guid runId, CancellationToken cancellationToken) =>
-        orchestrationJob.ProcessMatchesAsync(tenantContext.TenantId, runId, cancellationToken);
+    public Task<ReglasProcessResponse> ProcessRunAsync(Guid runId, CancellationToken cancellationToken)
+    {
+        access.EnsureCanExecute();
+        return orchestrationJob.ProcessMatchesAsync(tenantContext.TenantId, runId, cancellationToken);
+    }
 
-    public Task<ReglasProcessResponse> ProcessPendingMatchesAsync(CancellationToken cancellationToken) =>
-        orchestrationJob.ProcessMatchesAsync(tenantContext.TenantId, runId: null, cancellationToken);
+    public Task<ReglasProcessResponse> ProcessPendingMatchesAsync(CancellationToken cancellationToken)
+    {
+        access.EnsureCanExecute();
+        return orchestrationJob.ProcessMatchesAsync(tenantContext.TenantId, runId: null, cancellationToken);
+    }
 
     public async Task<ReglasMatchListResponse> ListMatchesAsync(
         Guid? runId,
         Guid? ruleId,
         CancellationToken cancellationToken)
     {
+        access.EnsureCanRead();
+
         var query = db.RuleProcessingRecords
             .AsNoTracking()
             .Where(r => r.TenantId == tenantContext.TenantId && r.DeletedAt == null);

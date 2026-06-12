@@ -212,7 +212,7 @@ public sealed class ReglasRuleTests
     }
 
     private static ReglasRuleService CreateRuleService(GdcDbContext db) =>
-        new(db, new FakeTenantContext(TenantId), TimeProvider.System);
+        new(db, new FakeTenantContext(TenantId), ReglasTestSupport.TenantAdminAccess(), TimeProvider.System);
 
     private static async Task<Guid> SeedSecretariatContactAsync(GdcDbContext db)
     {

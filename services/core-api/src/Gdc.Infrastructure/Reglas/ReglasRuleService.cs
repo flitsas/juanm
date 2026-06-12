@@ -9,10 +9,13 @@ namespace Gdc.Infrastructure.Reglas;
 public sealed class ReglasRuleService(
     GdcDbContext db,
     DgcTenantContext tenantContext,
+    ReglasAccessService access,
     TimeProvider timeProvider)
 {
     public async Task<ReglasRuleListResponse> ListAsync(CancellationToken cancellationToken)
     {
+        access.EnsureCanRead();
+
         var rules = await db.DynamicRules
             .Where(r => r.TenantId == tenantContext.TenantId && r.DeletedAt == null)
             .OrderBy(r => r.Name)
@@ -38,6 +41,8 @@ public sealed class ReglasRuleService(
 
     public async Task<ReglasRuleResponse?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
+        access.EnsureCanRead();
+
         var rule = await db.DynamicRules
             .FirstOrDefaultAsync(
                 r => r.Id == id && r.TenantId == tenantContext.TenantId && r.DeletedAt == null,
@@ -56,6 +61,7 @@ public sealed class ReglasRuleService(
         CreateReglasRuleRequest request,
         CancellationToken cancellationToken)
     {
+        access.EnsureCanManage();
         await ValidateReferencesAsync(request.SecretariatContactId, cancellationToken);
 
         var now = timeProvider.GetUtcNow();
@@ -97,6 +103,7 @@ public sealed class ReglasRuleService(
         UpdateReglasRuleRequest request,
         CancellationToken cancellationToken)
     {
+        access.EnsureCanManage();
         await ValidateReferencesAsync(request.SecretariatContactId, cancellationToken);
 
         var rule = await db.DynamicRules
@@ -143,6 +150,8 @@ public sealed class ReglasRuleService(
 
     public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken)
     {
+        access.EnsureCanManage();
+
         var rule = await db.DynamicRules
             .FirstOrDefaultAsync(
                 r => r.Id == id && r.TenantId == tenantContext.TenantId && r.DeletedAt == null,

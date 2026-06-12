@@ -104,6 +104,7 @@ app.MapNotifProviderEndpoints();
 app.MapNotifTemplateEndpoints();
 app.MapNotifRuleEndpoints();
 app.MapReglasRuleEndpoints();
+app.MapReglasSecretariatContactEndpoints();
 app.MapReglasExecutionEndpoints();
 
 app.Run();

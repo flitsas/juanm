@@ -78,6 +78,39 @@ internal static class AuthSeedData
                 IsActive = true,
                 CreatedAt = SeedTimestamp,
                 UpdatedAt = SeedTimestamp,
+            },
+            new Permission
+            {
+                Id = AuthPermissionIds.ReglasRead,
+                Code = "reglas.read",
+                Module = "reglas",
+                Action = "read",
+                Description = "Consultar reglas, logs y contactos secretaría",
+                IsActive = true,
+                CreatedAt = SeedTimestamp,
+                UpdatedAt = SeedTimestamp,
+            },
+            new Permission
+            {
+                Id = AuthPermissionIds.ReglasWrite,
+                Code = "reglas.write",
+                Module = "reglas",
+                Action = "write",
+                Description = "Gestionar reglas y contactos secretaría",
+                IsActive = true,
+                CreatedAt = SeedTimestamp,
+                UpdatedAt = SeedTimestamp,
+            },
+            new Permission
+            {
+                Id = AuthPermissionIds.ReglasExecute,
+                Code = "reglas.execute",
+                Module = "reglas",
+                Action = "execute",
+                Description = "Ejecutar motor REGLAS manualmente",
+                IsActive = true,
+                CreatedAt = SeedTimestamp,
+                UpdatedAt = SeedTimestamp,
             });
     }
 
@@ -87,8 +120,15 @@ internal static class AuthSeedData
             new RolePermission { RoleId = AuthRoleIds.SuperAdmin, PermissionId = AuthPermissionIds.UsersRead },
             new RolePermission { RoleId = AuthRoleIds.SuperAdmin, PermissionId = AuthPermissionIds.UsersWrite },
             new RolePermission { RoleId = AuthRoleIds.SuperAdmin, PermissionId = AuthPermissionIds.RbacManage },
+            new RolePermission { RoleId = AuthRoleIds.SuperAdmin, PermissionId = AuthPermissionIds.ReglasRead },
+            new RolePermission { RoleId = AuthRoleIds.SuperAdmin, PermissionId = AuthPermissionIds.ReglasWrite },
+            new RolePermission { RoleId = AuthRoleIds.SuperAdmin, PermissionId = AuthPermissionIds.ReglasExecute },
             new RolePermission { RoleId = AuthRoleIds.TenantAdmin, PermissionId = AuthPermissionIds.UsersRead },
             new RolePermission { RoleId = AuthRoleIds.TenantAdmin, PermissionId = AuthPermissionIds.UsersWrite },
-            new RolePermission { RoleId = AuthRoleIds.Operator, PermissionId = AuthPermissionIds.UsersRead });
+            new RolePermission { RoleId = AuthRoleIds.TenantAdmin, PermissionId = AuthPermissionIds.ReglasRead },
+            new RolePermission { RoleId = AuthRoleIds.TenantAdmin, PermissionId = AuthPermissionIds.ReglasWrite },
+            new RolePermission { RoleId = AuthRoleIds.TenantAdmin, PermissionId = AuthPermissionIds.ReglasExecute },
+            new RolePermission { RoleId = AuthRoleIds.Operator, PermissionId = AuthPermissionIds.UsersRead },
+            new RolePermission { RoleId = AuthRoleIds.Operator, PermissionId = AuthPermissionIds.ReglasRead });
     }
 }

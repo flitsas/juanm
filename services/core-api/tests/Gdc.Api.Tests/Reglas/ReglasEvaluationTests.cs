@@ -162,7 +162,12 @@ public sealed class ReglasEvaluationTests
         await job.RunForTenantAsync(TenantId, ReglasTriggerTypes.Manual, null, CancellationToken.None);
 
         var orchestration = CreateOrchestrationJob(db);
-        var service = new ReglasExecutionService(db, new FakeTenantContext(TenantId), job, orchestration);
+        var service = new ReglasExecutionService(
+            db,
+            new FakeTenantContext(TenantId),
+            ReglasTestSupport.TenantAdminAccess(),
+            job,
+            orchestration);
         var matches = await service.ListMatchesAsync(null, null, CancellationToken.None);
 
         Assert.Single(matches.Items);
@@ -271,6 +276,7 @@ public sealed class ReglasEvaluationTests
         new(
             db,
             new DgcComparendoReader(db),
+            new ReglasSecretariatResolver(db),
             new GdcPdfTemplateRendererStub(),
             new ReglasEmailDispatcher(db, new NoopSenderFactory(), new NoopEncryptor()),
             new DgcEmailLogWriter(db, TimeProvider.System),

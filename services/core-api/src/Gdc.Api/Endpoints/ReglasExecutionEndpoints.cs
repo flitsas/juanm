@@ -26,18 +26,34 @@ public static class ReglasExecutionEndpoints
 
     private static async Task<IResult> ListRunsAsync(
         ReglasExecutionService service,
-        CancellationToken cancellationToken) =>
-        Results.Ok(await service.ListRunsAsync(cancellationToken));
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            return Results.Ok(await service.ListRunsAsync(cancellationToken));
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Forbidden();
+        }
+    }
 
     private static async Task<IResult> GetRunAsync(
         Guid id,
         ReglasExecutionService service,
         CancellationToken cancellationToken)
     {
-        var run = await service.GetRunAsync(id, cancellationToken);
-        return run is null
-            ? Results.NotFound(new { code = "REGLAS_RUN_NOT_FOUND", message = $"Run {id} not found." })
-            : Results.Ok(run);
+        try
+        {
+            var run = await service.GetRunAsync(id, cancellationToken);
+            return run is null
+                ? Results.NotFound(new { code = "REGLAS_RUN_NOT_FOUND", message = $"Run {id} not found." })
+                : Results.Ok(run);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Forbidden();
+        }
     }
 
     private static async Task<IResult> TriggerRunAsync(
@@ -49,6 +65,10 @@ public static class ReglasExecutionEndpoints
             var result = await service.TriggerManualRunAsync(cancellationToken);
             return Results.Accepted($"/api/v1/reglas/runs/{result.RunId}", result);
         }
+        catch (UnauthorizedAccessException)
+        {
+            return Forbidden();
+        }
         catch (Exception ex)
         {
             return Results.BadRequest(new { code = "REGLAS_RUN_FAILED", message = ex.Message });
@@ -59,8 +79,17 @@ public static class ReglasExecutionEndpoints
         Guid? runId,
         Guid? ruleId,
         ReglasExecutionService service,
-        CancellationToken cancellationToken) =>
-        Results.Ok(await service.ListMatchesAsync(runId, ruleId, cancellationToken));
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            return Results.Ok(await service.ListMatchesAsync(runId, ruleId, cancellationToken));
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Forbidden();
+        }
+    }
 
     private static async Task<IResult> ProcessRunAsync(
         Guid id,
@@ -73,12 +102,33 @@ public static class ReglasExecutionEndpoints
             return Results.NotFound(new { code = "REGLAS_RUN_NOT_FOUND", message = $"Run {id} not found." });
         }
 
-        var result = await service.ProcessRunAsync(id, cancellationToken);
-        return Results.Ok(result);
+        try
+        {
+            var result = await service.ProcessRunAsync(id, cancellationToken);
+            return Results.Ok(result);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Forbidden();
+        }
     }
 
     private static async Task<IResult> ProcessPendingAsync(
         ReglasExecutionService service,
-        CancellationToken cancellationToken) =>
-        Results.Ok(await service.ProcessPendingMatchesAsync(cancellationToken));
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            return Results.Ok(await service.ProcessPendingMatchesAsync(cancellationToken));
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Forbidden();
+        }
+    }
+
+    private static IResult Forbidden() =>
+        Results.Json(
+            new { code = "REGLAS_FORBIDDEN", message = "Insufficient role for this REGLAS operation." },
+            statusCode: StatusCodes.Status403Forbidden);
 }

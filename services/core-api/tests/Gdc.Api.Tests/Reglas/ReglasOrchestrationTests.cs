@@ -38,10 +38,11 @@ public sealed class ReglasOrchestrationTests
     public async Task ProcessMatchesAsync_marks_record_success_with_pdf_and_email_refs()
     {
         await using var db = CreateDbContext();
-        var contactId = await SeedSecretariatContactAsync(db);
-        var ruleId = await SeedRuleWithContactAsync(db, contactId);
+        var secretariaId = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb");
+        await SeedSecretariatContactAsync(db, secretariaId.ToString());
+        var ruleId = await SeedRuleWithContactAsync(db, secretariatContactId: null);
         var comparendoId = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa");
-        await SeedComparendoAsync(db, comparendoId);
+        await SeedComparendoAsync(db, comparendoId, secretariaId);
         await SeedProviderAsync(db);
 
         var runId = Guid.CreateVersion7();
@@ -115,6 +116,7 @@ public sealed class ReglasOrchestrationTests
         return new ReglasOrchestrationJob(
             db,
             new DgcComparendoReader(db),
+            new ReglasSecretariatResolver(db),
             new GdcPdfTemplateRendererStub(),
             dispatcher,
             new DgcEmailLogWriter(db, TimeProvider.System),
@@ -142,13 +144,13 @@ public sealed class ReglasOrchestrationTests
         return ruleId;
     }
 
-    private static async Task<Guid> SeedSecretariatContactAsync(GdcDbContext db)
+    private static async Task SeedSecretariatContactAsync(GdcDbContext db, string secretariatCode)
     {
         var contact = new SecretariatContact
         {
             Id = Guid.CreateVersion7(),
             TenantId = TenantId,
-            SecretariatCode = "BOG",
+            SecretariatCode = secretariatCode,
             SecretariatName = "Bogotá",
             ContactName = "Operador",
             ContactEmail = "secretaria@example.com",
@@ -157,10 +159,9 @@ public sealed class ReglasOrchestrationTests
         };
         db.SecretariatContacts.Add(contact);
         await db.SaveChangesAsync();
-        return contact.Id;
     }
 
-    private static async Task SeedComparendoAsync(GdcDbContext db, Guid comparendoId)
+    private static async Task SeedComparendoAsync(GdcDbContext db, Guid comparendoId, Guid? secretariaId = null)
     {
         db.Comparendos.Add(new Comparendo
         {
@@ -171,6 +172,7 @@ public sealed class ReglasOrchestrationTests
             InfractorNombre = "Ana",
             Placa = "ABC123",
             FechaComparendo = new DateOnly(2026, 6, 1),
+            SecretariaId = secretariaId,
             Fuente = "OCR",
             PendienteContraventor = false,
             CreatedAt = DateTimeOffset.UtcNow,

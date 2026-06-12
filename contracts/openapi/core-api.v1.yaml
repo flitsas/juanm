@@ -1184,6 +1184,139 @@ paths:
       responses:
         "200":
           description: Coincidencias registradas
+  /api/v1/reglas/contacts:
+    get:
+      operationId: listReglasSecretariatContacts
+      summary: Lista contactos de secretaría del tenant
+      tags: [Reglas]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: X-Role
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Lista de contactos
+        "403":
+          description: Rol insuficiente
+    post:
+      operationId: createReglasSecretariatContact
+      summary: Crea contacto de secretaría
+      tags: [Reglas]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: X-Role
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        "201":
+          description: Contacto creado
+        "400":
+          description: Validación fallida
+        "403":
+          description: Rol insuficiente
+  /api/v1/reglas/contacts/{id}:
+    get:
+      operationId: getReglasSecretariatContact
+      summary: Obtiene contacto de secretaría por id
+      tags: [Reglas]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: X-Role
+          in: header
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Contacto encontrado
+        "404":
+          description: No encontrado
+        "403":
+          description: Rol insuficiente
+    put:
+      operationId: updateReglasSecretariatContact
+      summary: Actualiza contacto de secretaría
+      tags: [Reglas]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: X-Role
+          in: header
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Contacto actualizado
+        "404":
+          description: No encontrado
+        "403":
+          description: Rol insuficiente
+    delete:
+      operationId: deleteReglasSecretariatContact
+      summary: Elimina contacto de secretaría (soft delete)
+      tags: [Reglas]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: X-Role
+          in: header
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Eliminado
+        "404":
+          description: No encontrado
+        "403":
+          description: Rol insuficiente
   /api/v1/reglas/rules:
     get:
       operationId: listReglasRules
@@ -1697,6 +1830,33 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/ReglasConditionNode"
+          nullable: true
+    ReglasSecretariatContactResponse:
+      type: object
+      required: [id, secretariatCode, secretariatName, contactName, contactEmail, isActive, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        secretariatCode:
+          type: string
+        secretariatName:
+          type: string
+        contactName:
+          type: string
+        contactEmail:
+          type: string
+        contactPhone:
+          type: string
+          nullable: true
+        isActive:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
           nullable: true
     ReglasRuleResponse:
       type: object
