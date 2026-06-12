@@ -98,8 +98,10 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          # Solo el origen: el frontend ya antepone /api/v1 en cada fetch
+          # (ver getApiBaseUrl + features/**/api). NO agregar /api/v1 aqui o se duplica.
           build-args: |
-            NEXT_PUBLIC_API_BASE_URL=https://${{ github.ref == 'refs/heads/release' && 'api.juanm.flitsas.online' || 'dev.api.juanm.flitsas.online' }}/api/v1
+            NEXT_PUBLIC_API_BASE_URL=https://${{ github.ref == 'refs/heads/release' && 'api.juanm.flitsas.online' || 'dev.api.juanm.flitsas.online' }}
           cache-from: type=gha,scope=frontend
           cache-to: type=gha,mode=max,scope=frontend
 
