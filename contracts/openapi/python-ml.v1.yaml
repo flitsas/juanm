@@ -1,0 +1,40 @@
+openapi: 3.1.0
+info:
+  title: GDC Python ML
+  version: 1.0.0
+  description: Servicio OCR y ML auxiliar (FastAPI + Tesseract)
+servers:
+  - url: http://localhost:4012
+    description: Desarrollo local
+paths:
+  /health:
+    get:
+      operationId: getPythonMlHealth
+      summary: Health check del servicio python-ml
+      tags: [System]
+      responses:
+        "200":
+          description: Servicio operativo
+        "503":
+          description: Servicio no disponible
+  /ocr/comparendo:extract:
+    post:
+      operationId: extractComparendoOcr
+      summary: Extrae campos de comparendo desde PDF o imagen
+      tags: [OCR]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          description: Extracción OCR exitosa
+        "400":
+          description: Archivo inválido o no soportado

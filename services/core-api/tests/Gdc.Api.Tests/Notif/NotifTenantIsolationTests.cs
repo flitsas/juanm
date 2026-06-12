@@ -45,6 +45,6 @@ public sealed class NotifTenantIsolationTests
             .UseInMemoryDatabase(Guid.NewGuid().ToString())
             .Options;
 
-        return new GdcDbContext(options);
+        return new GdcDbContext(options, new TestSupport.TestTenantContext());
     }
 }

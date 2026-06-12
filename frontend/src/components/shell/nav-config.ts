@@ -29,12 +29,12 @@ export const SHELL_NAV_ITEMS: ShellNavItem[] = [
     enabled: true,
   },
   {
-    id: "peticiones",
-    label: "Peticiones",
-    description: "Derechos de petición y acciones legales.",
-    href: "/peticiones",
+    id: "reglas",
+    label: "Reglas DP",
+    description: "Reglas dinámicas y Derechos de Petición hacia secretarías.",
+    href: "/admin/reglas",
     icon: Scale,
-    enabled: false,
+    enabled: true,
   },
   {
     id: "gdc",
@@ -42,7 +42,7 @@ export const SHELL_NAV_ITEMS: ShellNavItem[] = [
     description: "Generador documental jurídico.",
     href: "/gdc",
     icon: FileText,
-    enabled: false,
+    enabled: true,
   },
   {
     id: "reportes",
@@ -55,8 +55,8 @@ export const SHELL_NAV_ITEMS: ShellNavItem[] = [
   {
     id: "admin",
     label: "Admin",
-    description: "Multi-compañía y configuración NOTIF.",
-    href: "/admin/notificaciones",
+    description: "Multi-compañía, usuarios, roles y NOTIF.",
+    href: "/admin",
     icon: Building2,
     enabled: true,
   },
@@ -64,6 +64,8 @@ export const SHELL_NAV_ITEMS: ShellNavItem[] = [
 
 export function resolveActiveNavId(pathname: string): string {
   if (pathname.startsWith("/dgc")) return "dgc";
+  if (pathname.startsWith("/gdc")) return "gdc";
+  if (pathname.startsWith("/admin/reglas")) return "reglas";
   if (pathname.startsWith("/admin")) return "admin";
   return "dashboard";
 }

@@ -1,0 +1,46 @@
+<Project>
+
+  <!--
+    Configuracion compartida por TODOS los proyectos .NET de core-api.
+    ADR-0002 §2 (Decision 1, 3, 5) y §8.1 (agente core-dotnet).
+  -->
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>14.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+    <!-- CA1014: CLSCompliant unnecessary in modern code.
+         CA1000: Result Pattern y Either monads requieren factories estaticas en tipos genericos.
+         CA1707: underscore en nombres de test (Method_Scenario_Outcome) es convencion xUnit.
+         CA1711: 'Queue' es terminologia de dominio valida (EmailQueue = cola de envios),
+                 no el sufijo de coleccion que la regla intenta evitar.
+         CA1848/CA1873: optimizaciones de logging (LoggerMessage source-gen). El proyecto usa
+                 los metodos de extension ILogger por diseno; el costo es irrelevante en estos
+                 flujos (auth/email/jobs), no en hot paths.
+         CA1861: arrays constantes como argumento. Solo aparece en migraciones autogeneradas
+                 por EF Core (Migrations/*.cs), que no se editan a mano.
+         CA1862: todas las ocurrencias son predicados LINQ-to-EF (u.Email.ToLower() == ...) que
+                 EF Core traduce a SQL (LOWER/UPPER). Usar StringComparison.OrdinalIgnoreCase
+                 rompe o altera la traduccion en Npgsql, asi que la comparacion se deja en BD. -->
+    <NoWarn>$(NoWarn);CA1014;CA1000;CA1707;CA1711;CA1848;CA1873;CA1861;CA1862</NoWarn>
+    <AnalysisLevel>latest-Recommended</AnalysisLevel>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+
+  <!-- JIT framework-dependent en todos los ambientes (ADR-0002 §"AOT en .NET", escape
+       documentado): EF Core + Npgsql + QuestPDF/SkiaSharp usan reflection y aun no son
+       AOT/trim-compatibles, y todos los publish (Dockerfile y CI) ya pasan PublishAot=false.
+       Por eso el analizador AOT/trim (IL2026/IL3050/IL2091) solo generaba ruido inaccionable;
+       se desactiva (IsAotCompatible=false). Reactivar cuando las dependencias soporten AOT. -->
+  <PropertyGroup>
+    <PublishAot>false</PublishAot>
+    <IsAotCompatible>false</IsAotCompatible>
+    <TrimmerSingleWarn>false</TrimmerSingleWarn>
+  </PropertyGroup>
+
+</Project>

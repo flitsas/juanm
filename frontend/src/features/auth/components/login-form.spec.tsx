@@ -28,9 +28,10 @@ describe("LoginForm", () => {
   it("redirige al dashboard tras login exitoso", async () => {
     vi.mocked(login).mockResolvedValue({
       accessToken: "jwt",
+      refreshToken: "refresh-token",
       expiresAt: "2026-12-31T00:00:00Z",
       userId: "11111111-1111-4111-8111-111111111111",
-      tenantId: "22222222-2222-4222-8222-222222222201",
+      tenantId: "22222222-2222-2222-2222-222222222222",
       email: "user@example.com",
       role: "Operator",
     });
@@ -47,7 +48,7 @@ describe("LoginForm", () => {
 
     await waitFor(() => {
       expect(setSession).toHaveBeenCalled();
-      expect(push).toHaveBeenCalledWith("/dashboard");
+      expect(push).toHaveBeenCalledWith("/");
     });
   });
 

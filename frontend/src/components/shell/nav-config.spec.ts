@@ -14,10 +14,28 @@ describe("nav-config", () => {
     expect(resolveActiveNavId("/")).toBe("dashboard");
   });
 
-  it("habilita Admin NOTIF en /admin/notificaciones", () => {
+  it("habilita Plantillas GDC en /gdc", () => {
+    const gdcPlantillas = SHELL_NAV_ITEMS.find((item) => item.id === "gdc");
+    expect(gdcPlantillas?.label).toBe("Plantillas");
+    expect(gdcPlantillas?.href).toBe("/gdc");
+    expect(gdcPlantillas?.enabled).toBe(true);
+    expect(resolveActiveNavId("/gdc")).toBe("gdc");
+  });
+
+  it("habilita Admin unificado en /admin", () => {
     const admin = SHELL_NAV_ITEMS.find((item) => item.id === "admin");
     expect(admin?.enabled).toBe(true);
-    expect(admin?.href).toBe("/admin/notificaciones");
+    expect(admin?.href).toBe("/admin");
+    expect(resolveActiveNavId("/admin")).toBe("admin");
     expect(resolveActiveNavId("/admin/notificaciones")).toBe("admin");
+    expect(resolveActiveNavId("/admin?tab=notificaciones")).toBe("admin");
+  });
+
+  it("habilita Reglas DP en /admin/reglas", () => {
+    const reglas = SHELL_NAV_ITEMS.find((item) => item.id === "reglas");
+    expect(reglas?.label).toBe("Reglas DP");
+    expect(reglas?.href).toBe("/admin/reglas");
+    expect(reglas?.enabled).toBe(true);
+    expect(resolveActiveNavId("/admin/reglas")).toBe("reglas");
   });
 });

@@ -1,6 +1,8 @@
 "use client";
 
 import { useQueryClient } from "@tanstack/react-query";
+import { Button } from "primereact/button";
+import { InputText } from "primereact/inputtext";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { dgcQueryKeys } from "../api/query-keys";
@@ -13,8 +15,8 @@ import {
   DETAIL_PANEL_TABS,
   type DetailPanelTab,
 } from "../lib/detail-panel.types";
-import { formatDpReadonly } from "../lib/format-dp-readonly";
 import { formatMaestraCell } from "../lib/format-maestra-cell";
+import { DgcDpGrid } from "./DgcDpGrid";
 import { DgcEmailEvidenceModal } from "./DgcEmailEvidenceModal";
 
 type DgcDetailPanelProps = {
@@ -106,7 +108,6 @@ export function DgcDetailPanel({
       : null;
   const item = detailQuery.data ?? summaryItem;
   const emails = emailsQuery.data?.items ?? [];
-  const dp = formatDpReadonly(item?.dp);
 
   if (!comparendoId || !mounted) return null;
 
@@ -198,28 +199,11 @@ export function DgcDetailPanel({
               <DetailRow label="Pago" value={item.pago ?? "—"} />
               <DetailRow label="Fuente" value={item.fuente} />
 
-              <section
-                className="mt-4 rounded-2xl border border-[var(--border)] bg-[var(--muted)]/30 p-4"
-                data-testid="dgc-dp-readonly"
-              >
+              <section className="mt-4 space-y-3" data-testid="gdc-dp-section">
                 <h3 className="text-xs font-semibold uppercase tracking-wide text-[var(--muted-foreground)]">
-                  Trámite DP (solo lectura)
+                  Derechos de petición
                 </h3>
-                <p className="mt-2 text-xs text-[var(--muted-foreground)]">
-                  Consulta de estado — generación de documentos en Feature #9564.
-                </p>
-                {dp.isLink && dp.href ? (
-                  <a
-                    href={dp.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-2 inline-block text-sm font-medium text-[var(--action)] underline"
-                  >
-                    {dp.label}
-                  </a>
-                ) : (
-                  <p className="mt-2 text-sm font-medium text-[var(--deep)]">{dp.label}</p>
-                )}
+                <DgcDpGrid comparendoId={comparendoId} />
               </section>
             </div>
           ) : null}
@@ -233,33 +217,41 @@ export function DgcDetailPanel({
                 </span>
               </p>
 
-              <label className="block">
+              <label className="block" htmlFor="contraventor-nombre">
                 <span className="mb-1 block text-xs text-[var(--muted-foreground)]">Nombre *</span>
-                <input
+                <InputText
+                  id="contraventor-nombre"
                   value={contraventorForm.nombre}
-                  onChange={(e) => setContraventorForm((f) => ({ ...f, nombre: e.target.value }))}
-                  className="h-10 w-full rounded-xl border border-[var(--border)] px-3"
+                  onChange={(e) =>
+                    setContraventorForm((form) => ({ ...form, nombre: e.target.value }))
+                  }
+                  className="flit-field-input w-full"
                 />
               </label>
-              <label className="block">
+              <label className="block" htmlFor="contraventor-documento">
                 <span className="mb-1 block text-xs text-[var(--muted-foreground)]">
                   Documento *
                 </span>
-                <input
+                <InputText
+                  id="contraventor-documento"
                   value={contraventorForm.documento}
+                  keyfilter="int"
                   onChange={(e) =>
-                    setContraventorForm((f) => ({ ...f, documento: e.target.value }))
+                    setContraventorForm((form) => ({ ...form, documento: e.target.value }))
                   }
-                  className="h-10 w-full rounded-xl border border-[var(--border)] px-3"
+                  className="flit-field-input w-full"
                 />
               </label>
-              <label className="block">
+              <label className="block" htmlFor="contraventor-correo">
                 <span className="mb-1 block text-xs text-[var(--muted-foreground)]">Correo</span>
-                <input
+                <InputText
+                  id="contraventor-correo"
                   type="email"
                   value={contraventorForm.correo}
-                  onChange={(e) => setContraventorForm((f) => ({ ...f, correo: e.target.value }))}
-                  className="h-10 w-full rounded-xl border border-[var(--border)] px-3"
+                  onChange={(e) =>
+                    setContraventorForm((form) => ({ ...form, correo: e.target.value }))
+                  }
+                  className="flit-field-input w-full"
                 />
               </label>
 
@@ -269,14 +261,14 @@ export function DgcDetailPanel({
                 </p>
               ) : null}
 
-              <button
+              <Button
                 type="button"
+                label={savingContraventor ? "Guardando…" : "Guardar contraventor"}
+                className="flit-btn-primary"
                 disabled={savingContraventor}
+                loading={savingContraventor}
                 onClick={() => void saveContraventor()}
-                className="rounded-full bg-[var(--action)] px-5 py-2 text-sm font-medium text-white disabled:opacity-50"
-              >
-                {savingContraventor ? "Guardando…" : "Guardar contraventor"}
-              </button>
+              />
             </div>
           ) : null}
 

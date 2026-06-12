@@ -2,9 +2,13 @@
 
 import { Button } from "primereact/button";
 import { Checkbox } from "primereact/checkbox";
-import { Dropdown } from "primereact/dropdown";
+import { InputNumber } from "primereact/inputnumber";
 import { InputText } from "primereact/inputtext";
+import { Password } from "primereact/password";
 import { useEffect, useState } from "react";
+import { FlitSelect } from "@/components/flit/flit-select";
+import { FlitFormField } from "@/components/flit/modal-form";
+import { fetchDevProviderPrefill } from "../api/notif-api";
 import { useNotifProviderMutations } from "../api/use-provider";
 import type { NotifProvider, ProviderType } from "../lib/notif.types";
 import {
@@ -34,12 +38,36 @@ export function ProviderForm({ provider, isLoading }: ProviderFormProps) {
   const [testMessage, setTestMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    if (isLoading) return;
+    let cancelled = false;
+    void fetchDevProviderPrefill()
+      .then((prefill) => {
+        if (cancelled || !prefill) return;
+        setForm({
+          providerType: prefill.providerType,
+          fromAddress: prefill.fromAddress,
+          testDestino: prefill.testDestino,
+          apiBaseUrl: "",
+          apiKey: "",
+          sendgridApiKey: "",
+          smtpHost: prefill.smtpHost,
+          smtpPort: String(prefill.smtpPort),
+          smtpUsername: prefill.smtpUsername,
+          smtpPassword: prefill.smtpPassword,
+          smtpUseSsl: prefill.smtpUseSsl,
+        });
+      })
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isLoading || !provider) return;
     setForm((prev) => ({
-      ...EMPTY_PROVIDER_FORM,
-      providerType: (provider?.providerType as ProviderType) ?? "",
-      fromAddress: provider?.fromAddress ?? "",
-      testDestino: prev.testDestino,
+      ...prev,
+      providerType: (provider.providerType as ProviderType) || prev.providerType,
+      fromAddress: provider.fromAddress || prev.fromAddress,
     }));
     setErrors({});
     setSaveMessage(null);
@@ -123,44 +151,38 @@ export function ProviderForm({ provider, isLoading }: ProviderFormProps) {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <div className="flex flex-col gap-1 md:col-span-2">
-          <label htmlFor="provider-type" className="text-xs text-[var(--muted-foreground)]">
-            Tipo de proveedor
-          </label>
-          <Dropdown
-            inputId="provider-type"
-            value={form.providerType}
-            options={PROVIDER_OPTIONS}
-            onChange={(e) => update({ providerType: e.value as ProviderType | "" })}
-            placeholder="Seleccione proveedor"
-            className="flit-dropdown w-full max-w-md"
-            panelClassName="flit-dropdown-panel"
-            aria-invalid={Boolean(errors.providerType)}
-          />
-          {errors.providerType ? (
-            <span className="text-xs text-[var(--alert)]" role="alert">
-              {errors.providerType}
-            </span>
-          ) : null}
+        <div className="md:col-span-2 max-w-md">
+          <FlitFormField
+            label="Tipo de proveedor"
+            htmlFor="provider-type"
+            error={errors.providerType}
+          >
+            <FlitSelect
+              inputId="provider-type"
+              value={form.providerType}
+              options={PROVIDER_OPTIONS}
+              onChange={(value) => update({ providerType: value as ProviderType | "" })}
+              placeholder="Seleccione proveedor"
+              invalid={Boolean(errors.providerType)}
+            />
+          </FlitFormField>
         </div>
 
-        <div className="flex flex-col gap-1 md:col-span-2">
-          <label htmlFor="provider-from" className="text-xs text-[var(--muted-foreground)]">
-            Remitente (From)
-          </label>
-          <InputText
-            id="provider-from"
-            type="email"
-            value={form.fromAddress}
-            onChange={(e) => update({ fromAddress: e.target.value })}
-            className="flit-field-input w-full max-w-md"
-            aria-invalid={Boolean(errors.fromAddress)}
-          />
-          {errors.fromAddress ? (
-            <span className="text-xs text-[var(--alert)]" role="alert">
-              {errors.fromAddress}
-            </span>
-          ) : null}
+        <div className="md:col-span-2 max-w-md">
+          <FlitFormField
+            label="Remitente (From)"
+            htmlFor="provider-from"
+            error={errors.fromAddress}
+          >
+            <InputText
+              id="provider-from"
+              type="email"
+              value={form.fromAddress}
+              onChange={(e) => update({ fromAddress: e.target.value })}
+              className={`flit-field-input w-full ${errors.fromAddress ? "p-invalid" : ""}`}
+              aria-invalid={Boolean(errors.fromAddress)}
+            />
+          </FlitFormField>
         </div>
 
         {form.providerType === "api" ? (
@@ -186,12 +208,15 @@ export function ProviderForm({ provider, isLoading }: ProviderFormProps) {
               <label htmlFor="api-key" className="text-xs text-[var(--muted-foreground)]">
                 API Key (opcional)
               </label>
-              <InputText
+              <Password
                 id="api-key"
-                type="password"
+                inputId="api-key"
                 value={form.apiKey}
                 onChange={(e) => update({ apiKey: e.target.value })}
-                className="flit-field-input w-full"
+                toggleMask
+                feedback={false}
+                className="w-full"
+                inputClassName="flit-field-input w-full"
               />
             </div>
           </>
@@ -202,12 +227,15 @@ export function ProviderForm({ provider, isLoading }: ProviderFormProps) {
             <label htmlFor="sendgrid-key" className="text-xs text-[var(--muted-foreground)]">
               SendGrid API Key
             </label>
-            <InputText
+            <Password
               id="sendgrid-key"
-              type="password"
+              inputId="sendgrid-key"
               value={form.sendgridApiKey}
               onChange={(e) => update({ sendgridApiKey: e.target.value })}
-              className="flit-field-input w-full"
+              toggleMask
+              feedback={false}
+              className="w-full"
+              inputClassName={`flit-field-input w-full ${errors.sendgridApiKey ? "p-invalid" : ""}`}
               aria-invalid={Boolean(errors.sendgridApiKey)}
             />
             {errors.sendgridApiKey ? (
@@ -241,11 +269,15 @@ export function ProviderForm({ provider, isLoading }: ProviderFormProps) {
               <label htmlFor="smtp-port" className="text-xs text-[var(--muted-foreground)]">
                 Puerto
               </label>
-              <InputText
-                id="smtp-port"
-                value={form.smtpPort}
-                onChange={(e) => update({ smtpPort: e.target.value })}
-                className="flit-field-input w-full"
+              <InputNumber
+                inputId="smtp-port"
+                value={form.smtpPort ? Number(form.smtpPort) : null}
+                onValueChange={(e) => update({ smtpPort: e.value === null ? "" : String(e.value) })}
+                useGrouping={false}
+                min={1}
+                max={65535}
+                className="flit-input-number w-full"
+                inputClassName="flit-field-input w-full"
               />
             </div>
             <div className="flex flex-col gap-1">
@@ -269,12 +301,14 @@ export function ProviderForm({ provider, isLoading }: ProviderFormProps) {
               <label htmlFor="smtp-pass" className="text-xs text-[var(--muted-foreground)]">
                 Contraseña
               </label>
-              <InputText
-                id="smtp-pass"
-                type="password"
+              <Password
+                inputId="smtp-pass"
                 value={form.smtpPassword}
                 onChange={(e) => update({ smtpPassword: e.target.value })}
-                className="flit-field-input w-full"
+                toggleMask
+                feedback={false}
+                className="w-full"
+                inputClassName={`flit-field-input w-full ${errors.smtpPassword ? "p-invalid" : ""}`}
                 aria-invalid={Boolean(errors.smtpPassword)}
               />
               {errors.smtpPassword ? (
@@ -308,6 +342,7 @@ export function ProviderForm({ provider, isLoading }: ProviderFormProps) {
             placeholder="ops@tenant.test"
             className="flit-field-input w-full max-w-md"
             aria-invalid={Boolean(errors.testDestino)}
+            data-testid="provider-test-destino"
           />
           {errors.testDestino ? (
             <span className="text-xs text-[var(--alert)]" role="alert">

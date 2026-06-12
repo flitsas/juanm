@@ -125,7 +125,7 @@ public sealed class NotifProviderTests
             .UseInMemoryDatabase(Guid.NewGuid().ToString())
             .Options;
 
-        return new GdcDbContext(options);
+        return new GdcDbContext(options, new TestSupport.TestTenantContext());
     }
 
     private sealed class FakeTenantContext(Guid tenantId) : Gdc.Modules.Dgc.Application.Abstractions.ITenantContext

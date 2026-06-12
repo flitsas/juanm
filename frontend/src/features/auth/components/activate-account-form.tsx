@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Password } from "primereact/password";
 import { useState } from "react";
 import { activateAccount } from "../api/auth-api";
 import { GradientButton } from "./gradient-button";
@@ -89,16 +90,18 @@ export function ActivateAccountForm() {
           >
             Nueva contraseña
           </label>
-          <input
-            id="activate-password"
+          <Password
+            inputId="activate-password"
             name="password"
-            type="password"
             autoComplete="new-password"
             required
             minLength={8}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="flit-input"
+            toggleMask
+            feedback={false}
+            className="flit-password w-full"
+            inputClassName="flit-field-input w-full"
             placeholder="Mínimo 8 caracteres"
           />
         </div>
@@ -110,16 +113,18 @@ export function ActivateAccountForm() {
           >
             Confirmar contraseña
           </label>
-          <input
-            id="activate-confirm-password"
+          <Password
+            inputId="activate-confirm-password"
             name="confirmPassword"
-            type="password"
             autoComplete="new-password"
             required
             minLength={8}
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            className="flit-input"
+            toggleMask
+            feedback={false}
+            className="flit-password w-full"
+            inputClassName="flit-field-input w-full"
             placeholder="Repite tu contraseña"
           />
         </div>

@@ -1,8 +1,10 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { PrimaryButton } from "@/components/flit/primary-button";
 import { getRbacMatrix, updateRbacMatrix } from "../api/admin-api";
+import { SessionExpiredError } from "../lib/ensure-access-token";
 import type { RbacMatrix } from "../types";
 import { EmptyState, ErrorState, LoadingState } from "./ui-state";
 
@@ -22,6 +24,7 @@ function buildAssignmentMap(matrix: RbacMatrix): Map<string, boolean> {
 }
 
 export function RbacMatrixPanel({ accessToken }: RbacMatrixPanelProps) {
+  const router = useRouter();
   const [matrix, setMatrix] = useState<RbacMatrix | null>(null);
   const [assignments, setAssignments] = useState<Map<string, boolean>>(new Map());
   const [loading, setLoading] = useState(true);
@@ -37,11 +40,15 @@ export function RbacMatrixPanel({ accessToken }: RbacMatrixPanelProps) {
       setMatrix(data);
       setAssignments(buildAssignmentMap(data));
     } catch (err) {
+      if (err instanceof SessionExpiredError) {
+        router.replace("/login");
+        return;
+      }
       setError(err instanceof Error ? err.message : "No se pudo cargar la matriz RBAC.");
     } finally {
       setLoading(false);
     }
-  }, [accessToken]);
+  }, [accessToken, router]);
 
   useEffect(() => {
     void load();

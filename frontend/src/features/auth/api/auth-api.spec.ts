@@ -13,9 +13,10 @@ describe("auth-api", () => {
         ok: true,
         json: async () => ({
           accessToken: "token",
+          refreshToken: "refresh-token",
           expiresAt: "2026-12-31T00:00:00Z",
           userId: "11111111-1111-4111-8111-111111111111",
-          tenantId: "22222222-2222-4222-8222-222222222201",
+          tenantId: "22222222-2222-2222-2222-222222222222",
           email: "user@example.com",
           role: "Operator",
         }),
@@ -47,7 +48,7 @@ describe("auth-api", () => {
 
     await logout("jwt-abc");
     expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringContaining("/auth/logout"),
+      expect.stringContaining("/api/v1/auth/logout"),
       expect.objectContaining({
         method: "POST",
         headers: expect.objectContaining({

@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Alineado con flitready-suite: dark solo con class .dark (next-themes), no prefers-color-scheme */
+@custom-variant dark (&:is(.dark *));
+
 :root {
   /* Tokens FLIT — canónicos (DESIGNS/flitready-suite/src/styles.css) */
   --flit-bg-app: #e2eaf7;
@@ -41,6 +44,23 @@
   --muted: var(--flit-bg-hover);
   --muted-foreground: var(--flit-text-secondary);
   --border: var(--flit-border-input);
+  --flit-shadow-dock: 0 10px 40px -10px color-mix(in oklab, #003eff 35%, transparent);
+}
+
+.dark {
+  /* flitready-suite/src/styles.css */
+  --flit-bg-app: #0b1426;
+  --flit-bg-card: #1b2a47;
+  --flit-bg-hover: #243352;
+  --flit-bg-danger-soft: #2a1a18;
+  --flit-text-primary: #f5f7fb;
+  --flit-text-secondary: #a8b4cc;
+  --flit-text-brand: #b3ff1f;
+  --flit-border-input: rgba(255, 255, 255, 0.12);
+  --flit-border-focus: #00dbd5;
+  --flit-table-head: #243352;
+  --flit-shadow-card: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --flit-shadow-button: 0 4px 14px rgba(0, 62, 255, 0.35);
 }
 
 @utility bg-gradient-flit {
@@ -54,6 +74,10 @@
   color: transparent;
 }
 
+@utility ring-flit {
+  box-shadow: var(--flit-shadow-dock);
+}
+
 body {
   background: var(--flit-bg-app);
   color: var(--flit-text-primary);
@@ -63,30 +87,30 @@ body {
 @keyframes blob-drift-a {
   0%,
   100% {
-    transform: translate(0, 0) scale(1);
+    transform: translate3d(0, 0, 0) scale(1);
   }
   50% {
-    transform: translate(8%, 6%) scale(1.05);
+    transform: translate3d(8vw, -6vh, 0) scale(1.15);
   }
 }
 
 @keyframes blob-drift-b {
   0%,
   100% {
-    transform: translate(0, 0) scale(1);
+    transform: translate3d(0, 0, 0) scale(1.05);
   }
   50% {
-    transform: translate(-6%, 4%) scale(1.08);
+    transform: translate3d(-10vw, 8vh, 0) scale(0.9);
   }
 }
 
 @keyframes blob-drift-c {
   0%,
   100% {
-    transform: translate(0, 0) scale(1);
+    transform: translate3d(0, 0, 0) scale(1);
   }
   50% {
-    transform: translate(4%, -5%) scale(1.04);
+    transform: translate3d(6vw, 10vh, 0) scale(1.2);
   }
 }
 
@@ -161,6 +185,45 @@ body {
   box-shadow: 0 0 0 2px color-mix(in oklab, var(--action) 25%, transparent);
 }
 
+/* PrimeReact Password + IconField (sin theme completo de PrimeReact) */
+.p-password.p-password {
+  display: flex;
+  width: 100%;
+}
+
+.p-icon-field {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+.p-icon-field > .p-input-icon {
+  position: absolute;
+  top: 50%;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+
+.p-icon-field-right > .p-input-icon:last-of-type {
+  right: 1rem;
+}
+
+.p-icon-field-right > .p-inputtext {
+  width: 100%;
+  padding-right: 2.75rem;
+}
+
+.p-password .p-password-show-icon,
+.p-password .p-password-hide-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
 .flit-field-input.flit-field-input--search.p-inputtext {
   padding-left: 2.75rem;
 }
@@ -221,6 +284,51 @@ body {
   color: var(--action);
 }
 
+/* ===== Modales (Lovable / flitready) — campos con radius 16px ===== */
+.flit-modal .flit-field-input.p-inputtext,
+.flit-modal .flit-dropdown.p-dropdown,
+.flit-modal .flit-input-number.p-inputnumber .p-inputnumber-input {
+  border-radius: var(--flit-radius-input);
+}
+
+.flit-modal .flit-calendar.p-calendar {
+  border-radius: var(--flit-radius-input);
+  width: 100%;
+}
+
+.flit-modal .flit-textarea.p-inputtextarea {
+  border: 1px solid var(--border);
+  border-radius: var(--flit-radius-input);
+  background: var(--card);
+  color: var(--deep);
+  font-family: "Poppins", sans-serif;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  padding: 0.75rem 1rem;
+  width: 100%;
+  min-height: 6rem;
+  box-shadow: none;
+  resize: vertical;
+}
+
+.flit-modal .flit-textarea.p-inputtextarea:enabled:focus {
+  border-color: var(--action);
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--action) 25%, transparent);
+  outline: none;
+}
+
+.flit-modal .p-checkbox .p-checkbox-box {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.flit-modal .p-checkbox .p-checkbox-box.p-highlight {
+  background: var(--action);
+  border-color: var(--action);
+}
+
 .flit-calendar.p-calendar {
   display: inline-flex;
   align-items: stretch;
@@ -262,6 +370,33 @@ body {
 .flit-calendar .p-datepicker-trigger:hover {
   background: var(--muted);
   color: var(--deep);
+}
+
+.flit-input-number.p-inputnumber {
+  display: flex;
+  width: 100%;
+}
+
+.flit-input-number.p-inputnumber .p-inputnumber-input {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--deep);
+  font-family: "Poppins", sans-serif;
+  font-size: 0.875rem;
+  height: 2.75rem;
+  padding: 0 1rem;
+  width: 100%;
+  box-shadow: none;
+}
+
+.flit-input-number.p-inputnumber .p-inputnumber-input:enabled:focus {
+  border-color: var(--action);
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--action) 25%, transparent);
+}
+
+.flit-field-input.p-inputmask {
+  width: 100%;
 }
 
 .flit-table thead tr {
@@ -388,7 +523,7 @@ body {
   padding: 0 16px;
   border: 1px solid var(--flit-border-input);
   border-radius: var(--flit-radius-input);
-  background: #fff;
+  background: var(--flit-bg-card);
   color: var(--flit-text-primary);
   font-size: 14px;
 }
@@ -480,7 +615,7 @@ body {
 }
 
 .flit-tab-pill-inactive {
-  background: #fff;
+  background: var(--flit-bg-card);
   color: var(--flit-text-primary);
   border: 1px solid var(--flit-border-input);
 }
@@ -558,7 +693,9 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .flit-brand-pulse {
-    animation: none;
+  .flit-brand-pulse,
+  .flit-ambient-blob,
+  .flit-shooting-star {
+    animation: none !important;
   }
 }

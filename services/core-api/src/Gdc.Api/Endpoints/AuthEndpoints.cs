@@ -9,7 +9,7 @@ public static class AuthEndpoints
 {
     public static IEndpointRouteBuilder MapAuthEndpoints(this IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("/auth").WithTags("Auth");
+        var group = app.MapGroup("/api/v1/auth").WithTags("Auth");
 
         group.MapPost("/login", async (
             [FromBody] LoginRequest request,
@@ -36,6 +36,31 @@ public static class AuthEndpoints
             return Results.Ok(success);
         })
         .WithName("AuthLogin")
+        .AllowAnonymous();
+
+        group.MapPost("/refresh", async (
+            [FromBody] RefreshRequest request,
+            IAuthSessionService authSessionService,
+            CancellationToken cancellationToken) =>
+        {
+            if (string.IsNullOrWhiteSpace(request.RefreshToken))
+            {
+                return Results.Json(
+                    new { message = "Sesión expirada." },
+                    statusCode: StatusCodes.Status401Unauthorized);
+            }
+
+            var (success, error) = await authSessionService.RefreshAsync(request, cancellationToken);
+            if (success is null || error is not null)
+            {
+                return Results.Json(
+                    new { message = error?.Message ?? "Sesión expirada." },
+                    statusCode: StatusCodes.Status401Unauthorized);
+            }
+
+            return Results.Ok(success);
+        })
+        .WithName("AuthRefresh")
         .AllowAnonymous();
 
         group.MapPost("/logout", async (
@@ -111,7 +136,7 @@ public static class AuthEndpoints
                 };
             }
 
-            return Results.Created($"/auth/users/{success.UserId}", success);
+            return Results.Created($"/api/v1/auth/users/{success.UserId}", success);
         })
         .WithName("AuthInviteUser")
         .RequireAuthorization(AuthPolicies.SuperAdmin);

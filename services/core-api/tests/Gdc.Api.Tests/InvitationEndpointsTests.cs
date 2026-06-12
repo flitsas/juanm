@@ -20,7 +20,7 @@ public class InvitationEndpointsTests
         var token = await LoginAsync(client, AuthTestData.SuperAdminEmail);
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        var response = await client.PostAsJsonAsync("/auth/users/invite", new
+        var response = await client.PostAsJsonAsync("/api/v1/auth/users/invite", new
         {
             email = "invited@example.com",
             tenantId = AuthTestData.TenantBId,
@@ -48,7 +48,7 @@ public class InvitationEndpointsTests
         var token = await LoginAsync(client, AuthTestData.SuperAdminEmail);
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        var response = await client.PostAsJsonAsync("/auth/users/invite", new
+        var response = await client.PostAsJsonAsync("/api/v1/auth/users/invite", new
         {
             email = AuthTestData.UserBEmail,
             tenantId = AuthTestData.TenantBId,
@@ -68,7 +68,7 @@ public class InvitationEndpointsTests
         var authed = factory.CreateClient();
         authed.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", adminToken);
 
-        var invite = await authed.PostAsJsonAsync("/auth/users/invite", new
+        var invite = await authed.PostAsJsonAsync("/api/v1/auth/users/invite", new
         {
             email = "fresh@example.com",
             tenantId = AuthTestData.TenantId,
@@ -78,7 +78,7 @@ public class InvitationEndpointsTests
         var rawToken = factory.GetActivationTokenFromLastEmail();
         Assert.False(string.IsNullOrWhiteSpace(rawToken));
 
-        var activate = await client.PostAsJsonAsync("/auth/users/activate", new
+        var activate = await client.PostAsJsonAsync("/api/v1/auth/users/activate", new
         {
             token = rawToken,
             password = "FreshPass1",
@@ -88,7 +88,7 @@ public class InvitationEndpointsTests
         var body = await activate.Content.ReadFromJsonAsync<ActivateDto>(JsonOptions);
         Assert.Equal("Active", body?.Status);
 
-        var login = await client.PostAsJsonAsync("/auth/login", new
+        var login = await client.PostAsJsonAsync("/api/v1/auth/login", new
         {
             email = "fresh@example.com",
             password = "FreshPass1",
@@ -108,7 +108,7 @@ public class InvitationEndpointsTests
         });
         var client = factory.CreateClient();
 
-        var response = await client.PostAsJsonAsync("/auth/users/activate", new
+        var response = await client.PostAsJsonAsync("/api/v1/auth/users/activate", new
         {
             token = rawToken,
             password = "FreshPass1",
@@ -119,7 +119,7 @@ public class InvitationEndpointsTests
 
     private static async Task<string> LoginAsync(HttpClient client, string email)
     {
-        var login = await client.PostAsJsonAsync("/auth/login", new
+        var login = await client.PostAsJsonAsync("/api/v1/auth/login", new
         {
             email,
             password = AuthTestData.Password,

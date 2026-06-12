@@ -69,7 +69,7 @@ public sealed class NotifSchemaTests
             .UseNpgsql("Host=localhost;Database=notif_test;Username=test;Password=test")
             .Options;
 
-        using var context = new GdcDbContext(options);
+        using var context = new GdcDbContext(options, new TestSupport.TestTenantContext());
         return context.Model;
     }
 }

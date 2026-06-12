@@ -135,7 +135,7 @@ public sealed class EmailLogQueryTests
         var options = new DbContextOptionsBuilder<GdcDbContext>()
             .UseInMemoryDatabase(Guid.NewGuid().ToString())
             .Options;
-        return new GdcDbContext(options);
+        return new GdcDbContext(options, new TestSupport.TestTenantContext());
     }
 
     private sealed class FakeTenantContext(Guid tenantId) : Gdc.Modules.Dgc.Application.Abstractions.ITenantContext

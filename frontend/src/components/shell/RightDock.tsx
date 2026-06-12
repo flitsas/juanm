@@ -11,8 +11,8 @@ function DockIconButton({ item, active }: { item: ShellNavItem; active: boolean 
   const baseClass =
     "relative z-[1] grid h-11 w-11 place-items-center rounded-full transition-all duration-180";
   const activeClass = active
-    ? "bg-[color-mix(in_oklab,var(--action)_18%,white)] text-[var(--action)]"
-    : "text-[var(--deep)]/70 hover:bg-[var(--muted)]";
+    ? "bg-[color-mix(in_oklab,var(--action)_18%,var(--card))] text-[var(--action)] dark:bg-[var(--lime)] dark:text-[var(--deep)]"
+    : "text-[var(--deep)]/70 hover:bg-[var(--muted)] dark:text-foreground/70";
 
   const tooltip = item.enabled
     ? `${item.label} — ${item.description}`
@@ -56,7 +56,7 @@ function BrandFab() {
   return (
     <div
       aria-hidden
-      className="pointer-events-none my-1 grid h-14 w-14 select-none place-items-center rounded-full shadow-lg ring-2 ring-[var(--lime)]/40"
+      className="ring-flit pointer-events-none my-1 grid h-14 w-14 select-none place-items-center rounded-full shadow-lg"
       style={{ background: "linear-gradient(135deg, #b3ff1f 0%, #003eff 100%)" }}
     >
       <FlitIsotipo size={42} />

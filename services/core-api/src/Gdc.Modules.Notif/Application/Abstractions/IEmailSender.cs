@@ -1,6 +1,13 @@
 namespace Gdc.Modules.Notif.Application.Abstractions;
 
-public sealed record EmailMessage(string From, string To, string Subject, string HtmlBody);
+public sealed record EmailAttachment(string FileName, string ContentType, byte[] Content);
+
+public sealed record EmailMessage(
+    string From,
+    string To,
+    string Subject,
+    string HtmlBody,
+    IReadOnlyList<EmailAttachment>? Attachments = null);
 
 public sealed record EmailSendResult(bool Success, string? ProviderMessageId, string? ErrorMessage);
 

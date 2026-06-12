@@ -5,9 +5,23 @@ namespace Gdc.Api;
 
 internal static class DevDataSeeder
 {
+    /// <summary>
+    /// IDs alineados con <c>identity.tenants</c> (migración SeedDevTenant) y módulo NOTIF.
+    /// </summary>
+    private const string DevTenantId = "22222222-2222-2222-2222-222222222222";
+    private const string TestTenantId = "11111111-1111-1111-1111-111111111111";
+
+    /// <summary>Tenants legacy de DevDataSeeder previo a la alineación NOTIF.</summary>
+    private const string LegacyDevTenantId = "22222222-2222-4222-8222-222222222201";
+    private const string LegacyTenantBId = "22222222-2222-4222-8222-222222222202";
+
     public static async Task SeedIfEmptyAsync(GdcDbContext db, CancellationToken cancellationToken = default)
     {
         await SeedCatalogsAsync(db, cancellationToken);
+        await EnsureIdentityTenantsAsync(db, cancellationToken);
+        await EnsureCoreTenantsAsync(db, cancellationToken);
+        await SyncIdentityTenantsToCoreAsync(db, cancellationToken);
+        await SyncLegacyTenantIdsAsync(db, cancellationToken);
         await SeedUsersAsync(db, cancellationToken);
     }
 
@@ -50,6 +64,84 @@ internal static class DevDataSeeder
             cancellationToken);
     }
 
+    /// <summary>
+    /// FK de módulos DGC/GDC/NOTIF apuntan a <c>identity.tenants</c> (no solo <c>core.tenants</c>).
+    /// </summary>
+    private static async Task EnsureIdentityTenantsAsync(GdcDbContext db, CancellationToken cancellationToken)
+    {
+        await db.Database.ExecuteSqlRawAsync(
+            $"""
+            INSERT INTO identity.tenants (id, name, created_at)
+            VALUES
+              ('{DevTenantId}', 'FLIT Dev Tenant', NOW()),
+              ('{TestTenantId}', 'FLIT Test Tenant', NOW())
+            ON CONFLICT (id) DO UPDATE
+            SET name = EXCLUDED.name;
+            """,
+            cancellationToken);
+    }
+
+    private static async Task EnsureCoreTenantsAsync(GdcDbContext db, CancellationToken cancellationToken)
+    {
+        await db.Database.ExecuteSqlRawAsync(
+            $"""
+            INSERT INTO core.tenants (id, name, is_active, created_at, updated_at, row_version)
+            VALUES
+              ('{DevTenantId}', 'FLIT Dev Tenant', true, NOW(), NOW(), '1'::xid),
+              ('{TestTenantId}', 'FLIT Test Tenant', true, NOW(), NOW(), '1'::xid)
+            ON CONFLICT (id) DO UPDATE
+            SET name = EXCLUDED.name,
+                is_active = EXCLUDED.is_active,
+                updated_at = NOW();
+            """,
+            cancellationToken);
+    }
+
+    /// <summary>
+    /// Compañías NOTIF viven en identity.tenants; auth.users FK a core.tenants.
+    /// </summary>
+    private static async Task SyncIdentityTenantsToCoreAsync(GdcDbContext db, CancellationToken cancellationToken)
+    {
+        await db.Database.ExecuteSqlRawAsync(
+            """
+            INSERT INTO core.tenants (id, name, is_active, created_at, updated_at, row_version)
+            SELECT i.id, i.name, COALESCE(i.is_active, true), i.created_at, COALESCE(i.updated_at, i.created_at), '1'::xid
+            FROM identity.tenants i
+            WHERE i.deleted_at IS NULL
+            ON CONFLICT (id) DO UPDATE
+            SET name = EXCLUDED.name,
+                is_active = EXCLUDED.is_active,
+                updated_at = NOW();
+            """,
+            cancellationToken);
+    }
+
+    /// <summary>
+    /// Repara BDs locales creadas con tenant IDs legacy para que la sesión coincida con NOTIF.
+    /// </summary>
+    private static async Task SyncLegacyTenantIdsAsync(GdcDbContext db, CancellationToken cancellationToken)
+    {
+        await db.Database.ExecuteSqlRawAsync(
+            $"""
+            UPDATE auth.users
+            SET tenant_id = '{DevTenantId}'::uuid,
+                updated_at = NOW()
+            WHERE tenant_id = '{LegacyDevTenantId}'::uuid;
+
+            UPDATE auth.users
+            SET tenant_id = '{TestTenantId}'::uuid,
+                updated_at = NOW()
+            WHERE tenant_id = '{LegacyTenantBId}'::uuid;
+
+            DELETE FROM core.tenants
+            WHERE id IN ('{LegacyDevTenantId}'::uuid, '{LegacyTenantBId}'::uuid)
+              AND NOT EXISTS (
+                  SELECT 1 FROM auth.users u WHERE u.tenant_id = core.tenants.id
+              );
+            """,
+            cancellationToken);
+    }
+
     private static async Task SeedUsersAsync(GdcDbContext db, CancellationToken cancellationToken)
     {
         if (await db.Users.IgnoreQueryFilters().AnyAsync(cancellationToken))
@@ -62,16 +154,10 @@ internal static class DevDataSeeder
 
         await db.Database.ExecuteSqlRawAsync(
             $"""
-            INSERT INTO core.tenants (id, name, is_active, created_at, updated_at, row_version)
-            VALUES
-              ('22222222-2222-4222-8222-222222222201', 'Tenant Demo', true, NOW(), NOW(), '1'::xid),
-              ('22222222-2222-4222-8222-222222222202', 'Tenant B', true, NOW(), NOW(), '1'::xid)
-            ON CONFLICT (id) DO NOTHING;
-
             INSERT INTO auth.users (id, tenant_id, email, password_hash, status, created_at, updated_at, row_version)
             VALUES
-              ('33333333-3333-4333-8333-333333333301', '22222222-2222-4222-8222-222222222201', 'operator@example.com', '{passwordHash}', 'Active', NOW(), NOW(), '1'::xid),
-              ('33333333-3333-4333-8333-333333333303', '22222222-2222-4222-8222-222222222201', 'superadmin@example.com', '{passwordHash}', 'Active', NOW(), NOW(), '1'::xid)
+              ('33333333-3333-4333-8333-333333333301', '{DevTenantId}', 'operator@example.com', '{passwordHash}', 'Active', NOW(), NOW(), '1'::xid),
+              ('33333333-3333-4333-8333-333333333303', '{DevTenantId}', 'superadmin@example.com', '{passwordHash}', 'Active', NOW(), NOW(), '1'::xid)
             ON CONFLICT (id) DO NOTHING;
 
             INSERT INTO auth.user_roles (user_id, role_id)

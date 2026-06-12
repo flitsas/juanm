@@ -1,6 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { InputText } from "primereact/inputtext";
+import { Password } from "primereact/password";
 import { useState } from "react";
 import { login } from "../api/auth-api";
 import { setSession } from "../lib/session";
@@ -21,7 +23,7 @@ export function LoginForm() {
     try {
       const session = await login({ email, password });
       setSession(session);
-      router.push("/dashboard");
+      router.push("/");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Credenciales inválidas.");
     } finally {
@@ -39,7 +41,7 @@ export function LoginForm() {
       {error ? (
         <p
           role="alert"
-          className="mt-6 rounded-[var(--flit-radius-input)] border border-[var(--flit-state-danger)] bg-[#FFF5F3] px-4 py-3 text-sm text-[var(--flit-state-danger)]"
+          className="mt-6 rounded-[var(--flit-radius-input)] border border-[var(--flit-state-danger)] bg-[var(--flit-bg-danger-soft)] px-4 py-3 text-sm text-[var(--flit-state-danger)]"
         >
           {error}
         </p>
@@ -47,10 +49,10 @@ export function LoginForm() {
 
       <div className="mt-8 space-y-4">
         <div className="space-y-1.5">
-          <label htmlFor="email" className="text-xs font-semibold text-[var(--flit-text-primary)]">
-            Correo electrónico
+          <label htmlFor="email" className="text-xs font-medium text-[var(--flit-text-primary)]">
+            Usuario o correo
           </label>
-          <input
+          <InputText
             id="email"
             name="email"
             type="email"
@@ -58,29 +60,39 @@ export function LoginForm() {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="flit-input"
+            className="flit-field-input w-full"
             placeholder="tu@empresa.co"
           />
         </div>
 
         <div className="space-y-1.5">
           <label
-            htmlFor="password"
-            className="text-xs font-semibold text-[var(--flit-text-primary)]"
+            htmlFor="login-password"
+            className="text-xs font-medium text-[var(--flit-text-primary)]"
           >
             Contraseña
           </label>
-          <input
-            id="password"
+          <Password
+            inputId="login-password"
             name="password"
-            type="password"
             autoComplete="current-password"
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="flit-input"
+            toggleMask
+            feedback={false}
+            className="flit-password w-full"
+            inputClassName="flit-field-input w-full"
             placeholder="••••••••"
           />
+        </div>
+        <div className="text-right">
+          <button
+            type="button"
+            className="text-xs font-medium text-[var(--flit-action)] hover:underline"
+          >
+            Olvidé mi contraseña
+          </button>
         </div>
       </div>
 

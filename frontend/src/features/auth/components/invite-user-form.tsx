@@ -1,6 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { InputText } from "primereact/inputtext";
+import { useMemo, useState } from "react";
+import { FlitSelect } from "@/components/flit/flit-select";
+import { FlitFormField } from "@/components/flit/modal-form";
 import { PrimaryButton } from "@/components/flit/primary-button";
 import { inviteUser } from "../api/admin-api";
 import type { TenantGroup } from "../types";
@@ -23,6 +26,11 @@ export function InviteUserForm({
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  const tenantOptions = useMemo(
+    () => tenants.map((tenant) => ({ label: tenant.label, value: tenant.tenantId })),
+    [tenants],
+  );
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,45 +74,27 @@ export function InviteUserForm({
       ) : null}
 
       <div className="mt-4 space-y-3">
-        <div className="space-y-1.5">
-          <label
-            htmlFor="invite-email"
-            className="text-xs font-semibold text-[var(--flit-text-primary)]"
-          >
-            Correo electrónico
-          </label>
-          <input
+        <FlitFormField label="Correo electrónico" htmlFor="invite-email">
+          <InputText
             id="invite-email"
             type="email"
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="flit-input"
+            className="flit-field-input w-full"
             placeholder="nuevo@empresa.co"
           />
-        </div>
+        </FlitFormField>
 
-        <div className="space-y-1.5">
-          <label
-            htmlFor="invite-compania"
-            className="text-xs font-semibold text-[var(--flit-text-primary)]"
-          >
-            Compañía
-          </label>
-          <select
-            id="invite-compania"
-            required
+        <FlitFormField label="Compañía" htmlFor="invite-compania">
+          <FlitSelect
+            inputId="invite-compania"
             value={tenantId}
-            onChange={(e) => setTenantId(e.target.value)}
-            className="flit-input"
-          >
-            {tenants.map((t) => (
-              <option key={t.tenantId} value={t.tenantId}>
-                {t.label}
-              </option>
-            ))}
-          </select>
-        </div>
+            options={tenantOptions}
+            onChange={setTenantId}
+            disabled={tenants.length === 0}
+          />
+        </FlitFormField>
       </div>
 
       <PrimaryButton

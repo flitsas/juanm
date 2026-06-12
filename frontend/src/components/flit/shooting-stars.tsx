@@ -49,7 +49,7 @@ export function ShootingStars({
         return (
           <span
             key={streakKey}
-            className="absolute top-0 left-0 block rounded-full"
+            className="flit-shooting-star absolute top-0 left-0 block rounded-full"
             style={{
               width: `${len}px`,
               height: "1px",

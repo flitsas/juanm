@@ -1,3 +1,13 @@
+"use client";
+
+import { Button } from "primereact/button";
+import { InputNumber } from "primereact/inputnumber";
+import { InputText } from "primereact/inputtext";
+import { FlitDateField } from "@/components/flit/flit-date-field";
+import { FlitSelect } from "@/components/flit/flit-select";
+import { FlitFormField } from "@/components/flit/modal-form";
+import { COMPARENDO_ESTADO_OPTIONS } from "../lib/comparendo-estado-options";
+import { formatCurrencyField, parseCurrencyField } from "../lib/currency-field";
 import type { OcrBufferFieldErrors, OcrBufferForm } from "../lib/ocr.types";
 
 type DgcOcrBufferFormProps = {
@@ -21,7 +31,7 @@ export function DgcOcrBufferForm({
 
   return (
     <article
-      className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4"
+      className="rounded-2xl border border-[var(--flit-border-input)] bg-[var(--flit-bg-muted)]/10 p-4"
       data-testid={`ocr-buffer-item-${form.itemId}`}
     >
       <div className="flex flex-wrap items-start gap-4">
@@ -30,20 +40,20 @@ export function DgcOcrBufferForm({
           <img
             src={form.previewUrl}
             alt={`Vista previa ${form.fileName}`}
-            className="h-24 w-24 rounded-xl border border-[var(--border)] object-cover"
+            className="h-24 w-24 rounded-xl border border-[var(--flit-border-input)] object-cover"
           />
         ) : (
-          <div className="flex h-24 w-24 items-center justify-center rounded-xl border border-dashed border-[var(--border)] bg-[var(--muted)] text-xs text-[var(--muted-foreground)]">
+          <div className="flex h-24 w-24 items-center justify-center rounded-xl border border-dashed border-[var(--flit-border-input)] bg-[var(--flit-bg-muted)] text-xs text-[var(--flit-text-secondary)]">
             {form.fileName.endsWith(".pdf") ? "PDF" : "Archivo"}
           </div>
         )}
         <div className="min-w-[200px] flex-1">
-          <p className="text-sm font-semibold text-[var(--deep)]">{form.fileName}</p>
-          <p className="text-xs text-[var(--muted-foreground)]">
+          <p className="text-sm font-semibold text-[var(--flit-text-primary)]">{form.fileName}</p>
+          <p className="text-xs text-[var(--flit-text-secondary)]">
             Confianza OCR: {(form.confidence * 100).toFixed(0)}%
           </p>
           {form.ocrDiagnostic ? (
-            <p className="mt-1 text-xs text-[var(--alert)]" role="note">
+            <p className="mt-1 text-xs text-[var(--flit-state-danger)]" role="note">
               {form.ocrDiagnostic}
             </p>
           ) : null}
@@ -51,85 +61,105 @@ export function DgcOcrBufferForm({
       </div>
 
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        <Field
+        <FlitFormField
           label="No. Comparendo *"
-          value={form.numeroComparendo}
+          htmlFor={`ocr-numero-${form.itemId}`}
           error={errors.numeroComparendo}
-          onChange={(v) => patch({ numeroComparendo: v })}
-        />
-        <Field
-          label="Estado *"
-          value={form.estado}
-          error={errors.estado}
-          onChange={(v) => patch({ estado: v })}
-        />
-        <Field
-          label="Infractor"
-          value={form.infractorNombre}
-          onChange={(v) => patch({ infractorNombre: v })}
-        />
-        <Field label="Documento" value={form.documento} onChange={(v) => patch({ documento: v })} />
-        <Field label="Placa" value={form.placa} onChange={(v) => patch({ placa: v })} />
-        <Field
-          label="Infracción"
-          value={form.infraccionCodigo}
-          onChange={(v) => patch({ infraccionCodigo: v })}
-        />
-        <Field
-          label="Fecha comparendo"
-          type="date"
-          value={form.fechaComparendo}
-          onChange={(v) => patch({ fechaComparendo: v })}
-        />
-        <Field label="Total" value={form.totalValor} onChange={(v) => patch({ totalValor: v })} />
+        >
+          <InputText
+            id={`ocr-numero-${form.itemId}`}
+            value={form.numeroComparendo}
+            onChange={(e) => patch({ numeroComparendo: e.target.value })}
+            className={`flit-field-input w-full ${errors.numeroComparendo ? "p-invalid" : ""}`}
+            aria-invalid={Boolean(errors.numeroComparendo)}
+          />
+        </FlitFormField>
+
+        <FlitFormField label="Estado *" htmlFor={`ocr-estado-${form.itemId}`} error={errors.estado}>
+          <FlitSelect
+            inputId={`ocr-estado-${form.itemId}`}
+            value={form.estado}
+            options={[...COMPARENDO_ESTADO_OPTIONS]}
+            onChange={(value) => patch({ estado: value })}
+            invalid={Boolean(errors.estado)}
+          />
+        </FlitFormField>
+
+        <FlitFormField label="Infractor" htmlFor={`ocr-infractor-${form.itemId}`}>
+          <InputText
+            id={`ocr-infractor-${form.itemId}`}
+            value={form.infractorNombre}
+            onChange={(e) => patch({ infractorNombre: e.target.value })}
+            className="flit-field-input w-full"
+          />
+        </FlitFormField>
+
+        <FlitFormField label="Documento" htmlFor={`ocr-documento-${form.itemId}`}>
+          <InputText
+            id={`ocr-documento-${form.itemId}`}
+            value={form.documento}
+            keyfilter="int"
+            onChange={(e) => patch({ documento: e.target.value })}
+            className="flit-field-input w-full"
+          />
+        </FlitFormField>
+
+        <FlitFormField label="Placa" htmlFor={`ocr-placa-${form.itemId}`}>
+          <InputText
+            id={`ocr-placa-${form.itemId}`}
+            value={form.placa}
+            onChange={(e) => patch({ placa: e.target.value.toUpperCase() })}
+            className="flit-field-input w-full"
+          />
+        </FlitFormField>
+
+        <FlitFormField label="Infracción" htmlFor={`ocr-infraccion-${form.itemId}`}>
+          <InputText
+            id={`ocr-infraccion-${form.itemId}`}
+            value={form.infraccionCodigo}
+            onChange={(e) => patch({ infraccionCodigo: e.target.value })}
+            className="flit-field-input w-full"
+          />
+        </FlitFormField>
+
+        <FlitFormField label="Fecha comparendo" htmlFor={`ocr-fecha-${form.itemId}`}>
+          <FlitDateField
+            inputId={`ocr-fecha-${form.itemId}`}
+            value={form.fechaComparendo}
+            onChange={(value) => patch({ fechaComparendo: value })}
+          />
+        </FlitFormField>
+
+        <FlitFormField label="Total" htmlFor={`ocr-total-${form.itemId}`} error={errors.totalValor}>
+          <InputNumber
+            inputId={`ocr-total-${form.itemId}`}
+            value={parseCurrencyField(form.totalValor)}
+            onValueChange={(e) =>
+              patch({ totalValor: formatCurrencyField(e.value as number | null) })
+            }
+            mode="currency"
+            currency="COP"
+            locale="es-CO"
+            minFractionDigits={0}
+            maxFractionDigits={0}
+            className={`flit-input-number w-full ${errors.totalValor ? "p-invalid" : ""}`}
+            inputClassName="flit-field-input w-full"
+            aria-invalid={Boolean(errors.totalValor)}
+          />
+        </FlitFormField>
       </div>
 
       <div className="mt-4 flex justify-end">
-        <button
+        <Button
           type="button"
+          label={confirmed ? "Guardado ✓" : confirming ? "Guardando…" : "Confirmar guardado"}
+          className="flit-btn-primary"
           disabled={confirming || confirmed}
+          loading={confirming}
           onClick={onConfirm}
-          className="rounded-full bg-[var(--action)] px-5 py-2 text-sm font-medium text-white disabled:opacity-50"
           aria-label={`Confirmar comparendo ${form.numeroComparendo || form.fileName}`}
-        >
-          {confirmed ? "Guardado ✓" : confirming ? "Guardando…" : "Confirmar guardado"}
-        </button>
+        />
       </div>
     </article>
-  );
-}
-
-function Field({
-  label,
-  value,
-  error,
-  onChange,
-  type = "text",
-}: {
-  label: string;
-  value: string;
-  error?: string;
-  onChange: (value: string) => void;
-  type?: string;
-}) {
-  return (
-    <label className="block text-sm">
-      <span className="mb-1 block text-xs text-[var(--muted-foreground)]">{label}</span>
-      <input
-        type={type}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className={`h-10 w-full rounded-xl border px-3 text-sm outline-none focus:ring-2 focus:ring-[var(--action)] ${
-          error ? "border-[var(--alert)]" : "border-[var(--border)]"
-        }`}
-        aria-invalid={error ? true : undefined}
-        aria-describedby={error ? `${label}-error` : undefined}
-      />
-      {error ? (
-        <span id={`${label}-error`} className="mt-1 block text-xs text-[var(--alert)]" role="alert">
-          {error}
-        </span>
-      ) : null}
-    </label>
   );
 }

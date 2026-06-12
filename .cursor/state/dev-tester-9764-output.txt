@@ -1,0 +1,18 @@
+﻿
+ RUN  v3.2.6 C:/FLIT 2.0/juanm/frontend
+
+ Ô£ô src/features/reglas/lib/condition-tree.spec.ts > createDefaultConditionRoot > crea grupo AND con un predicado inicial 4ms
+ Ô£ô src/features/reglas/lib/condition-tree.spec.ts > createGroupNode > crea subgrupo con predicado hijo 1ms
+ Ô£ô src/features/reglas/lib/rule-builder-validation.spec.ts > validateRuleBuilderForm > exige nombre y plantilla PDF 2ms
+ Ô£ô src/features/reglas/lib/rule-builder-validation.spec.ts > validateRuleBuilderForm > exige condiciones completas en regla activa 0ms
+ Ô£ô src/features/reglas/lib/rule-builder-validation.spec.ts > validateRuleBuilderForm > acepta regla activa con predicado completo 0ms
+ Ô£ô src/features/reglas/lib/rule-builder-validation.spec.ts > condition-tree helpers > cuenta predicados en ├írbol anidado 1ms
+ Ô£ô src/components/shell/nav-config.spec.ts > nav-config > incluye Comparendos con ruta /dgc 3ms
+ Ô£ô src/components/shell/nav-config.spec.ts > nav-config > resuelve activeId para rutas DGC 1ms
+ Ô£ô src/components/shell/nav-config.spec.ts > nav-config > habilita Admin unificado en /admin 1ms
+
+ Test Files  3 passed (3)
+      Tests  9 passed (9)
+   Start at  09:22:58
+   Duration  3.19s (transform 155ms, setup 1.35s, collect 573ms, tests 17ms, environment 3.67s, prepare 720ms)
+

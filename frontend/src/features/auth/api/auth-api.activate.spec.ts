@@ -12,7 +12,7 @@ describe("auth-api activateAccount", () => {
     const result = await activateAccount({ token: "tok", password: "Pass1234!" });
 
     expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringContaining("/auth/users/activate"),
+      expect.stringContaining("/api/v1/auth/users/activate"),
       expect.objectContaining({
         method: "POST",
         body: JSON.stringify({ token: "tok", password: "Pass1234!" }),

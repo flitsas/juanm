@@ -1,19 +1,12 @@
 "use client";
 
 import { Search } from "lucide-react";
-import { Calendar } from "primereact/calendar";
-import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
+import { FlitDateField } from "@/components/flit/flit-date-field";
+import { FlitSelect } from "@/components/flit/flit-select";
+import { FlitFormField } from "@/components/flit/modal-form";
+import { COMPARENDO_ESTADO_FILTER_OPTIONS } from "../lib/comparendo-estado-options";
 import type { ComparendoMaestraFilters } from "../lib/comparendo-maestra.types";
-import { formatFilterDate, parseFilterDate } from "../lib/filter-date";
-
-const ESTADO_OPTIONS = [
-  { label: "Todos", value: "" },
-  { label: "Pendiente", value: "Pendiente" },
-  { label: "Impugnado", value: "Impugnado" },
-  { label: "Pagado", value: "Pagado" },
-  { label: "Prescrito", value: "Prescrito" },
-];
 
 type DgcMaestraFiltersProps = {
   filters: ComparendoMaestraFilters;
@@ -50,72 +43,50 @@ export function DgcMaestraFilters({ filters, secretarias, onChange }: DgcMaestra
         />
       </div>
 
-      <div className="flex min-w-[9rem] flex-col gap-1">
-        <label htmlFor="dgc-filter-estado" className="text-xs text-[var(--muted-foreground)]">
-          Estado
-        </label>
-        <Dropdown
-          inputId="dgc-filter-estado"
-          value={filters.estado}
-          options={ESTADO_OPTIONS}
-          onChange={(e) => update({ estado: (e.value as string) ?? "" })}
-          className="flit-dropdown w-full"
-          panelClassName="flit-dropdown-panel"
-          aria-label="Filtrar por estado"
-        />
+      <div className="min-w-[9rem]">
+        <FlitFormField label="Estado" htmlFor="dgc-filter-estado">
+          <FlitSelect
+            inputId="dgc-filter-estado"
+            value={filters.estado}
+            options={COMPARENDO_ESTADO_FILTER_OPTIONS}
+            onChange={(value) => update({ estado: value })}
+            aria-label="Filtrar por estado"
+          />
+        </FlitFormField>
       </div>
 
-      <div className="flex min-w-[10rem] flex-col gap-1">
-        <label htmlFor="dgc-filter-secretaria" className="text-xs text-[var(--muted-foreground)]">
-          Secretaría
-        </label>
-        <Dropdown
-          inputId="dgc-filter-secretaria"
-          value={filters.secretaria}
-          options={secretariaOptions}
-          onChange={(e) => update({ secretaria: (e.value as string) ?? "" })}
-          className="flit-dropdown w-full"
-          panelClassName="flit-dropdown-panel"
-          aria-label="Filtrar por secretaría"
-        />
+      <div className="min-w-[10rem]">
+        <FlitFormField label="Secretaría" htmlFor="dgc-filter-secretaria">
+          <FlitSelect
+            inputId="dgc-filter-secretaria"
+            value={filters.secretaria}
+            options={secretariaOptions}
+            onChange={(value) => update({ secretaria: value })}
+            aria-label="Filtrar por secretaría"
+          />
+        </FlitFormField>
       </div>
 
-      <div className="flex flex-col gap-1">
-        <label htmlFor="dgc-filter-desde" className="text-xs text-[var(--muted-foreground)]">
-          Desde
-        </label>
-        <Calendar
-          inputId="dgc-filter-desde"
-          value={parseFilterDate(filters.fechaDesde)}
-          onChange={(e) => update({ fechaDesde: formatFilterDate(e.value as Date | null) })}
-          dateFormat="dd/mm/yy"
-          showIcon
-          showButtonBar
-          appendTo={typeof document !== "undefined" ? document.body : undefined}
-          className="flit-calendar"
-          inputClassName="flit-field-input flit-field-input--calendar"
-          panelClassName="flit-datepicker-panel"
-          aria-label="Fecha desde"
-        />
+      <div className="min-w-[10rem]">
+        <FlitFormField label="Desde" htmlFor="dgc-filter-desde">
+          <FlitDateField
+            inputId="dgc-filter-desde"
+            value={filters.fechaDesde}
+            onChange={(value) => update({ fechaDesde: value })}
+            aria-label="Fecha desde"
+          />
+        </FlitFormField>
       </div>
 
-      <div className="flex flex-col gap-1">
-        <label htmlFor="dgc-filter-hasta" className="text-xs text-[var(--muted-foreground)]">
-          Hasta
-        </label>
-        <Calendar
-          inputId="dgc-filter-hasta"
-          value={parseFilterDate(filters.fechaHasta)}
-          onChange={(e) => update({ fechaHasta: formatFilterDate(e.value as Date | null) })}
-          dateFormat="dd/mm/yy"
-          showIcon
-          showButtonBar
-          appendTo={typeof document !== "undefined" ? document.body : undefined}
-          className="flit-calendar"
-          inputClassName="flit-field-input flit-field-input--calendar"
-          panelClassName="flit-datepicker-panel"
-          aria-label="Fecha hasta"
-        />
+      <div className="min-w-[10rem]">
+        <FlitFormField label="Hasta" htmlFor="dgc-filter-hasta">
+          <FlitDateField
+            inputId="dgc-filter-hasta"
+            value={filters.fechaHasta}
+            onChange={(value) => update({ fechaHasta: value })}
+            aria-label="Fecha hasta"
+          />
+        </FlitFormField>
       </div>
     </div>
   );

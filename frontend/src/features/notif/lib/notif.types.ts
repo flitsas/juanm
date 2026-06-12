@@ -66,6 +66,18 @@ export type TestProviderResult = {
 
 export type ProviderType = "api" | "sendgrid" | "flit_mail";
 
+/** Solo Development — precarga desde appsettings.Development.local.json vía API. */
+export type DevProviderPrefill = {
+  providerType: ProviderType;
+  fromAddress: string;
+  smtpHost: string;
+  smtpPort: number;
+  smtpUsername: string;
+  smtpPassword: string;
+  smtpUseSsl: boolean;
+  testDestino: string;
+};
+
 export type NotifTemplate = {
   id: string;
   name: string;

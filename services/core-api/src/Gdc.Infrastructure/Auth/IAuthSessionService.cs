@@ -9,6 +9,10 @@ public interface IAuthSessionService
         LoginRequest request,
         CancellationToken cancellationToken = default);
 
+    Task<(LoginResponse? Success, AuthError? Error)> RefreshAsync(
+        RefreshRequest request,
+        CancellationToken cancellationToken = default);
+
     Task LogoutAsync(ClaimsPrincipal principal, CancellationToken cancellationToken = default);
 
     Task<bool> IsTokenRevokedAsync(string tokenId, CancellationToken cancellationToken = default);

@@ -1,7 +1,17 @@
 {
-  "_comment": "Copia a appsettings.Development.local.json (gitignored) o define las variables en .env raíz.",
+  "_comment": "Copia a appsettings.Development.local.json (gitignored). Credenciales SMTP solo locales.",
   "Smtp": {
     "Enabled": true,
     "EnableSsl": true
+  },
+  "DevNotifProviderPrefill": {
+    "ProviderType": "flit_mail",
+    "FromAddress": "remitente@flitsas.com",
+    "SmtpHost": "smtp.office365.com",
+    "SmtpPort": 587,
+    "SmtpUsername": "remitente@flitsas.com",
+    "SmtpPassword": "CAMBIAR_EN_LOCAL",
+    "SmtpUseSsl": true,
+    "TestDestino": "tu-correo@flitsas.com"
   }
 }
