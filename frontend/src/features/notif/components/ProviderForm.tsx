@@ -152,7 +152,11 @@ export function ProviderForm({ provider, isLoading }: ProviderFormProps) {
 
       <div className="grid gap-4 md:grid-cols-2">
         <div className="md:col-span-2 max-w-md">
-          <FlitFormField label="Tipo de proveedor" htmlFor="provider-type" error={errors.providerType}>
+          <FlitFormField
+            label="Tipo de proveedor"
+            htmlFor="provider-type"
+            error={errors.providerType}
+          >
             <FlitSelect
               inputId="provider-type"
               value={form.providerType}
@@ -165,7 +169,11 @@ export function ProviderForm({ provider, isLoading }: ProviderFormProps) {
         </div>
 
         <div className="md:col-span-2 max-w-md">
-          <FlitFormField label="Remitente (From)" htmlFor="provider-from" error={errors.fromAddress}>
+          <FlitFormField
+            label="Remitente (From)"
+            htmlFor="provider-from"
+            error={errors.fromAddress}
+          >
             <InputText
               id="provider-from"
               type="email"

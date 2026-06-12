@@ -3,13 +3,13 @@
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { FlitSelect } from "@/components/flit/flit-select";
+import { createGroupNode, createPredicateNode } from "../lib/condition-tree";
 import {
   REGLAS_FIELD_OPTIONS,
   REGLAS_LOGIC_OPTIONS,
   REGLAS_NODE_TYPES,
   REGLAS_OPERATOR_OPTIONS,
 } from "../lib/reglas.constants";
-import { createGroupNode, createPredicateNode } from "../lib/condition-tree";
 import type { ConditionNode } from "../lib/reglas.types";
 
 type ConditionTreeEditorProps = {
@@ -74,7 +74,11 @@ export function ConditionTreeEditor({ root, onChange, depth = 0 }: ConditionTree
 
       <div className="space-y-3 pl-2">
         {children.map((child, index) => (
-          <div key={`${depth}-${index}`} className="relative">
+          <div
+            // biome-ignore lint/suspicious/noArrayIndexKey: nodos del árbol no tienen id estable hasta persistir
+            key={`${depth}-${index}-${child.nodeType}-${child.fieldKey ?? child.logicOperator ?? ""}`}
+            className="relative"
+          >
             {child.nodeType === REGLAS_NODE_TYPES.group ? (
               <div className="space-y-2">
                 <ConditionTreeEditor

@@ -1,7 +1,12 @@
 "use client";
 
 import { useReglasMatches, useReglasRuns } from "../api/use-runs";
-import { formatMatchStatus, formatRunMetrics, formatRunStatus, formatTriggerType } from "../lib/execution-labels";
+import {
+  formatMatchStatus,
+  formatRunMetrics,
+  formatRunStatus,
+  formatTriggerType,
+} from "../lib/execution-labels";
 import { aggregateRunMetrics, countMatchesByStatus } from "../lib/logs-metrics";
 
 function formatDateTime(value: string | null | undefined): string {
@@ -73,11 +78,11 @@ export function LogsSection() {
           ) : null}
 
           <div>
-            <h3 className="mb-3 text-base font-semibold text-[var(--deep)]">Historial de corridas</h3>
+            <h3 className="mb-3 text-base font-semibold text-[var(--deep)]">
+              Historial de corridas
+            </h3>
             {runs.length === 0 ? (
-              <div
-                className="rounded-2xl border border-dashed border-[var(--border)] bg-[var(--card)] p-8 text-center text-sm text-[var(--muted-foreground)]"
-              >
+              <div className="rounded-2xl border border-dashed border-[var(--border)] bg-[var(--card)] p-8 text-center text-sm text-[var(--muted-foreground)]">
                 Sin corridas registradas.
               </div>
             ) : (
@@ -137,7 +142,9 @@ export function LogsSection() {
                   <tbody>
                     {matches.map((match) => (
                       <tr key={match.id} className="border-t border-[var(--border)]/60">
-                        <td className="px-4 py-3 font-medium text-[var(--deep)]">{match.ruleName}</td>
+                        <td className="px-4 py-3 font-medium text-[var(--deep)]">
+                          {match.ruleName}
+                        </td>
                         <td className="px-4 py-3">{match.comparendoNumero}</td>
                         <td className="px-4 py-3">{formatMatchStatus(match.status)}</td>
                         <td className="px-4 py-3 text-[var(--muted-foreground)]">

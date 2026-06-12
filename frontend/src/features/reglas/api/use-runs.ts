@@ -1,11 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { reglasQueryKeys } from "./query-keys";
 import {
   fetchReglasMatches,
   fetchReglasRuns,
   processReglasRun,
   triggerReglasRun,
 } from "./reglas-api";
-import { reglasQueryKeys } from "./query-keys";
 
 export function useReglasRuns() {
   return useQuery({
@@ -21,7 +21,8 @@ export function useReglasMatches(
 ) {
   return useQuery({
     queryKey: reglasQueryKeys.matches(runId, ruleId),
-    queryFn: ({ signal }) => fetchReglasMatches({ runId: runId ?? undefined, ruleId: ruleId ?? undefined }, { signal }),
+    queryFn: ({ signal }) =>
+      fetchReglasMatches({ runId: runId ?? undefined, ruleId: ruleId ?? undefined }, { signal }),
     enabled: options?.enabled ?? true,
   });
 }

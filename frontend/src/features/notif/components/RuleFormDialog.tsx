@@ -5,12 +5,8 @@ import { Checkbox } from "primereact/checkbox";
 import { InputNumber } from "primereact/inputnumber";
 import { InputText } from "primereact/inputtext";
 import { useEffect, useMemo, useState } from "react";
-import {
-  FlitFormField,
-  FlitModal,
-  FlitModalActions,
-} from "@/components/flit/modal-form";
 import { FlitSelect } from "@/components/flit/flit-select";
+import { FlitFormField, FlitModal, FlitModalActions } from "@/components/flit/modal-form";
 import type { NotifRule, NotifTemplate, TriggerReference } from "../lib/notif.types";
 import {
   EMPTY_RULE_FORM,
@@ -146,7 +142,11 @@ export function RuleFormDialog({
           />
         </FlitFormField>
 
-        <FlitFormField label="Tipo de disparador" htmlFor="rule-trigger-type" error={errors.triggerType}>
+        <FlitFormField
+          label="Tipo de disparador"
+          htmlFor="rule-trigger-type"
+          error={errors.triggerType}
+        >
           <FlitSelect
             inputId="rule-trigger-type"
             value={form.triggerType}
@@ -183,7 +183,11 @@ export function RuleFormDialog({
         ) : null}
 
         {form.triggerType === "state" ? (
-          <FlitFormField label="Estado del comparendo" htmlFor="rule-estado" error={errors.triggerEstado}>
+          <FlitFormField
+            label="Estado del comparendo"
+            htmlFor="rule-estado"
+            error={errors.triggerEstado}
+          >
             <InputText
               id="rule-estado"
               value={form.triggerEstado}

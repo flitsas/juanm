@@ -12,8 +12,8 @@ export function SchedulerPanel() {
     >
       <h2 className="text-lg font-semibold text-[var(--deep)]">Motor programado</h2>
       <p className="mt-1 text-sm text-[var(--muted-foreground)]">
-        El worker en segundo plano evalúa reglas activas y, si está habilitado, orquesta PDF y correo
-        tras cada ciclo.
+        El worker en segundo plano evalúa reglas activas y, si está habilitado, orquesta PDF y
+        correo tras cada ciclo.
       </p>
       <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-3">
         <div>
@@ -39,8 +39,9 @@ export function SchedulerPanel() {
         </div>
       </dl>
       <p className="mt-3 text-xs text-[var(--muted-foreground)]">
-        Configuración servidor: <code className="font-mono">Reglas:Execution</code>. Valores mostrados
-        vía variables <code className="font-mono">NEXT_PUBLIC_REGLAS_*</code> para referencia en UI.
+        Configuración servidor: <code className="font-mono">Reglas:Execution</code>. Valores
+        mostrados vía variables <code className="font-mono">NEXT_PUBLIC_REGLAS_*</code> para
+        referencia en UI.
       </p>
     </div>
   );

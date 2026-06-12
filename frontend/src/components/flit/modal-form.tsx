@@ -46,6 +46,9 @@ export function FlitModal({
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
+      onKeyDown={(e) => {
+        if (e.key === "Escape") onClose();
+      }}
     >
       <div
         className={`flit-modal flit-card flex max-h-[90vh] w-full ${SIZE_CLASS[size]} flex-col overflow-hidden`}
@@ -107,13 +110,7 @@ export function FlitModalActions({ children }: { children: ReactNode }) {
   return <div className="flex flex-wrap items-center justify-end gap-3">{children}</div>;
 }
 
-export function FlitModalActionsSplit({
-  start,
-  end,
-}: {
-  start?: ReactNode;
-  end: ReactNode;
-}) {
+export function FlitModalActionsSplit({ start, end }: { start?: ReactNode; end: ReactNode }) {
   return (
     <div className="flex flex-wrap items-center justify-between gap-3">
       <div>{start ?? null}</div>

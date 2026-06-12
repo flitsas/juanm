@@ -40,7 +40,9 @@ test.describe("NOTIF proveedor — prueba SMTP real", () => {
 
     await expect(page.locator("#smtp-host")).toHaveValue("smtp.office365.com", { timeout: 10_000 });
     await expect(page.locator("#provider-from")).toHaveValue("tramitesvehiculos@flitsas.com");
-    await expect(page.getByTestId("provider-test-destino")).toHaveValue("willyn.londono@flitsas.com");
+    await expect(page.getByTestId("provider-test-destino")).toHaveValue(
+      "willyn.londono@flitsas.com",
+    );
 
     await page.getByTestId("provider-test-btn").click();
     await expect(page.getByRole("status")).toContainText(/sent|enviado|Test email/i, {

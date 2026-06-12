@@ -1,5 +1,5 @@
-import type { ConditionNode } from "./reglas.types";
 import { REGLAS_LOGIC_OPERATORS, REGLAS_NODE_TYPES } from "./reglas.constants";
+import type { ConditionNode } from "./reglas.types";
 
 export function createDefaultConditionRoot(): ConditionNode {
   return {

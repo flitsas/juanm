@@ -75,11 +75,7 @@ export function DgcOcrBufferForm({
           />
         </FlitFormField>
 
-        <FlitFormField
-          label="Estado *"
-          htmlFor={`ocr-estado-${form.itemId}`}
-          error={errors.estado}
-        >
+        <FlitFormField label="Estado *" htmlFor={`ocr-estado-${form.itemId}`} error={errors.estado}>
           <FlitSelect
             inputId={`ocr-estado-${form.itemId}`}
             value={form.estado}
@@ -134,15 +130,13 @@ export function DgcOcrBufferForm({
           />
         </FlitFormField>
 
-        <FlitFormField
-          label="Total"
-          htmlFor={`ocr-total-${form.itemId}`}
-          error={errors.totalValor}
-        >
+        <FlitFormField label="Total" htmlFor={`ocr-total-${form.itemId}`} error={errors.totalValor}>
           <InputNumber
             inputId={`ocr-total-${form.itemId}`}
             value={parseCurrencyField(form.totalValor)}
-            onValueChange={(e) => patch({ totalValor: formatCurrencyField(e.value as number | null) })}
+            onValueChange={(e) =>
+              patch({ totalValor: formatCurrencyField(e.value as number | null) })
+            }
             mode="currency"
             currency="COP"
             locale="es-CO"

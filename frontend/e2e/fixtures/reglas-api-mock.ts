@@ -1,7 +1,5 @@
 import type { Page, Route } from "@playwright/test";
 
-const TENANT_ID = "22222222-2222-2222-2222-222222222222";
-
 export const mockReglasRule = {
   id: "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
   name: "DP Secretaría Bogotá",
@@ -107,7 +105,10 @@ export async function installReglasApiMocks(page: Page) {
     }
 
     if (path === "/contacts" && method === "POST") {
-      const body = route.request().postDataJSON() as Omit<typeof mockReglasContact, "id" | "createdAt">;
+      const body = route.request().postDataJSON() as Omit<
+        typeof mockReglasContact,
+        "id" | "createdAt"
+      >;
       const created = {
         ...mockReglasContact,
         ...body,

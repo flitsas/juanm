@@ -4,19 +4,15 @@ import { Button } from "primereact/button";
 import { Checkbox } from "primereact/checkbox";
 import { InputText } from "primereact/inputtext";
 import { useEffect, useState } from "react";
+import { FlitFormField, FlitModal, FlitModalActions } from "@/components/flit/modal-form";
 import {
-  FlitFormField,
-  FlitModal,
-  FlitModalActions,
-} from "@/components/flit/modal-form";
-import type { ReglasSecretariatContact } from "../lib/reglas.types";
-import {
+  type ContactFormState,
   EMPTY_CONTACT_FORM,
   hasContactErrors,
-  type ContactFormState,
   toContactPayload,
   validateContactForm,
 } from "../lib/contact-validation";
+import type { ReglasSecretariatContact } from "../lib/reglas.types";
 
 type ContactFormDialogProps = {
   open: boolean;

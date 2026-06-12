@@ -13,7 +13,9 @@ test.describe("NOTIF admin — Feature #9563", () => {
     await expect(page.getByTestId("unified-admin-page")).toBeVisible();
     await expect(page.getByTestId("admin-companies-sidebar")).toBeVisible();
     await expect(page.getByTestId(`company-card-${mockCompany.id}`)).toBeVisible();
-    await expect(page.getByTestId(`company-card-${mockCompany.id}`).getByText(mockCompany.name)).toBeVisible();
+    await expect(
+      page.getByTestId(`company-card-${mockCompany.id}`).getByText(mockCompany.name),
+    ).toBeVisible();
     await page.getByTestId(`edit-company-${mockCompany.id}`).click();
     await expect(page.getByTestId("notif-company-form-dialog")).toBeVisible();
     await expect(page.locator("#company-email")).toHaveValue(mockCompany.contactEmail ?? "");

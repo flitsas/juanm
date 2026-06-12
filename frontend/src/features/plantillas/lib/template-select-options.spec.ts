@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
+import type { PdfTemplateSummary } from "./plantillas.types";
 import {
   buildPdfTemplateSelectOptions,
   formatPdfTemplateLabel,
   pickDefaultPdfTemplateId,
   resolvePdfTemplateName,
 } from "./template-select-options";
-import type { PdfTemplateSummary } from "./plantillas.types";
 
 const active: PdfTemplateSummary = {
   id: "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",

@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { SaveReglasContactPayload } from "../lib/reglas.types";
-import { createReglasContact, deleteReglasContact, updateReglasContact } from "./reglas-api";
 import { reglasQueryKeys } from "./query-keys";
+import { createReglasContact, deleteReglasContact, updateReglasContact } from "./reglas-api";
 
 export function useReglasContactMutations() {
   const queryClient = useQueryClient();

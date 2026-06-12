@@ -5,11 +5,7 @@ import { Checkbox } from "primereact/checkbox";
 import { InputMask } from "primereact/inputmask";
 import { InputText } from "primereact/inputtext";
 import { useEffect, useState } from "react";
-import {
-  FlitFormField,
-  FlitModal,
-  FlitModalActionsSplit,
-} from "@/components/flit/modal-form";
+import { FlitFormField, FlitModal, FlitModalActionsSplit } from "@/components/flit/modal-form";
 import type { CreateCompanyPayload, NotifCompany } from "../lib/notif.types";
 
 type CompanyFormDialogProps = {
@@ -137,7 +133,11 @@ export function CompanyFormDialog({
           />
         </FlitFormField>
 
-        <FlitFormField label="Correo de contacto" htmlFor="company-email" error={errors.contactEmail}>
+        <FlitFormField
+          label="Correo de contacto"
+          htmlFor="company-email"
+          error={errors.contactEmail}
+        >
           <InputText
             id="company-email"
             type="email"

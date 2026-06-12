@@ -5,17 +5,17 @@ import { Checkbox } from "primereact/checkbox";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
 import { useEffect, useMemo, useState } from "react";
-import {
-  FlitFormField,
-  FlitModal,
-  FlitModalActions,
-} from "@/components/flit/modal-form";
 import { FlitSelect } from "@/components/flit/flit-select";
+import { FlitFormField, FlitModal, FlitModalActions } from "@/components/flit/modal-form";
 import { usePdfTemplates } from "@/features/plantillas/api/use-plantillas";
 import { PdfTemplateDropdown } from "@/features/plantillas/components/PdfTemplateDropdown";
 import { pickDefaultPdfTemplateId } from "@/features/plantillas/lib/template-select-options";
 import { createDefaultConditionRoot } from "../lib/condition-tree";
-import type { ReglasRule, ReglasSecretariatContact, SaveReglasRulePayload } from "../lib/reglas.types";
+import type {
+  ReglasRule,
+  ReglasSecretariatContact,
+  SaveReglasRulePayload,
+} from "../lib/reglas.types";
 import {
   EMPTY_RULE_BUILDER_FORM,
   hasRuleBuilderErrors,
@@ -185,7 +185,11 @@ export function ReglasRuleFormDialog({
           />
         </FlitFormField>
 
-        <FlitFormField label="Asunto correo" htmlFor="reglas-email-subject" error={errors.emailSubject}>
+        <FlitFormField
+          label="Asunto correo"
+          htmlFor="reglas-email-subject"
+          error={errors.emailSubject}
+        >
           <InputText
             id="reglas-email-subject"
             value={form.emailSubject}

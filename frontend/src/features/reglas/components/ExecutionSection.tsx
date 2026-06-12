@@ -42,7 +42,7 @@ export function ExecutionSection() {
 
   useEffect(() => {
     if (!selectedRunId && runs.length > 0) {
-      setSelectedRunId(runs[0]!.id);
+      setSelectedRunId(runs[0]?.id ?? "");
     }
   }, [runs, selectedRunId]);
 
@@ -169,7 +169,9 @@ export function ExecutionSection() {
                     onClick={() => setSelectedRunId(run.id)}
                     data-testid={`reglas-run-row-${run.id}`}
                   >
-                    <td className="px-4 py-3 text-[var(--deep)]">{formatDateTime(run.startedAt)}</td>
+                    <td className="px-4 py-3 text-[var(--deep)]">
+                      {formatDateTime(run.startedAt)}
+                    </td>
                     <td className="px-4 py-3 text-[var(--muted-foreground)]">
                       {formatTriggerType(run.triggerType)}
                     </td>
@@ -212,7 +214,9 @@ export function ExecutionSection() {
 
       {selectedRunId ? (
         <div className="space-y-3">
-          <h3 className="text-base font-semibold text-[var(--deep)]">Coincidencias de la corrida</h3>
+          <h3 className="text-base font-semibold text-[var(--deep)]">
+            Coincidencias de la corrida
+          </h3>
 
           {matchesQuery.isLoading ? (
             <div

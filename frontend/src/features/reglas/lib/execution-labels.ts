@@ -57,5 +57,7 @@ export function getSchedulerDisplayConfig(): {
 export function canExecuteReglas(role: string | undefined): boolean {
   if (!role) return false;
   const normalized = role.toLowerCase();
-  return normalized === "tenantadmin" || normalized === "superadmin" || normalized === "super_admin";
+  return (
+    normalized === "tenantadmin" || normalized === "superadmin" || normalized === "super_admin"
+  );
 }

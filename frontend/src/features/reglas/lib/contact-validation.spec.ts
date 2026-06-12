@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { hasContactErrors, validateContactForm, EMPTY_CONTACT_FORM } from "./contact-validation";
+import { EMPTY_CONTACT_FORM, hasContactErrors, validateContactForm } from "./contact-validation";
 
 describe("validateContactForm", () => {
   it("exige campos obligatorios y email válido", () => {

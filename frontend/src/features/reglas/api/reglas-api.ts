@@ -173,19 +173,19 @@ export async function fetchReglasMatches(
   if (params?.runId) search.set("runId", params.runId);
   if (params?.ruleId) search.set("ruleId", params.ruleId);
   const qs = search.toString();
-  const response = await fetch(
-    `${getApiBaseUrl()}/api/v1/reglas/matches${qs ? `?${qs}` : ""}`,
-    {
-      ...init,
-      headers: { ...buildReglasHeaders(), ...init?.headers },
-      cache: "no-store",
-    },
-  );
+  const response = await fetch(`${getApiBaseUrl()}/api/v1/reglas/matches${qs ? `?${qs}` : ""}`, {
+    ...init,
+    headers: { ...buildReglasHeaders(), ...init?.headers },
+    cache: "no-store",
+  });
   if (!response.ok) throw await parseError(response);
   return response.json() as Promise<ReglasMatchListResult>;
 }
 
-export async function processReglasRun(id: string, init?: RequestInit): Promise<ReglasProcessResult> {
+export async function processReglasRun(
+  id: string,
+  init?: RequestInit,
+): Promise<ReglasProcessResult> {
   const response = await fetch(`${getApiBaseUrl()}/api/v1/reglas/runs/${id}/process`, {
     method: "POST",
     ...init,

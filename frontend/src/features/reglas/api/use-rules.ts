@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { SaveReglasRulePayload } from "../lib/reglas.types";
+import { reglasQueryKeys } from "./query-keys";
 import {
   createReglasRule,
   deleteReglasRule,
@@ -7,7 +8,6 @@ import {
   fetchReglasRules,
   updateReglasRule,
 } from "./reglas-api";
-import { reglasQueryKeys } from "./query-keys";
 
 export function useReglasRules() {
   return useQuery({

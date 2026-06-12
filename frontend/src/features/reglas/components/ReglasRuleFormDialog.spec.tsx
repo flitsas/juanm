@@ -4,13 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 import { ReglasRuleFormDialog } from "./ReglasRuleFormDialog";
 
 vi.mock("@/features/plantillas/components/PdfTemplateDropdown", () => ({
-  PdfTemplateDropdown: ({
-    value,
-    onChange,
-  }: {
-    value: string;
-    onChange: (id: string) => void;
-  }) => (
+  PdfTemplateDropdown: ({ value, onChange }: { value: string; onChange: (id: string) => void }) => (
     <select
       data-testid="reglas-pdf-template-dropdown"
       value={value}
@@ -63,9 +57,7 @@ describe("ReglasRuleFormDialog", () => {
 
   it("preselecciona plantilla activa al crear regla", () => {
     renderDialog();
-    const select = screen.getByTestId(
-      "reglas-pdf-template-dropdown",
-    ) as HTMLSelectElement;
+    const select = screen.getByTestId("reglas-pdf-template-dropdown") as HTMLSelectElement;
     expect(select.value).toBe("33333333-3333-3333-3333-333333333333");
   });
 });

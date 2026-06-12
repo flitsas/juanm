@@ -107,10 +107,10 @@ export function ContactsSection() {
                     {contact.secretariatCode}
                   </td>
                   <td className="px-4 py-3">{contact.contactName}</td>
-                  <td className="px-4 py-3 text-[var(--muted-foreground)]">{contact.contactEmail}</td>
-                  <td className="px-4 py-3">
-                    {contact.isActive ? "Activo" : "Inactivo"}
+                  <td className="px-4 py-3 text-[var(--muted-foreground)]">
+                    {contact.contactEmail}
                   </td>
+                  <td className="px-4 py-3">{contact.isActive ? "Activo" : "Inactivo"}</td>
                   <td className="px-4 py-3">
                     <div className="flex justify-end gap-2">
                       <Button

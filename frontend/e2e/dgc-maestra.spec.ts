@@ -21,7 +21,9 @@ test.describe("DGC maestra — Feature #9560", () => {
 
   test("Detalle — pestañas detalle, DP y correos", async ({ page }) => {
     await page.goto("/dgc", { waitUntil: "domcontentloaded" });
-    await page.getByRole("button", { name: `Abrir detalle ${mockComparendo.numeroComparendo}` }).click();
+    await page
+      .getByRole("button", { name: `Abrir detalle ${mockComparendo.numeroComparendo}` })
+      .click();
     await expect(page.getByTestId("dgc-detail-panel")).toBeVisible();
     await expect(page.getByTestId("gdc-dp-section")).toBeVisible();
     await expect(page.getByTestId("gdc-dp-grid")).toBeVisible();
