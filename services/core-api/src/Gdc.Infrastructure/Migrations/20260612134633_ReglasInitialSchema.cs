@@ -36,7 +36,7 @@ namespace Gdc.Infrastructure.Migrations
                     updated_by = table.Column<Guid>(type: "uuid", nullable: true),
                     deleted_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     deleted_by = table.Column<Guid>(type: "uuid", nullable: true),
-                    row_version = table.Column<uint>(type: "xid", rowVersion: true, nullable: false, defaultValue: 0u)
+                    row_version = table.Column<uint>(type: "xid", rowVersion: true, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -62,7 +62,7 @@ namespace Gdc.Infrastructure.Migrations
                     updated_by = table.Column<Guid>(type: "uuid", nullable: true),
                     deleted_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     deleted_by = table.Column<Guid>(type: "uuid", nullable: true),
-                    row_version = table.Column<uint>(type: "xid", rowVersion: true, nullable: false, defaultValue: 0u)
+                    row_version = table.Column<uint>(type: "xid", rowVersion: true, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -89,7 +89,7 @@ namespace Gdc.Infrastructure.Migrations
                     updated_by = table.Column<Guid>(type: "uuid", nullable: true),
                     deleted_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     deleted_by = table.Column<Guid>(type: "uuid", nullable: true),
-                    row_version = table.Column<uint>(type: "xid", rowVersion: true, nullable: false, defaultValue: 0u)
+                    row_version = table.Column<uint>(type: "xid", rowVersion: true, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -124,7 +124,7 @@ namespace Gdc.Infrastructure.Migrations
                     updated_by = table.Column<Guid>(type: "uuid", nullable: true),
                     deleted_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     deleted_by = table.Column<Guid>(type: "uuid", nullable: true),
-                    row_version = table.Column<uint>(type: "xid", rowVersion: true, nullable: false, defaultValue: 0u)
+                    row_version = table.Column<uint>(type: "xid", rowVersion: true, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -166,7 +166,7 @@ namespace Gdc.Infrastructure.Migrations
                     updated_by = table.Column<Guid>(type: "uuid", nullable: true),
                     deleted_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     deleted_by = table.Column<Guid>(type: "uuid", nullable: true),
-                    row_version = table.Column<uint>(type: "xid", rowVersion: true, nullable: false, defaultValue: 0u)
+                    row_version = table.Column<uint>(type: "xid", rowVersion: true, nullable: false)
                 },
                 constraints: table =>
                 {

@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { FLIT_BRAND } from "@/lib/flit-brand";
 
@@ -9,17 +8,15 @@ type FlitLogoProps = {
 
 /**
  * Logo blanco/lime — flitready-suite flit-logo.tsx (panel gradiente login).
+ * Usa <img> nativo como el prototipo Lovable (wordmark + brackets ya en el asset).
  */
 export function FlitLogo({ className, showTagline = false }: FlitLogoProps) {
   return (
     <div className={className}>
-      <Image
+      <img
         src={FLIT_BRAND.logo}
         alt="Flit Ready"
-        width={560}
-        height={160}
         className="pointer-events-none h-auto w-full select-none"
-        priority
         draggable={false}
       />
       {showTagline ? (
@@ -34,6 +31,22 @@ export function FlitLogo({ className, showTagline = false }: FlitLogoProps) {
   );
 }
 
+/** Badge compacto con gradiente — flitready-suite FlitLogoBadge */
+export function FlitLogoBadge({ className }: { className?: string }) {
+  return (
+    <div
+      className={`flex items-center gap-2 rounded-2xl bg-gradient-flit px-3 py-2 shadow-md ${className ?? ""}`}
+    >
+      <img
+        src={FLIT_BRAND.logo}
+        alt="Flit Ready"
+        className="h-7 w-auto select-none"
+        draggable={false}
+      />
+    </div>
+  );
+}
+
 type FlitLogoBlueProps = {
   className?: string;
   href?: string;
@@ -42,13 +55,10 @@ type FlitLogoBlueProps = {
 /** Logo azul del header — flitready-suite app-header.tsx */
 export function FlitLogoBlue({ className, href = "/" }: FlitLogoBlueProps) {
   const img = (
-    <Image
+    <img
       src={FLIT_BRAND.logoBlue}
       alt="Flit Ready"
-      width={180}
-      height={56}
       className={`pointer-events-none h-14 w-auto select-none dark:brightness-0 dark:invert ${className ?? ""}`}
-      priority
       draggable={false}
     />
   );
@@ -72,12 +82,13 @@ type FlitIsotipoProps = {
 /** Isotipo blanco sobre FAB del dock — flitready-suite right-dock.tsx */
 export function FlitIsotipo({ className, size = 42 }: FlitIsotipoProps) {
   return (
-    <Image
+    <img
       src={FLIT_BRAND.isotipo}
       alt=""
       width={size}
       height={size}
       className={`brightness-0 invert ${className ?? ""}`}
+      style={{ width: size, height: size }}
       aria-hidden
       draggable={false}
     />

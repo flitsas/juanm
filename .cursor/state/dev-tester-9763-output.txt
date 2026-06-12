@@ -1,0 +1,49 @@
+﻿  Determinando los proyectos que se van a restaurar...
+  Todos los proyectos est├ín actualizados para la restauraci├│n.
+  Gdc.Modules.Notif -> C:\FLIT 2.0\juanm\services\core-api\src\Gdc.Modules.Notif\bin\Debug\net10.0\Gdc.Modules.Notif.dll
+  Gdc.Modules.Dgc -> C:\FLIT 2.0\juanm\services\core-api\src\Gdc.Modules.Dgc\bin\Debug\net10.0\Gdc.Modules.Dgc.dll
+  Gdc.Modules.Reglas -> C:\FLIT 2.0\juanm\services\core-api\src\Gdc.Modules.Reglas\bin\Debug\net10.0\Gdc.Modules.Reglas.dll
+  Gdc.Infrastructure -> C:\FLIT 2.0\juanm\services\core-api\src\Gdc.Infrastructure\bin\Debug\net10.0\Gdc.Infrastructure.dll
+  Gdc.Infrastructure.Tests -> C:\FLIT 2.0\juanm\services\core-api\tests\Gdc.Infrastructure.Tests\bin\Debug\net10.0\Gdc.Infrastructure.Tests.dll
+  Gdc.Api -> C:\FLIT 2.0\juanm\services\core-api\src\Gdc.Api\bin\Debug\net10.0\Gdc.Api.dll
+  Gdc.Api.Tests -> C:\FLIT 2.0\juanm\services\core-api\tests\Gdc.Api.Tests\bin\Debug\net10.0\Gdc.Api.Tests.dll
+Serie de pruebas para C:\FLIT 2.0\juanm\services\core-api\tests\Gdc.Api.Tests\bin\Debug\net10.0\Gdc.Api.Tests.dll (.NETCoreApp,Version=v10.0)
+1 archivos de prueba en total coincidieron con el patr├│n especificado.
+C:\FLIT 2.0\juanm\services\core-api\tests\Gdc.Api.Tests\bin\Debug\net10.0\Gdc.Api.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v3.1.4+50e68bbb8b (64-bit .NET 10.0.8)
+[xUnit.net 00:00:00.15]   Discovering: Gdc.Api.Tests
+[xUnit.net 00:00:00.23]   Discovered:  Gdc.Api.Tests
+[xUnit.net 00:00:00.28]   Starting:    Gdc.Api.Tests
+  Correctas Gdc.Api.Tests.Reglas.ReglasSecretariatContactTests.Operator_cannot_create_contact [196 ms]
+  Correctas Gdc.Api.Tests.Reglas.ReglasSchemaTests.Model_contains_required_reglas_entities [1 s]
+  Correctas Gdc.Api.Tests.Reglas.ReglasSchemaTests.Rule_processing_record_has_unique_success_per_rule_comparendo_index [32 ms]
+  Correctas Gdc.Api.Tests.Reglas.ReglasSchemaTests.All_reglas_entities_have_tenant_id_column [126 ms]
+  Correctas Gdc.Api.Tests.Reglas.ReglasSchemaTests.Migration_enables_row_level_security [3 ms]
+  Correctas Gdc.Api.Tests.Reglas.ReglasSecretariatContactTests.Operator_can_list_contacts [1 s]
+  Correctas Gdc.Api.Tests.Reglas.ReglasSecretariatContactTests.Operator_cannot_trigger_manual_run [2 ms]
+  Correctas Gdc.Api.Tests.Reglas.ReglasRuleTests.GetByIdAsync_returns_nested_conditions [1 s]
+  Correctas Gdc.Api.Tests.Reglas.ReglasOrchestrationTests.ProcessMatchesAsync_fails_without_secretariat_contact [1 s]
+  Correctas Gdc.Api.Tests.Reglas.ReglasOrchestrationTests.GdcPdfTemplateRendererStub_returns_document_ref [8 ms]
+  Correctas Gdc.Api.Tests.Reglas.ReglasSecretariatContactTests.TenantAdmin_can_trigger_manual_run [112 ms]
+  Correctas Gdc.Api.Tests.Reglas.ReglasRuleTests.UpdateAsync_replaces_condition_tree [80 ms]
+  Correctas Gdc.Api.Tests.Reglas.ReglasSecretariatContactTests.Resolver_prefers_comparendo_secretaria_over_rule_contact [21 ms]
+  Correctas Gdc.Api.Tests.Reglas.ReglasSecretariatContactTests.CreateAsync_persists_secretariat_contact [20 ms]
+  Correctas Gdc.Api.Tests.Reglas.ReglasSecretariatContactTests.CreateAsync_rejects_duplicate_secretariat_code [3 ms]
+  Correctas Gdc.Api.Tests.Reglas.ReglasEvaluationTests.ListMatchesAsync_returns_rule_and_comparendo_labels [1 s]
+  Correctas Gdc.Api.Tests.Reglas.ReglasEvaluationTests.Matches_predicate_eq_on_estado [< 1 ms]
+  Correctas Gdc.Api.Tests.Reglas.ReglasEvaluationTests.RunForTenantAsync_skips_inactive_rules [3 ms]
+  Correctas Gdc.Api.Tests.Reglas.ReglasEvaluationTests.Matches_and_group_requires_all_children [1 ms]
+  Correctas Gdc.Api.Tests.Reglas.ReglasRuleTests.CreateReglasRuleRequestValidator_rejects_active_rule_without_conditions [85 ms]
+  Correctas Gdc.Api.Tests.Reglas.ReglasEvaluationTests.RunForTenantAsync_records_matches_and_skips_success_pairs [45 ms]
+  Correctas Gdc.Api.Tests.Reglas.ReglasEvaluationTests.Matches_or_group_matches_any_child [< 1 ms]
+  Correctas Gdc.Api.Tests.Reglas.ReglasRuleTests.DeleteAsync_soft_deletes_rule [19 ms]
+  Correctas Gdc.Api.Tests.Reglas.ReglasRuleTests.CreateReglasRuleRequestValidator_rejects_active_rule_without_pdf_template [18 ms]
+  Correctas Gdc.Api.Tests.Reglas.ReglasRuleTests.CreateAsync_persists_rule_with_condition_tree [1 ms]
+[xUnit.net 00:00:02.34]   Finished:    Gdc.Api.Tests
+  Correctas Gdc.Api.Tests.Reglas.ReglasRuleTests.CreateAsync_validates_secretariat_contact_exists [1 ms]
+  Correctas Gdc.Api.Tests.Reglas.ReglasOrchestrationTests.ProcessMatchesAsync_marks_record_success_with_pdf_and_email_refs [176 ms]
+
+La serie de pruebas se ejecut├│ correctamente.
+Pruebas totales: 27
+     Correcto: 27
+ Tiempo total: 3.2076 Segundos

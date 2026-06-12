@@ -1,0 +1,19 @@
+﻿
+ RUN  v3.2.6 C:/FLIT 2.0/juanm/frontend
+
+ Ô£ô src/features/reglas/lib/execution-labels.spec.ts > execution-labels > traduce estados de corrida y disparador 8ms
+ Ô£ô src/features/reglas/lib/execution-labels.spec.ts > execution-labels > resume m├®tricas de corrida 2ms
+ Ô£ô src/features/reglas/lib/execution-labels.spec.ts > execution-labels > permite ejecuci├│n solo a TenantAdmin y SuperAdmin 1ms
+ Ô£ô src/features/reglas/lib/condition-tree.spec.ts > createDefaultConditionRoot > crea grupo AND con un predicado inicial 10ms
+ Ô£ô src/features/reglas/lib/condition-tree.spec.ts > createGroupNode > crea subgrupo con predicado hijo 2ms
+ Ô£ô src/features/reglas/lib/rule-builder-validation.spec.ts > validateRuleBuilderForm > exige nombre y plantilla PDF 7ms
+ Ô£ô src/features/reglas/lib/rule-builder-validation.spec.ts > validateRuleBuilderForm > exige condiciones completas en regla activa 1ms
+ Ô£ô src/features/reglas/lib/rule-builder-validation.spec.ts > validateRuleBuilderForm > acepta regla activa con predicado completo 1ms
+ Ô£ô src/features/reglas/lib/rule-builder-validation.spec.ts > condition-tree helpers > cuenta predicados en ├írbol anidado 2ms
+ Ô£ô src/features/reglas/api/reglas-api.spec.ts > fetchReglasMatches > incluye runId en query string 9ms
+
+ Test Files  4 passed (4)
+      Tests  10 passed (10)
+   Start at  09:27:14
+   Duration  4.04s (transform 445ms, setup 2.83s, collect 1.00s, tests 63ms, environment 7.00s, prepare 1.10s)
+
