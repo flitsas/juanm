@@ -6,6 +6,9 @@ import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
 import { type ReactNode, useEffect, useMemo, useState } from "react";
+import { PdfTemplateDropdown } from "@/features/plantillas/components/PdfTemplateDropdown";
+import { usePdfTemplates } from "@/features/plantillas/api/use-plantillas";
+import { pickDefaultPdfTemplateId } from "@/features/plantillas/lib/template-select-options";
 import { createDefaultConditionRoot } from "../lib/condition-tree";
 import type { ReglasRule, ReglasSecretariatContact, SaveReglasRulePayload } from "../lib/reglas.types";
 import {
@@ -35,6 +38,7 @@ export function ReglasRuleFormDialog({
 }: ReglasRuleFormDialogProps) {
   const [form, setForm] = useState<RuleBuilderFormState>(EMPTY_RULE_BUILDER_FORM);
   const [errors, setErrors] = useState<ReturnType<typeof validateRuleBuilderForm>>({});
+  const templatesQuery = usePdfTemplates();
 
   const contactOptions = useMemo(
     () => [
@@ -63,6 +67,13 @@ export function ReglasRuleFormDialog({
     });
     setErrors({});
   }, [open, rule]);
+
+  useEffect(() => {
+    if (!open || rule || templatesQuery.isLoading || !templatesQuery.data) return;
+    const defaultId = pickDefaultPdfTemplateId(templatesQuery.data.items);
+    if (!defaultId) return;
+    setForm((prev) => (prev.pdfTemplateId.trim() ? prev : { ...prev, pdfTemplateId: defaultId }));
+  }, [open, rule, templatesQuery.isLoading, templatesQuery.data]);
 
   if (!open) return null;
 
@@ -130,11 +141,12 @@ export function ReglasRuleFormDialog({
           </div>
 
           <Field label="Plantilla PDF (GDC)" error={errors.pdfTemplateId}>
-            <InputText
+            <PdfTemplateDropdown
               value={form.pdfTemplateId}
-              onChange={(e) => update({ pdfTemplateId: e.target.value })}
-              className="flit-field-input w-full font-mono text-xs"
-              placeholder="UUID plantilla GDC"
+              onChange={(pdfTemplateId) => update({ pdfTemplateId })}
+              className="flit-field-input w-full"
+              inputId="reglas-pdf-template"
+              testId="reglas-pdf-template-dropdown"
             />
           </Field>
 

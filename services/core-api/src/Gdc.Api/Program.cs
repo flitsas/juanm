@@ -32,6 +32,8 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<DgcTenantContext, HeaderTenantContext>();
 builder.Services.AddScoped<IUserRoleContext, HeaderUserRoleContext>();
 builder.Services.AddOpenApi();
+builder.Services.Configure<DevNotifProviderPrefillOptions>(
+    builder.Configuration.GetSection(DevNotifProviderPrefillOptions.SectionName));
 
 builder.Services.AddCors(options =>
 {
@@ -108,6 +110,7 @@ app.MapGdcDpEndpoints();
 app.MapReglasRuleEndpoints();
 app.MapReglasSecretariatContactEndpoints();
 app.MapReglasExecutionEndpoints();
+app.MapDevEndpoints();
 
 app.Run();
 

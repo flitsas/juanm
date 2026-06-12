@@ -2,6 +2,8 @@
 
 import { Button } from "primereact/button";
 import { useState } from "react";
+import { usePdfTemplates } from "@/features/plantillas/api/use-plantillas";
+import { resolvePdfTemplateName } from "@/features/plantillas/lib/template-select-options";
 import { useReglasContacts, useReglasRuleMutations, useReglasRules } from "../api/use-rules";
 import { formatConditionSummary } from "../lib/condition-tree";
 import type { ReglasRule, SaveReglasRulePayload } from "../lib/reglas.types";
@@ -10,6 +12,7 @@ import { ReglasRuleFormDialog } from "./ReglasRuleFormDialog";
 export function RuleBuilderSection() {
   const rulesQuery = useReglasRules();
   const contactsQuery = useReglasContacts();
+  const templatesQuery = usePdfTemplates();
   const { create, update, remove } = useReglasRuleMutations();
 
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -115,8 +118,8 @@ export function RuleBuilderSection() {
                   <td className="px-4 py-3 text-[var(--muted-foreground)]">
                     {formatConditionSummary(rule.conditionRoot)}
                   </td>
-                  <td className="px-4 py-3 font-mono text-xs text-[var(--muted-foreground)]">
-                    {rule.pdfTemplateId.slice(0, 8)}…
+                  <td className="px-4 py-3 text-xs text-[var(--muted-foreground)]">
+                    {resolvePdfTemplateName(templatesQuery.data?.items, rule.pdfTemplateId)}
                   </td>
                   <td className="px-4 py-3">
                     <span

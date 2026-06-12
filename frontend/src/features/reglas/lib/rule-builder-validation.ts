@@ -58,7 +58,7 @@ export function validateRuleBuilderForm(form: RuleBuilderFormState): RuleBuilder
   }
 
   if (!form.pdfTemplateId.trim()) {
-    errors.pdfTemplateId = "Indique el identificador de plantilla PDF (GDC).";
+    errors.pdfTemplateId = "Seleccione una plantilla PDF del catálogo GDC.";
   }
 
   if (!form.emailSubject.trim()) {

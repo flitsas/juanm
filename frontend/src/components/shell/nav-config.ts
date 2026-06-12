@@ -29,12 +29,12 @@ export const SHELL_NAV_ITEMS: ShellNavItem[] = [
     enabled: true,
   },
   {
-    id: "peticiones",
-    label: "Peticiones",
-    description: "Derechos de petición y acciones legales.",
-    href: "/peticiones",
+    id: "reglas",
+    label: "Reglas DP",
+    description: "Reglas dinámicas y Derechos de Petición hacia secretarías.",
+    href: "/admin/reglas",
     icon: Scale,
-    enabled: false,
+    enabled: true,
   },
   {
     id: "gdc",
@@ -65,6 +65,7 @@ export const SHELL_NAV_ITEMS: ShellNavItem[] = [
 export function resolveActiveNavId(pathname: string): string {
   if (pathname.startsWith("/dgc")) return "dgc";
   if (pathname.startsWith("/gdc")) return "gdc";
+  if (pathname.startsWith("/admin/reglas")) return "reglas";
   if (pathname.startsWith("/admin")) return "admin";
   return "dashboard";
 }

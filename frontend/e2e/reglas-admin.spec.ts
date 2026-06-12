@@ -1,5 +1,7 @@
 import { expect, test } from "@playwright/test";
+import { installAuthSession } from "./fixtures/auth-session";
 import { installNotifApiMocks } from "./fixtures/notif-api-mock";
+import { installPlantillasApiMocks } from "./fixtures/plantillas-api-mock";
 import {
   installReglasApiMocks,
   mockReglasContact,
@@ -9,7 +11,9 @@ import {
 
 test.describe("REGLAS admin — Feature #9710 smoke", () => {
   test.beforeEach(async ({ page }) => {
+    await installAuthSession(page);
     await installNotifApiMocks(page);
+    await installPlantillasApiMocks(page);
     await installReglasApiMocks(page);
   });
 

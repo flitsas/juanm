@@ -1,6 +1,7 @@
 import { getApiBaseUrl } from "@/lib/api-base-url";
 import type {
   CreateCompanyPayload,
+  DevProviderPrefill,
   NotifCompany,
   NotifCompanyListResult,
   NotifProvider,
@@ -108,6 +109,33 @@ export async function deleteCompany(id: string, init?: RequestInit): Promise<voi
   if (!response.ok) {
     throw await parseError(response);
   }
+}
+
+export async function fetchDevProviderPrefill(
+  init?: RequestInit,
+): Promise<DevProviderPrefill | null> {
+  if (process.env.NODE_ENV === "production") {
+    return null;
+  }
+
+  const response = await fetch(`${getApiBaseUrl()}/api/v1/dev/notif-provider-prefill`, {
+    ...init,
+    headers: {
+      Accept: "application/json",
+      ...init?.headers,
+    },
+    cache: "no-store",
+  });
+
+  if (response.status === 404) {
+    return null;
+  }
+
+  if (!response.ok) {
+    return null;
+  }
+
+  return response.json() as Promise<DevProviderPrefill>;
 }
 
 export async function fetchProvider(init?: RequestInit): Promise<NotifProvider | null> {

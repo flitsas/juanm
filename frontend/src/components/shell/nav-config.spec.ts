@@ -28,6 +28,14 @@ describe("nav-config", () => {
     expect(admin?.href).toBe("/admin");
     expect(resolveActiveNavId("/admin")).toBe("admin");
     expect(resolveActiveNavId("/admin/notificaciones")).toBe("admin");
-    expect(resolveActiveNavId("/admin/reglas")).toBe("admin");
+    expect(resolveActiveNavId("/admin?tab=notificaciones")).toBe("admin");
+  });
+
+  it("habilita Reglas DP en /admin/reglas", () => {
+    const reglas = SHELL_NAV_ITEMS.find((item) => item.id === "reglas");
+    expect(reglas?.label).toBe("Reglas DP");
+    expect(reglas?.href).toBe("/admin/reglas");
+    expect(reglas?.enabled).toBe(true);
+    expect(resolveActiveNavId("/admin/reglas")).toBe("reglas");
   });
 });

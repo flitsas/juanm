@@ -7,6 +7,7 @@ import { InputNumber } from "primereact/inputnumber";
 import { InputText } from "primereact/inputtext";
 import { Password } from "primereact/password";
 import { useEffect, useState } from "react";
+import { fetchDevProviderPrefill } from "../api/notif-api";
 import { useNotifProviderMutations } from "../api/use-provider";
 import type { NotifProvider, ProviderType } from "../lib/notif.types";
 import {
@@ -36,12 +37,36 @@ export function ProviderForm({ provider, isLoading }: ProviderFormProps) {
   const [testMessage, setTestMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    if (isLoading) return;
+    let cancelled = false;
+    void fetchDevProviderPrefill()
+      .then((prefill) => {
+        if (cancelled || !prefill) return;
+        setForm({
+          providerType: prefill.providerType,
+          fromAddress: prefill.fromAddress,
+          testDestino: prefill.testDestino,
+          apiBaseUrl: "",
+          apiKey: "",
+          sendgridApiKey: "",
+          smtpHost: prefill.smtpHost,
+          smtpPort: String(prefill.smtpPort),
+          smtpUsername: prefill.smtpUsername,
+          smtpPassword: prefill.smtpPassword,
+          smtpUseSsl: prefill.smtpUseSsl,
+        });
+      })
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isLoading || !provider) return;
     setForm((prev) => ({
-      ...EMPTY_PROVIDER_FORM,
-      providerType: (provider?.providerType as ProviderType) ?? "",
-      fromAddress: provider?.fromAddress ?? "",
-      testDestino: prev.testDestino,
+      ...prev,
+      providerType: (provider.providerType as ProviderType) || prev.providerType,
+      fromAddress: provider.fromAddress || prev.fromAddress,
     }));
     setErrors({});
     setSaveMessage(null);
@@ -322,6 +347,7 @@ export function ProviderForm({ provider, isLoading }: ProviderFormProps) {
             placeholder="ops@tenant.test"
             className="flit-field-input w-full max-w-md"
             aria-invalid={Boolean(errors.testDestino)}
+            data-testid="provider-test-destino"
           />
           {errors.testDestino ? (
             <span className="text-xs text-[var(--alert)]" role="alert">
