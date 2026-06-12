@@ -5,6 +5,7 @@ using Gdc.Infrastructure.Notif;
 using Gdc.Infrastructure.Notif.EmailSenders;
 using Gdc.Infrastructure.Persistence;
 using Gdc.Infrastructure.Reglas;
+using Gdc.Modules.Reglas.Application.Abstractions;
 using Gdc.Modules.Reglas.Application.Rules.Validators;
 using FluentValidation;
 using Gdc.Modules.Dgc.Application.Abstractions;
@@ -62,7 +63,10 @@ public static class DependencyInjection
         services.AddValidatorsFromAssemblyContaining<CreateReglasRuleRequestValidator>();
         services.AddScoped<ReglasRuleService>();
         services.AddScoped<ReglasExecutionJob>();
+        services.AddScoped<ReglasOrchestrationJob>();
         services.AddScoped<ReglasExecutionService>();
+        services.AddScoped<IGdcPdfTemplateRenderer, GdcPdfTemplateRendererStub>();
+        services.AddScoped<IReglasEmailDispatcher, ReglasEmailDispatcher>();
         services.Configure<ReglasExecutionOptions>(configuration.GetSection(ReglasExecutionOptions.SectionName));
         services.AddHostedService<ReglasExecutionHostedService>();
         services.AddScoped<NotifQueueService>();

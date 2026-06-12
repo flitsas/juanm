@@ -9,4 +9,6 @@ public sealed class ReglasExecutionOptions
     public int PollIntervalSeconds { get; set; } = 60;
 
     public int BatchSize { get; set; } = 50;
+
+    public bool ProcessMatchesAfterEvaluation { get; set; } = true;
 }

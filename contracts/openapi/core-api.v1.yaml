@@ -1097,6 +1097,21 @@ paths:
           description: Corrida aceptada
         "400":
           description: Error en evaluación
+  /api/v1/reglas/process:
+    post:
+      operationId: processReglasPendingMatches
+      summary: Orquesta PDF y correo para coincidencias pendientes
+      tags: [Reglas]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Resultado de procesamiento
   /api/v1/reglas/runs/{id}:
     get:
       operationId: getReglasRun
@@ -1120,6 +1135,28 @@ paths:
           description: Corrida encontrada
         "404":
           description: No encontrada
+    post:
+      operationId: processReglasRun
+      summary: Orquesta PDF y correo para coincidencias de una corrida
+      tags: [Reglas]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Resultado de procesamiento
+        "404":
+          description: Corrida no encontrada
   /api/v1/reglas/matches:
     get:
       operationId: listReglasMatches
@@ -1763,6 +1800,16 @@ components:
           type: string
           format: uuid
         matchedCount:
+          type: integer
+    ReglasProcessResponse:
+      type: object
+      required: [processedCount, succeededCount, failedCount]
+      properties:
+        processedCount:
+          type: integer
+        succeededCount:
+          type: integer
+        failedCount:
           type: integer
     ReglasMatchResponse:
       type: object

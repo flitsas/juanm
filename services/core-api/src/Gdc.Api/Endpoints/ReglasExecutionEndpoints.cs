@@ -11,6 +11,11 @@ public static class ReglasExecutionEndpoints
         runs.MapGet("/", ListRunsAsync).WithName("ListReglasRuns");
         runs.MapGet("/{id:guid}", GetRunAsync).WithName("GetReglasRun");
         runs.MapPost("/", TriggerRunAsync).WithName("TriggerReglasRun");
+        runs.MapPost("/{id:guid}/process", ProcessRunAsync).WithName("ProcessReglasRun");
+
+        app.MapPost("/api/v1/reglas/process", ProcessPendingAsync)
+            .WithTags("Reglas")
+            .WithName("ProcessReglasPendingMatches");
 
         app.MapGet("/api/v1/reglas/matches", ListMatchesAsync)
             .WithTags("Reglas")
@@ -56,4 +61,24 @@ public static class ReglasExecutionEndpoints
         ReglasExecutionService service,
         CancellationToken cancellationToken) =>
         Results.Ok(await service.ListMatchesAsync(runId, ruleId, cancellationToken));
+
+    private static async Task<IResult> ProcessRunAsync(
+        Guid id,
+        ReglasExecutionService service,
+        CancellationToken cancellationToken)
+    {
+        var run = await service.GetRunAsync(id, cancellationToken);
+        if (run is null)
+        {
+            return Results.NotFound(new { code = "REGLAS_RUN_NOT_FOUND", message = $"Run {id} not found." });
+        }
+
+        var result = await service.ProcessRunAsync(id, cancellationToken);
+        return Results.Ok(result);
+    }
+
+    private static async Task<IResult> ProcessPendingAsync(
+        ReglasExecutionService service,
+        CancellationToken cancellationToken) =>
+        Results.Ok(await service.ProcessPendingMatchesAsync(cancellationToken));
 }

@@ -13,6 +13,7 @@ namespace Gdc.Infrastructure.Reglas;
 public sealed class ReglasExecutionJob(
     GdcDbContext db,
     IDgcComparendoReader comparendoReader,
+    ReglasOrchestrationJob orchestrationJob,
     TimeProvider timeProvider,
     IOptions<ReglasExecutionOptions> options,
     ILogger<ReglasExecutionJob> logger)
@@ -31,6 +32,11 @@ public sealed class ReglasExecutionJob(
         {
             var result = await RunForTenantAsync(tenantId, ReglasTriggerTypes.Scheduled, null, cancellationToken);
             totalMatches += result.MatchedCount;
+
+            if (options.Value.ProcessMatchesAfterEvaluation && result.MatchedCount > 0)
+            {
+                await orchestrationJob.ProcessMatchesAsync(tenantId, result.RunId, cancellationToken);
+            }
         }
 
         logger.LogInformation("REGLAS evaluation cycle recorded {MatchedCount} new matches.", totalMatches);

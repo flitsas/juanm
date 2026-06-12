@@ -31,6 +31,15 @@ internal sealed class FlitMailEmailSender(string credentialsJson) : IEmailSender
     {
         using var client = CreateClient();
         using var mail = new MailMessage(message.From, message.To, message.Subject, message.HtmlBody) { IsBodyHtml = true };
+        if (message.Attachments is not null)
+        {
+            foreach (var attachment in message.Attachments)
+            {
+                var stream = new MemoryStream(attachment.Content);
+                mail.Attachments.Add(new Attachment(stream, attachment.FileName, attachment.ContentType));
+            }
+        }
+
         client.Send(mail);
         return Task.FromResult(new EmailSendResult(true, null, null));
     }

@@ -9,7 +9,8 @@ namespace Gdc.Infrastructure.Reglas;
 public sealed class ReglasExecutionService(
     GdcDbContext db,
     DgcTenantContext tenantContext,
-    ReglasExecutionJob executionJob)
+    ReglasExecutionJob executionJob,
+    ReglasOrchestrationJob orchestrationJob)
 {
     public async Task<ReglasRunListResponse> ListRunsAsync(CancellationToken cancellationToken)
     {
@@ -44,6 +45,12 @@ public sealed class ReglasExecutionService(
 
         return new TriggerReglasRunResponse(runId, matchedCount);
     }
+
+    public Task<ReglasProcessResponse> ProcessRunAsync(Guid runId, CancellationToken cancellationToken) =>
+        orchestrationJob.ProcessMatchesAsync(tenantContext.TenantId, runId, cancellationToken);
+
+    public Task<ReglasProcessResponse> ProcessPendingMatchesAsync(CancellationToken cancellationToken) =>
+        orchestrationJob.ProcessMatchesAsync(tenantContext.TenantId, runId: null, cancellationToken);
 
     public async Task<ReglasMatchListResponse> ListMatchesAsync(
         Guid? runId,

@@ -161,7 +161,8 @@ public sealed class ReglasEvaluationTests
         var job = CreateExecutionJob(db);
         await job.RunForTenantAsync(TenantId, ReglasTriggerTypes.Manual, null, CancellationToken.None);
 
-        var service = new ReglasExecutionService(db, new FakeTenantContext(TenantId), job);
+        var orchestration = CreateOrchestrationJob(db);
+        var service = new ReglasExecutionService(db, new FakeTenantContext(TenantId), job, orchestration);
         var matches = await service.ListMatchesAsync(null, null, CancellationToken.None);
 
         Assert.Single(matches.Items);
@@ -261,9 +262,44 @@ public sealed class ReglasEvaluationTests
         new(
             db,
             new DgcComparendoReader(db),
+            CreateOrchestrationJob(db),
+            TimeProvider.System,
+            Options.Create(new ReglasExecutionOptions { BatchSize = 50, ProcessMatchesAfterEvaluation = false }),
+            NullLogger<ReglasExecutionJob>.Instance);
+
+    private static ReglasOrchestrationJob CreateOrchestrationJob(GdcDbContext db) =>
+        new(
+            db,
+            new DgcComparendoReader(db),
+            new GdcPdfTemplateRendererStub(),
+            new ReglasEmailDispatcher(db, new NoopSenderFactory(), new NoopEncryptor()),
+            new DgcEmailLogWriter(db, TimeProvider.System),
             TimeProvider.System,
             Options.Create(new ReglasExecutionOptions { BatchSize = 50 }),
-            NullLogger<ReglasExecutionJob>.Instance);
+            NullLogger<ReglasOrchestrationJob>.Instance);
+
+    private sealed class NoopSenderFactory : Gdc.Modules.Notif.Application.Abstractions.IEmailSenderFactory
+    {
+        public Gdc.Modules.Notif.Application.Abstractions.IEmailSender Create(string providerType, string credentialsJson) =>
+            new NoopEmailSender();
+    }
+
+    private sealed class NoopEmailSender : Gdc.Modules.Notif.Application.Abstractions.IEmailSender
+    {
+        public Task ValidateAsync(CancellationToken cancellationToken) => Task.CompletedTask;
+
+        public Task<Gdc.Modules.Notif.Application.Abstractions.EmailSendResult> SendAsync(
+            Gdc.Modules.Notif.Application.Abstractions.EmailMessage message,
+            CancellationToken cancellationToken) =>
+            Task.FromResult(new Gdc.Modules.Notif.Application.Abstractions.EmailSendResult(true, "noop", null));
+    }
+
+    private sealed class NoopEncryptor : Gdc.Modules.Notif.Application.Abstractions.IEmailCredentialEncryptor
+    {
+        public string Decrypt(string cipherText) => "{}";
+
+        public string Encrypt(string plainText) => plainText;
+    }
 
     private static GdcDbContext CreateDbContext()
     {
