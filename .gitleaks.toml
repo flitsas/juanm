@@ -1,0 +1,40 @@
+# Configuración de gitleaks para el monorepo FLIT.
+# Usa el ruleset por defecto de gitleaks y añade un allowlist para falsos
+# positivos conocidos (ejemplos de entorno, identificadores de desarrollo,
+# lockfiles y artefactos generados).
+title = "FLIT gitleaks config"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Rutas y valores permitidos (no son secretos reales)"
+
+paths = [
+  # Plantillas de entorno: contienen placeholders, no credenciales reales.
+  '''(^|[\\/])\.env(\.[^\\/]+)?\.example$''',
+  '''(^|[\\/])\.env\.sample$''',
+  # Lockfiles y dependencias (alta entropía, sin secretos).
+  '''(^|[\\/])pnpm-lock\.yaml$''',
+  '''(^|[\\/])uv\.lock$''',
+  '''(^|[\\/])package-lock\.json$''',
+  '''(^|[\\/])node_modules[\\/]''',
+  # Entornos virtuales de Python y paquetes instalados (no se versionan; gitleaks
+  # con --no-git escanea el filesystem y puede toparlos en local).
+  '''(^|[\\/])\.venv[\\/]''',
+  '''(^|[\\/])site-packages[\\/]''',
+  # Fixtures de tests .NET: claves JWT dummy (p.ej. "test-secret-key-...").
+  '''(^|[\\/])tests[\\/].*Tests\.cs$''',
+  # Contratos y documentación (ejemplos ilustrativos).
+  '''(^|[\\/])contracts[\\/]''',
+  '''\.(md|mdc)$''',
+]
+
+regexes = [
+  # UUIDs de desarrollo usados como datos semilla (no son secretos).
+  '''01900000-[0-9a-f]{4}-7[0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}''',
+  '''2{8}-2{4}-2{4}-2{4}-2{12}''',
+  '''3{8}-3{4}-3{4}-3{4}-3{12}''',
+  # Claves de prueba evidentes en fixtures.
+  '''test-secret-key[\w-]*''',
+]

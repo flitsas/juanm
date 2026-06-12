@@ -2,6 +2,11 @@ namespace Gdc.Infrastructure.Dgc;
 
 public sealed class ContraventorWindowEvaluator
 {
+    // Servicio registrado e inyectado por DI (singleton); el metodo es de instancia por
+    // diseno (mockeable/consistente con el resto de servicios), aunque no use estado.
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "Performance", "CA1822:Mark members as static",
+        Justification = "Servicio inyectable por DI; la instancia es intencional.")]
     public bool IsWindowActive(string cronExpression, DateTimeOffset now)
     {
         if (!TryParseDailyWindow(cronExpression, out var hour, out var minute))

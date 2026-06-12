@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Gdc.Modules.Dgc.Domain.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -6,7 +7,11 @@ namespace Gdc.Modules.Dgc.Infrastructure.Persistence.Configurations;
 
 internal static class TenantAuditableEntityConfiguration
 {
-    public static void ConfigureTenantAuditable<TEntity>(EntityTypeBuilder<TEntity> builder)
+    // EntityTypeBuilder<TEntity> de EF Core exige que TEntity conserve sus miembros
+    // (constructores/campos/propiedades/interfaces) para el analizador de trimming (IL2091).
+    public static void ConfigureTenantAuditable<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TEntity
+    >(EntityTypeBuilder<TEntity> builder)
         where TEntity : TenantAuditableEntity
     {
         builder.Property(e => e.Id).HasColumnName("id");

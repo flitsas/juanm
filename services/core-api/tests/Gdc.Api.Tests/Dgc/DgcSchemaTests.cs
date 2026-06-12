@@ -67,7 +67,7 @@ public sealed class DgcSchemaTests
             .UseNpgsql("Host=localhost;Database=dgc_test;Username=test;Password=test")
             .Options;
 
-        using var context = new GdcDbContext(options);
+        using var context = new GdcDbContext(options, new TestSupport.TestTenantContext());
         return context.Model;
     }
 }

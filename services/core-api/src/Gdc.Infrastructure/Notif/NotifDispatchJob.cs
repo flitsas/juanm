@@ -224,7 +224,7 @@ public sealed class NotifDispatchJob(
         await db.SaveChangesAsync(cancellationToken);
     }
 
-    private static IReadOnlyDictionary<string, string> BuildVariables(DgcComparendoSnapshot? comparendo, string ruleName) =>
+    private static Dictionary<string, string> BuildVariables(DgcComparendoSnapshot? comparendo, string ruleName) =>
         new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {
             ["infractor"] = comparendo?.InfractorNombre ?? "Contraventor",

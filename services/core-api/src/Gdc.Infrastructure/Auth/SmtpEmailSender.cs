@@ -79,9 +79,12 @@ public sealed class SmtpEmailSender(
             ? settings.Username
             : settings.FromAddress;
 
-#pragma warning disable SYSLIB0014 // ServicePointManager requerido para compatibilidad SMTP legacy (certificados autofirmados).
+        // SMTP legacy con certificados autofirmados (entornos internos): se acepta el cert
+        // del servidor a proposito. SYSLIB0014 (ServicePointManager obsoleto) y CA5359
+        // (callback que acepta cualquier cert) son intencionales en este flujo.
+#pragma warning disable SYSLIB0014, CA5359
         ServicePointManager.ServerCertificateValidationCallback = AcceptAllCertifications;
-#pragma warning restore SYSLIB0014
+#pragma warning restore SYSLIB0014, CA5359
 
         return new SmtpClient
         {
