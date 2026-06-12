@@ -4,6 +4,8 @@ using Gdc.Modules.Dgc.Domain.Entities;
 using Gdc.Modules.Dgc.Infrastructure.Persistence;
 using Gdc.Modules.Notif.Domain.Entities;
 using Gdc.Modules.Notif.Infrastructure.Persistence;
+using Gdc.Modules.Plantillas.Domain.Entities;
+using Gdc.Modules.Plantillas.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace Gdc.Infrastructure.Persistence;
@@ -54,6 +56,12 @@ public sealed class GdcDbContext : DbContext
 
     public DbSet<TenantCompany> TenantCompanies => Set<TenantCompany>();
 
+    public DbSet<PdfTemplate> PdfTemplates => Set<PdfTemplate>();
+
+    public DbSet<PdfTemplateField> PdfTemplateFields => Set<PdfTemplateField>();
+
+    public DbSet<DerechoPeticion> DerechosPeticion => Set<DerechoPeticion>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasDefaultSchema("core");
@@ -63,6 +71,7 @@ public sealed class GdcDbContext : DbContext
         AuthSeedData.SeedDefaultRolePermissions(modelBuilder);
         modelBuilder.ApplyDgcConfigurations();
         modelBuilder.ApplyNotifConfigurations();
+        modelBuilder.ApplyPlantillasConfigurations();
 
         modelBuilder.Entity<User>().HasQueryFilter(user =>
             user.DeletedAt == null &&
