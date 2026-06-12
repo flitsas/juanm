@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Gdc.Modules.Dgc\Gdc.Modules.Dgc.csproj" />
     <ProjectReference Include="..\Gdc.Modules.Notif\Gdc.Modules.Notif.csproj" />
+    <ProjectReference Include="..\Gdc.Modules.Reglas\Gdc.Modules.Reglas.csproj" />
   </ItemGroup>
 
   <ItemGroup>
