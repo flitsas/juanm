@@ -15,6 +15,12 @@ public sealed class TenantContextMiddleware(RequestDelegate next)
             tenantContext.SetFromClaims(tenantId, role);
         }
 
+        if (context.User.Identity?.IsAuthenticated == true
+            && Guid.TryParse(context.Request.Headers["X-Tenant-Id"].FirstOrDefault(), out var headerTenantId))
+        {
+            tenantContext.ApplyHeaderTenant(headerTenantId);
+        }
+
         await next(context);
     }
 }

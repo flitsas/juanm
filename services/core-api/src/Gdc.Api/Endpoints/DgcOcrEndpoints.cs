@@ -1,5 +1,6 @@
 using Gdc.Infrastructure.Dgc;
 using Gdc.Modules.Dgc.Application.Ocr;
+using Microsoft.EntityFrameworkCore;
 
 namespace Gdc.Api.Endpoints;
 
@@ -53,9 +54,20 @@ public static class DgcOcrEndpoints
             var result = await service.UploadLoteAsync(uploads, cancellationToken);
             return Results.Created($"/api/v1/dgc/ocr/lotes/{result.LoteId}/items", result);
         }
+        catch (InvalidOperationException ex) when (ex.Message.Contains("X-Tenant-Id", StringComparison.Ordinal))
+        {
+            return Results.BadRequest(new { code = "DGC_TENANT_REQUIRED", message = ex.Message });
+        }
         catch (InvalidOperationException ex)
         {
             return Results.BadRequest(new { code = "DGC_UNSUPPORTED_FILE", message = ex.Message });
+        }
+        catch (DbUpdateException)
+        {
+            return Results.Problem(
+                statusCode: StatusCodes.Status403Forbidden,
+                title: "Tenant isolation blocked OCR persistence.",
+                detail: "Verify Authorization token and X-Tenant-Id match the active session tenant.");
         }
     }
 

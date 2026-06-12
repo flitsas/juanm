@@ -22,5 +22,7 @@ internal sealed class TestTenantContext : ITenantContext
         BypassTenantFilter = false;
     }
 
+    public void ApplyHeaderTenant(Guid headerTenantId) => TenantId = headerTenantId;
+
     public void EnableBypass() => BypassTenantFilter = true;
 }

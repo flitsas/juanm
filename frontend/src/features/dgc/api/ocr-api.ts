@@ -1,13 +1,6 @@
 import { getApiBaseUrl } from "@/lib/api-base-url";
 import type { OcrBufferForm, OcrLoteUploadResult } from "../lib/ocr.types";
-import { getTenantId } from "../lib/tenant-context";
-
-function tenantHeaders(): HeadersInit {
-  return {
-    "X-Tenant-Id": getTenantId(),
-    Accept: "application/json",
-  };
-}
+import { buildDgcHeaders } from "./dgc-headers";
 
 export async function uploadOcrLote(files: File[]): Promise<OcrLoteUploadResult> {
   const formData = new FormData();
@@ -17,7 +10,7 @@ export async function uploadOcrLote(files: File[]): Promise<OcrLoteUploadResult>
 
   const response = await fetch(`${getApiBaseUrl()}/api/v1/dgc/ocr/lotes`, {
     method: "POST",
-    headers: tenantHeaders(),
+    headers: buildDgcHeaders(),
     body: formData,
   });
 
@@ -43,10 +36,7 @@ export async function confirmOcrItem(form: OcrBufferForm): Promise<{ comparendoI
 
   const response = await fetch(`${getApiBaseUrl()}/api/v1/dgc/ocr/items/${form.itemId}/confirm`, {
     method: "POST",
-    headers: {
-      ...tenantHeaders(),
-      "Content-Type": "application/json",
-    },
+    headers: buildDgcHeaders({ json: true }),
     body: JSON.stringify(body),
   });
 

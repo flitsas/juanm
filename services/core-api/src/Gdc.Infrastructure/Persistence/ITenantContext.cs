@@ -10,5 +10,7 @@ public interface ITenantContext
 
     void SetFromClaims(Guid? tenantId, string? roleCode);
 
+    void ApplyHeaderTenant(Guid headerTenantId);
+
     void EnableBypass();
 }

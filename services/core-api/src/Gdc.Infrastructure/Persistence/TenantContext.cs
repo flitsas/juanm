@@ -17,6 +17,14 @@ public sealed class TenantContext : ITenantContext
         BypassTenantFilter = false;
     }
 
+    public void ApplyHeaderTenant(Guid headerTenantId)
+    {
+        if (IsSuperAdmin || TenantId is null || TenantId == headerTenantId)
+        {
+            TenantId = headerTenantId;
+        }
+    }
+
     public void EnableBypass()
     {
         if (!IsSuperAdmin)

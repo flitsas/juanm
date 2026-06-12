@@ -1,6 +1,6 @@
 import { getApiBaseUrl } from "@/lib/api-base-url";
 import type { ContraventorForm } from "../lib/detail-panel.types";
-import { getTenantId } from "../lib/tenant-context";
+import { buildDgcHeaders } from "./dgc-headers";
 
 export type ContraventorResponse = {
   id: string;
@@ -19,11 +19,7 @@ export async function upsertContraventor(
     `${getApiBaseUrl()}/api/v1/dgc/comparendos/${comparendoId}/contraventor`,
     {
       method: "PUT",
-      headers: {
-        "X-Tenant-Id": getTenantId(),
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
+      headers: buildDgcHeaders({ json: true }),
       body: JSON.stringify({
         nombre: form.nombre.trim(),
         documento: form.documento.trim(),

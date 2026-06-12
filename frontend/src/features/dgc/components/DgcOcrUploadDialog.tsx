@@ -68,8 +68,13 @@ export function DgcOcrUploadDialog({ open, onOpenChange, onConfirmed }: DgcOcrUp
         confirmed: false,
       }));
       setEntries(newEntries);
-    } catch {
-      setUploadError("No se pudo procesar la carga OCR. Verifique el API y python-ml.");
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Error desconocido";
+      setUploadError(
+        message.includes("401") || message.includes("403")
+          ? "Sesión inválida o tenant incorrecto. Inicie sesión nuevamente."
+          : "No se pudo procesar la carga OCR. Verifique el API y python-ml.",
+      );
     } finally {
       setUploading(false);
     }
