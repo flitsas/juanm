@@ -9,6 +9,7 @@ public static class ReglasTagComposer
         string ruleName) =>
         new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {
+            ["comparendo_id"] = comparendo?.Id.ToString() ?? string.Empty,
             ["infractor"] = comparendo?.InfractorNombre ?? string.Empty,
             ["numero_comparendo"] = comparendo?.NumeroComparendo ?? string.Empty,
             ["placa"] = comparendo?.Placa ?? string.Empty,

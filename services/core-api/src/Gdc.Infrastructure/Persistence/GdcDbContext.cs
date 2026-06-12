@@ -4,6 +4,8 @@ using Gdc.Modules.Dgc.Domain.Entities;
 using Gdc.Modules.Dgc.Infrastructure.Persistence;
 using Gdc.Modules.Notif.Domain.Entities;
 using Gdc.Modules.Notif.Infrastructure.Persistence;
+using Gdc.Modules.Plantillas.Domain.Entities;
+using Gdc.Modules.Plantillas.Infrastructure.Persistence;
 using Gdc.Modules.Reglas.Domain.Entities;
 using Gdc.Modules.Reglas.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -56,6 +58,12 @@ public sealed class GdcDbContext : DbContext
 
     public DbSet<TenantCompany> TenantCompanies => Set<TenantCompany>();
 
+    public DbSet<PdfTemplate> PdfTemplates => Set<PdfTemplate>();
+
+    public DbSet<PdfTemplateField> PdfTemplateFields => Set<PdfTemplateField>();
+
+    public DbSet<DerechoPeticion> DerechosPeticion => Set<DerechoPeticion>();
+
     public DbSet<DynamicRule> DynamicRules => Set<DynamicRule>();
 
     public DbSet<RuleCondition> RuleConditions => Set<RuleCondition>();
@@ -75,6 +83,7 @@ public sealed class GdcDbContext : DbContext
         AuthSeedData.SeedDefaultRolePermissions(modelBuilder);
         modelBuilder.ApplyDgcConfigurations();
         modelBuilder.ApplyNotifConfigurations();
+        modelBuilder.ApplyPlantillasConfigurations();
         modelBuilder.ApplyReglasConfigurations();
 
         modelBuilder.Entity<User>().HasQueryFilter(user =>

@@ -5,6 +5,7 @@
     <Project Path="src/Gdc.Infrastructure/Gdc.Infrastructure.csproj" />
     <Project Path="src/Gdc.Modules.Dgc/Gdc.Modules.Dgc.csproj" />
     <Project Path="src/Gdc.Modules.Notif/Gdc.Modules.Notif.csproj" />
+    <Project Path="src/Gdc.Modules.Plantillas/Gdc.Modules.Plantillas.csproj" />
     <Project Path="src/Gdc.Modules.Reglas/Gdc.Modules.Reglas.csproj" />
   </Folder>
   <Folder Name="/tests/">

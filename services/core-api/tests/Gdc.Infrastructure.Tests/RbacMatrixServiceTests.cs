@@ -19,9 +19,10 @@ public class RbacMatrixServiceTests
 
         var matrix = await service.GetMatrixAsync();
 
-        Assert.Equal(3, matrix.Permissions.Count);
+        Assert.Equal(6, matrix.Permissions.Count);
         Assert.Equal(3, matrix.Roles.Count);
         Assert.Contains(matrix.Permissions, p => p.Code == "auth.users.read");
+        Assert.Contains(matrix.Permissions, p => p.Code == "reglas.read");
         Assert.Contains(matrix.Roles, r => r.Code == "Operator");
     }
 

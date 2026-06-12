@@ -18,6 +18,7 @@ internal static class DevDataSeeder
     public static async Task SeedIfEmptyAsync(GdcDbContext db, CancellationToken cancellationToken = default)
     {
         await SeedCatalogsAsync(db, cancellationToken);
+        await EnsureIdentityTenantsAsync(db, cancellationToken);
         await EnsureCoreTenantsAsync(db, cancellationToken);
         await SyncLegacyTenantIdsAsync(db, cancellationToken);
         await SeedUsersAsync(db, cancellationToken);
@@ -58,6 +59,23 @@ internal static class DevDataSeeder
               ('11111111-1111-4111-8111-111111111102', '44444444-4444-4444-8444-444444444402'),
               ('11111111-1111-4111-8111-111111111103', '44444444-4444-4444-8444-444444444401')
             ON CONFLICT (role_id, permission_id) DO NOTHING;
+            """,
+            cancellationToken);
+    }
+
+    /// <summary>
+    /// FK de módulos DGC/GDC/NOTIF apuntan a <c>identity.tenants</c> (no solo <c>core.tenants</c>).
+    /// </summary>
+    private static async Task EnsureIdentityTenantsAsync(GdcDbContext db, CancellationToken cancellationToken)
+    {
+        await db.Database.ExecuteSqlRawAsync(
+            $"""
+            INSERT INTO identity.tenants (id, name, created_at)
+            VALUES
+              ('{DevTenantId}', 'FLIT Dev Tenant', NOW()),
+              ('{TestTenantId}', 'FLIT Test Tenant', NOW())
+            ON CONFLICT (id) DO UPDATE
+            SET name = EXCLUDED.name;
             """,
             cancellationToken);
     }
