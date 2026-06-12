@@ -3,6 +3,10 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { GdcPlantillasPage } from "./GdcPlantillasPage";
 
+vi.mock("./TemplateGenerationDialog", () => ({
+  TemplateGenerationDialog: () => <div data-testid="gdc-generation-dialog-stub" />,
+}));
+
 vi.mock("../api/use-plantillas", () => ({
   usePdfTemplates: () => ({
     data: {

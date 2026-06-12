@@ -66,3 +66,18 @@ export const FIELD_TYPE_LABELS: Record<PlantillaFieldType, string> = {
   number: "Número",
   choice: "Lista / selección",
 };
+
+export type GenerateDerechoPeticionResponse = {
+  derechoPeticionId: string;
+  comparendoId: string;
+  templateId: string;
+  templateVersion: number;
+  estado: string;
+  outputStorageKey: string;
+  generatedAt: string;
+};
+
+export type PlantillasApiErrorBody = {
+  code?: string;
+  message?: string;
+};

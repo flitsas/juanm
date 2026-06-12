@@ -6,9 +6,14 @@ import type { PdfTemplateSummary } from "../lib/plantillas.types";
 type TemplatesCatalogGridProps = {
   templates: PdfTemplateSummary[];
   onUseTemplate: (template: PdfTemplateSummary) => void;
+  onConfigureTemplate: (template: PdfTemplateSummary) => void;
 };
 
-export function TemplatesCatalogGrid({ templates, onUseTemplate }: TemplatesCatalogGridProps) {
+export function TemplatesCatalogGrid({
+  templates,
+  onUseTemplate,
+  onConfigureTemplate,
+}: TemplatesCatalogGridProps) {
   return (
     <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3" data-testid="gdc-templates-catalog">
       {templates.map((template) => (
@@ -37,13 +42,23 @@ export function TemplatesCatalogGrid({ templates, onUseTemplate }: TemplatesCata
             </p>
           </div>
           <div className="mt-auto flex justify-end">
-            <Button
-              type="button"
-              label="Usar plantilla"
-              className="flit-btn-primary"
-              onClick={() => onUseTemplate(template)}
-              data-testid={`gdc-use-template-${template.id}`}
-            />
+            {template.isActive ? (
+              <Button
+                type="button"
+                label="Usar plantilla"
+                className="flit-btn-primary"
+                onClick={() => onUseTemplate(template)}
+                data-testid={`gdc-use-template-${template.id}`}
+              />
+            ) : (
+              <Button
+                type="button"
+                label="Configurar mapeo"
+                className="flit-btn-secondary"
+                onClick={() => onConfigureTemplate(template)}
+                data-testid={`gdc-configure-template-${template.id}`}
+              />
+            )}
           </div>
         </article>
       ))}

@@ -1,19 +1,31 @@
 import { getApiBaseUrl } from "@/lib/api-base-url";
 import type {
+  GenerateDerechoPeticionResponse,
   PdfTemplateDetail,
   PdfTemplateListResponse,
+  PlantillasApiErrorBody,
   SystemVariableListResponse,
   UpdateFieldMappingsRequest,
   UploadPdfTemplateResponse,
 } from "../lib/plantillas.types";
 import { buildGdcHeaders } from "./gdc-headers";
 
+export class PlantillasApiError extends Error {
+  readonly code?: string;
+
+  constructor(message: string, code?: string) {
+    super(message);
+    this.name = "PlantillasApiError";
+    this.code = code;
+  }
+}
+
 async function parseJson<T>(response: Response): Promise<T> {
   if (!response.ok) {
-    const body = await response.json().catch(() => ({}));
+    const body = (await response.json().catch(() => ({}))) as PlantillasApiErrorBody;
     const message =
       typeof body.message === "string" ? body.message : `Error HTTP ${response.status}`;
-    throw new Error(message);
+    throw new PlantillasApiError(message, body.code);
   }
   return response.json() as Promise<T>;
 }
@@ -85,4 +97,39 @@ export async function activatePdfTemplate(
     headers: buildGdcHeaders(),
   });
   return parseJson<{ id: string; isActive: boolean }>(response);
+}
+
+export async function generateDerechoPeticion(
+  comparendoId: string,
+  templateId: string,
+): Promise<GenerateDerechoPeticionResponse> {
+  const response = await fetch(
+    `${getApiBaseUrl()}/api/v1/gdc/comparendos/${comparendoId}/derechos-peticion`,
+    {
+      method: "POST",
+      headers: buildGdcHeaders({ json: true }),
+      body: JSON.stringify({ templateId }),
+    },
+  );
+  return parseJson<GenerateDerechoPeticionResponse>(response);
+}
+
+export async function downloadDerechoPeticionPdf(derechoPeticionId: string): Promise<Blob> {
+  const response = await fetch(
+    `${getApiBaseUrl()}/api/v1/gdc/derechos-peticion/${derechoPeticionId}/download`,
+    {
+      headers: buildGdcHeaders(),
+      cache: "no-store",
+    },
+  );
+
+  if (!response.ok) {
+    const body = (await response.json().catch(() => ({}))) as PlantillasApiErrorBody;
+    throw new PlantillasApiError(
+      typeof body.message === "string" ? body.message : `Error HTTP ${response.status}`,
+      body.code,
+    );
+  }
+
+  return response.blob();
 }

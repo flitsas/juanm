@@ -10,6 +10,7 @@ import {
   useSystemVariables,
 } from "../api/use-plantillas";
 import type { PdfTemplateSummary } from "../lib/plantillas.types";
+import { TemplateGenerationDialog } from "./TemplateGenerationDialog";
 import { TemplateMappingPanel } from "./TemplateMappingPanel";
 import { TemplatesCatalogGrid } from "./TemplatesCatalogGrid";
 import { TemplateUploadPanel } from "./TemplateUploadPanel";
@@ -28,6 +29,7 @@ export function GdcPlantillasPage() {
     import("../lib/plantillas.types").PdfTemplateField[]
   >([]);
   const [localName, setLocalName] = useState("");
+  const [generationTemplate, setGenerationTemplate] = useState<PdfTemplateSummary | null>(null);
 
   const detailQuery = usePdfTemplate(editingTemplateId);
 
@@ -42,11 +44,15 @@ export function GdcPlantillasPage() {
     setUploadError(null);
   };
 
-  const openUseTemplate = (template: PdfTemplateSummary) => {
+  const openConfigureTemplate = (template: PdfTemplateSummary) => {
     setEditorMode("mapping");
     setEditingTemplateId(template.id);
     setLocalFields([]);
     setUploadError(null);
+  };
+
+  const openGenerationDialog = (template: PdfTemplateSummary) => {
+    setGenerationTemplate(template);
   };
 
   const closeEditor = () => {
@@ -181,8 +187,18 @@ export function GdcPlantillasPage() {
       ) : null}
 
       {!templatesQuery.isLoading && !templatesQuery.isError && templates.length > 0 ? (
-        <TemplatesCatalogGrid templates={templates} onUseTemplate={openUseTemplate} />
+        <TemplatesCatalogGrid
+          templates={templates}
+          onUseTemplate={openGenerationDialog}
+          onConfigureTemplate={openConfigureTemplate}
+        />
       ) : null}
+
+      <TemplateGenerationDialog
+        template={generationTemplate}
+        visible={generationTemplate !== null}
+        onHide={() => setGenerationTemplate(null)}
+      />
     </div>
   );
 }
