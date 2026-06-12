@@ -66,9 +66,9 @@
 
 ## HU #9758 — UI grilla DP en detalle comparendo
 
-- [ ] 8.1 Reemplazar stub `DgcDetailPanel`
-- [ ] 8.2 Grilla estados + descarga
-- [ ] 8.3 Commit `HU9758:` + dev-tester
+- [x] 8.1 Reemplazar stub `DgcDetailPanel`
+- [x] 8.2 Grilla estados + descarga
+- [x] 8.3 Commit `HU9758:` + dev-tester
 
 ## Cierre Feature
 

@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { UpdateFieldMappingsRequest } from "../lib/plantillas.types";
 import {
   activatePdfTemplate,
+  fetchDerechosPeticionByComparendo,
   fetchPdfTemplate,
   fetchPdfTemplates,
   fetchSystemVariables,
@@ -32,6 +33,17 @@ export function useSystemVariables() {
   return useQuery({
     queryKey: plantillasQueryKeys.systemVariables(),
     queryFn: ({ signal }) => fetchSystemVariables({ signal }),
+  });
+}
+
+export function useDerechosPeticionList(comparendoId: string | null) {
+  return useQuery({
+    queryKey: plantillasQueryKeys.derechosPeticion(comparendoId ?? ""),
+    queryFn: ({ signal }) => {
+      if (!comparendoId) throw new Error("Comparendo id is required");
+      return fetchDerechosPeticionByComparendo(comparendoId, { signal });
+    },
+    enabled: Boolean(comparendoId),
   });
 }
 

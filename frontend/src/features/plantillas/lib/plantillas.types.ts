@@ -67,6 +67,20 @@ export const FIELD_TYPE_LABELS: Record<PlantillaFieldType, string> = {
   choice: "Lista / selección",
 };
 
+export type DerechoPeticionListItem = {
+  id: string;
+  comparendoId: string;
+  templateId: string;
+  templateVersion: number;
+  estado: string;
+  generatedAt: string;
+  downloadPath: string;
+};
+
+export type DerechoPeticionListResponse = {
+  items: DerechoPeticionListItem[];
+};
+
 export type GenerateDerechoPeticionResponse = {
   derechoPeticionId: string;
   comparendoId: string;

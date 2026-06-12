@@ -1,5 +1,6 @@
 import { getApiBaseUrl } from "@/lib/api-base-url";
 import type {
+  DerechoPeticionListResponse,
   GenerateDerechoPeticionResponse,
   PdfTemplateDetail,
   PdfTemplateListResponse,
@@ -97,6 +98,21 @@ export async function activatePdfTemplate(
     headers: buildGdcHeaders(),
   });
   return parseJson<{ id: string; isActive: boolean }>(response);
+}
+
+export async function fetchDerechosPeticionByComparendo(
+  comparendoId: string,
+  init?: RequestInit,
+): Promise<DerechoPeticionListResponse> {
+  const response = await fetch(
+    `${getApiBaseUrl()}/api/v1/gdc/comparendos/${comparendoId}/derechos-peticion`,
+    {
+      ...init,
+      headers: buildGdcHeaders(),
+      cache: "no-store",
+    },
+  );
+  return parseJson<DerechoPeticionListResponse>(response);
 }
 
 export async function generateDerechoPeticion(
