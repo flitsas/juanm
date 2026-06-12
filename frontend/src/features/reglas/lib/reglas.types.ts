@@ -93,3 +93,12 @@ export type ReglasProcessResult = {
   succeededCount: number;
   failedCount: number;
 };
+
+export type SaveReglasContactPayload = {
+  secretariatCode: string;
+  secretariatName: string;
+  contactName: string;
+  contactEmail: string;
+  contactPhone?: string | null;
+  isActive: boolean;
+};

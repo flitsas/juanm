@@ -14,11 +14,15 @@ export function useReglasRuns() {
   });
 }
 
-export function useReglasMatches(runId?: string | null, ruleId?: string | null) {
+export function useReglasMatches(
+  runId?: string | null,
+  ruleId?: string | null,
+  options?: { enabled?: boolean },
+) {
   return useQuery({
     queryKey: reglasQueryKeys.matches(runId, ruleId),
     queryFn: ({ signal }) => fetchReglasMatches({ runId: runId ?? undefined, ruleId: ruleId ?? undefined }, { signal }),
-    enabled: Boolean(runId),
+    enabled: options?.enabled ?? true,
   });
 }
 

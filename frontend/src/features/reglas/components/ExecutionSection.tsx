@@ -34,7 +34,7 @@ export function ExecutionSection() {
   const [notice, setNotice] = useState<string | null>(null);
 
   const runs = runsQuery.data?.items ?? [];
-  const matchesQuery = useReglasMatches(selectedRunId);
+  const matchesQuery = useReglasMatches(selectedRunId, null, { enabled: Boolean(selectedRunId) });
   const matches = matchesQuery.data?.items ?? [];
 
   const role = getSession()?.role ?? getUserRole();
@@ -42,7 +42,7 @@ export function ExecutionSection() {
 
   useEffect(() => {
     if (!selectedRunId && runs.length > 0) {
-      setSelectedRunId(runs[0].id);
+      setSelectedRunId(runs[0]!.id);
     }
   }, [runs, selectedRunId]);
 

@@ -7,6 +7,8 @@ import type {
   ReglasRuleListResult,
   ReglasRun,
   ReglasRunListResult,
+  ReglasSecretariatContact,
+  SaveReglasContactPayload,
   SaveReglasRulePayload,
   TriggerReglasRunResult,
 } from "../lib/reglas.types";
@@ -85,6 +87,52 @@ export async function fetchReglasContacts(init?: RequestInit): Promise<ReglasCon
   });
   if (!response.ok) throw await parseError(response);
   return response.json() as Promise<ReglasContactListResult>;
+}
+
+export async function createReglasContact(
+  payload: SaveReglasContactPayload,
+  init?: RequestInit,
+): Promise<ReglasSecretariatContact> {
+  const response = await fetch(`${getApiBaseUrl()}/api/v1/reglas/contacts`, {
+    method: "POST",
+    ...init,
+    headers: {
+      "Content-Type": "application/json",
+      ...buildReglasHeaders(),
+      ...init?.headers,
+    },
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) throw await parseError(response);
+  return response.json() as Promise<ReglasSecretariatContact>;
+}
+
+export async function updateReglasContact(
+  id: string,
+  payload: SaveReglasContactPayload,
+  init?: RequestInit,
+): Promise<ReglasSecretariatContact> {
+  const response = await fetch(`${getApiBaseUrl()}/api/v1/reglas/contacts/${id}`, {
+    method: "PUT",
+    ...init,
+    headers: {
+      "Content-Type": "application/json",
+      ...buildReglasHeaders(),
+      ...init?.headers,
+    },
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) throw await parseError(response);
+  return response.json() as Promise<ReglasSecretariatContact>;
+}
+
+export async function deleteReglasContact(id: string, init?: RequestInit): Promise<void> {
+  const response = await fetch(`${getApiBaseUrl()}/api/v1/reglas/contacts/${id}`, {
+    method: "DELETE",
+    ...init,
+    headers: { ...buildReglasHeaders(), ...init?.headers },
+  });
+  if (!response.ok) throw await parseError(response);
 }
 
 export async function fetchReglasRuns(init?: RequestInit): Promise<ReglasRunListResult> {

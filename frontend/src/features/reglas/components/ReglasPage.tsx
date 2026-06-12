@@ -5,6 +5,7 @@ import { useCallback } from "react";
 import { TabPills } from "@/components/flit/tab-pills";
 import { PageHeaderCard } from "@/components/shell/PageHeaderCard";
 import { ExecutionSection } from "./ExecutionSection";
+import { LogsAndContactsSection } from "./LogsAndContactsSection";
 import { RuleBuilderSection } from "./RuleBuilderSection";
 
 type ReglasTab = "constructor" | "ejecucion" | "logs";
@@ -54,17 +55,7 @@ export function ReglasPage() {
 
       {activeTab === "ejecucion" ? <ExecutionSection /> : null}
 
-      {activeTab === "logs" ? (
-        <div
-          className="rounded-2xl border border-dashed border-[var(--border)] bg-[var(--card)] p-12 text-center"
-          data-testid="reglas-tab-placeholder"
-        >
-          <p className="text-sm font-medium text-[var(--deep)]">Sección en desarrollo</p>
-          <p className="mt-1 text-sm text-[var(--muted-foreground)]">
-            Logs, métricas y contactos secretaría se entregarán en la historia #9766.
-          </p>
-        </div>
-      ) : null}
+      {activeTab === "logs" ? <LogsAndContactsSection /> : null}
     </div>
   );
 }
