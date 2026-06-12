@@ -1,6 +1,7 @@
 <Solution>
   <Folder Name="/src/">
     <Project Path="src/Gdc.Api/Gdc.Api.csproj" />
+    <Project Path="src/Gdc.Gateway/Gdc.Gateway.csproj" />
     <Project Path="src/Gdc.Infrastructure/Gdc.Infrastructure.csproj" />
     <Project Path="src/Gdc.Modules.Dgc/Gdc.Modules.Dgc.csproj" />
     <Project Path="src/Gdc.Modules.Notif/Gdc.Modules.Notif.csproj" />
