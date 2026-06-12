@@ -42,7 +42,7 @@ export const SHELL_NAV_ITEMS: ShellNavItem[] = [
     description: "Generador documental jurídico.",
     href: "/gdc",
     icon: FileText,
-    enabled: false,
+    enabled: true,
   },
   {
     id: "reportes",
@@ -64,6 +64,7 @@ export const SHELL_NAV_ITEMS: ShellNavItem[] = [
 
 export function resolveActiveNavId(pathname: string): string {
   if (pathname.startsWith("/dgc")) return "dgc";
+  if (pathname.startsWith("/gdc")) return "gdc";
   if (pathname.startsWith("/admin")) return "admin";
   return "dashboard";
 }

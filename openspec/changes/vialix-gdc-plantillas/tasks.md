@@ -55,8 +55,8 @@
 
 ## HU #9756 — UI catálogo y carga plantillas
 
-- [ ] 6.1 Feature `frontend/src/features/plantillas/`
-- [ ] 6.2 Ruta `/gdc` + nav enabled
+- [x] 6.1 Feature `frontend/src/features/plantillas/`
+- [x] 6.2 Ruta `/gdc` + nav enabled
 - [ ] 6.3 Commit `HU9756:` + dev-tester
 
 ## HU #9757 — UI preview y generación DP

@@ -14,6 +14,14 @@ describe("nav-config", () => {
     expect(resolveActiveNavId("/")).toBe("dashboard");
   });
 
+  it("habilita Plantillas GDC en /gdc", () => {
+    const gdcPlantillas = SHELL_NAV_ITEMS.find((item) => item.id === "gdc");
+    expect(gdcPlantillas?.label).toBe("Plantillas");
+    expect(gdcPlantillas?.href).toBe("/gdc");
+    expect(gdcPlantillas?.enabled).toBe(true);
+    expect(resolveActiveNavId("/gdc")).toBe("gdc");
+  });
+
   it("habilita Admin unificado en /admin", () => {
     const admin = SHELL_NAV_ITEMS.find((item) => item.id === "admin");
     expect(admin?.enabled).toBe(true);
