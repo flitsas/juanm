@@ -14,6 +14,10 @@
 # Variables para AISLAR este proyecto del resto del VPS (UNICAS por proyecto):
 #   COMPOSE_PROJECT_NAME    nombre del proyecto Compose (default: flit-prod)
 #   FRONTEND_PORT / GATEWAY_PORT / CORE_API_PORT   puertos host 127.0.0.1 (defaults: 60106/60206/60306)
+#   COMPOSE_SUBNET          subred de la red Compose. DEBE estar dentro de 172.16.0.0/12
+#                           (rango ya permitido en ufw hacia Postgres:5432) y ser UNICA
+#                           por proyecto en el VPS, o las redes chocan al levantar.
+#                           default: 172.30.0.0/16
 # Variables opcionales:
 #   CORE_API_TAG / FRONTEND_TAG   tag de imagen (default: latest)
 #   VERIFIK_BASE_URL / VERIFIK_TIMEOUT_SECONDS
@@ -50,7 +54,8 @@ services:
       ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENV:-Develop}
       ASPNETCORE_URLS: http://+:8081
       ConnectionStrings__Core: ${CONNECTION_STRING_CORE}
-      Cors__AllowedOrigins: ${CORS_ORIGIN:-https://dev.juanm.flitsas.online}
+      # La app lee Cors:Origins (Program.cs) y separa por ';'. NO usar Cors__AllowedOrigins.
+      Cors__Origins: ${CORS_ORIGIN:-https://dev.juanm.flitsas.online}
       # Login deshabilitado temporalmente: DevGenerate evita exigir llaves JWT
       # montadas. Para reactivar login, montar jwt-private/public.pem y quitar esto.
       Jwt__DevGenerate: "true"
@@ -60,7 +65,7 @@ services:
     ports:
       - "127.0.0.1:${CORE_API_PORT:-40304}:8081"
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:8081/api/v1/health"]
+      test: ["CMD", "wget", "-qO-", "http://localhost:8081/health"]
       interval: 30s
       timeout: 5s
       retries: 3
@@ -103,3 +108,12 @@ services:
       - gateway
     restart: *restart
     logging: *default-logging
+
+# Red Compose con subred FIJA dentro de 172.16.0.0/12 (ya permitido en ufw hacia
+# Postgres:5432). Evita que Docker elija 192.168.x al azar y bloquee la conexion
+# del contenedor a la DB del host. UNICA por proyecto: ajustar COMPOSE_SUBNET en .env.
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: ${COMPOSE_SUBNET:-172.30.0.0/16}
