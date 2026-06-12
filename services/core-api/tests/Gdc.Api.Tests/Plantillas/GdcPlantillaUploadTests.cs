@@ -1,6 +1,7 @@
 using Gdc.Infrastructure.Persistence;
 using Gdc.Infrastructure.Plantillas;
 using DgcTenantContext = Gdc.Modules.Dgc.Application.Abstractions.ITenantContext;
+using Gdc.Modules.Plantillas.Application;
 using Gdc.Modules.Plantillas.Application.Abstractions;
 using Gdc.Modules.Plantillas.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -65,6 +66,12 @@ public sealed class GdcPlantillaUploadTests
 
         Assert.Contains(fields, f => f.AcroformName == "tenant_nombre");
         Assert.Contains(fields, f => f.AcroformName == "comparendo_estado");
+        Assert.Contains(
+            fields,
+            f => f.AcroformName == "comparendo_estado" && f.FieldType == PlantillaFieldTypes.Choice);
+        Assert.Contains(
+            fields,
+            f => f.AcroformName == "comparendo_total" && f.FieldType == PlantillaFieldTypes.Number);
     }
 
     private static GdcPlantillaService CreateService(GdcDbContext db) =>

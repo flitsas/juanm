@@ -4,6 +4,7 @@ import { Button } from "primereact/button";
 import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
 import { useMemo, useState } from "react";
+import { defaultChoiceOptions } from "../lib/acroform-defaults";
 import { buildMappingsFromFields, validateMappings } from "../lib/mapping-validation";
 import {
   FIELD_TYPE_LABELS,
@@ -63,7 +64,7 @@ export function TemplateMappingPanel({
 
   const handleSave = async () => {
     const mappings = buildMappingsFromFields(fields, overrides);
-    const validationError = validateMappings(mappings);
+    const validationError = validateMappings(mappings, systemVariables);
     if (validationError) {
       setError(validationError);
       return;
@@ -74,7 +75,7 @@ export function TemplateMappingPanel({
 
   const handleActivate = async () => {
     const mappings = buildMappingsFromFields(fields, overrides);
-    const validationError = validateMappings(mappings);
+    const validationError = validateMappings(mappings, systemVariables);
     if (validationError) {
       setError(validationError);
       return;
@@ -138,7 +139,21 @@ export function TemplateMappingPanel({
                     <Dropdown
                       value={systemVariable || null}
                       options={variableOptions}
-                      onChange={(e) => updateOverride(field.id, { systemVariable: e.value })}
+                      onChange={(e) => {
+                        const nextVariable = e.value as string;
+                        const variableDef = systemVariables.find((v) => v.key === nextVariable);
+                        const patch: FieldOverride = { systemVariable: nextVariable };
+                        if (variableDef) {
+                          patch.fieldType = variableDef.dataType;
+                          if (
+                            variableDef.dataType === "choice" &&
+                            !(override.choiceOptions?.length || field.choiceOptions?.length)
+                          ) {
+                            patch.choiceOptions = defaultChoiceOptions(field.acroformName) ?? [];
+                          }
+                        }
+                        updateOverride(field.id, patch);
+                      }}
                       placeholder="Seleccionar variable"
                       className="flit-dropdown w-full max-w-[280px]"
                       panelClassName="flit-dropdown-panel"

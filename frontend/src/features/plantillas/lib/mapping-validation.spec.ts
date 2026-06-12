@@ -46,6 +46,16 @@ describe("mapping-validation", () => {
     expect(validateMappings(mappings)).toContain("opciones");
   });
 
+  it("validateMappings rechaza tipos incompatibles con la variable sistema", () => {
+    const mappings = buildMappingsFromFields(sampleFields, {
+      f2: { systemVariable: "comparendo.estado", fieldType: "text" },
+    });
+    const error = validateMappings(mappings, [
+      { key: "comparendo.estado", label: "Estado", source: "comparendo", dataType: "choice" },
+    ]);
+    expect(error).toContain("no es compatible");
+  });
+
   it("buildMappingsFromFields conserva overrides de variable", () => {
     const mappings = buildMappingsFromFields(sampleFields, {
       f2: { systemVariable: "comparendo.estado", choiceOptions: ["A", "B"] },

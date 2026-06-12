@@ -9,6 +9,7 @@ import {
   usePlantillaMutations,
   useSystemVariables,
 } from "../api/use-plantillas";
+import { normalizeTemplateFields } from "../lib/acroform-defaults";
 import type { PdfTemplateSummary } from "../lib/plantillas.types";
 import { TemplateGenerationDialog } from "./TemplateGenerationDialog";
 import { TemplateMappingPanel } from "./TemplateMappingPanel";
@@ -68,14 +69,15 @@ export function GdcPlantillasPage() {
       const response = await upload.mutateAsync({ file, name });
       setEditingTemplateId(response.id);
       setLocalName(response.name);
-      setLocalFields(response.detectedFields);
+      setLocalFields(normalizeTemplateFields(response.detectedFields));
       setEditorMode("mapping");
     } catch (err) {
       setUploadError(err instanceof Error ? err.message : "No se pudo cargar el PDF.");
     }
   };
 
-  const mappingFields = localFields.length > 0 ? localFields : (detailQuery.data?.fields ?? []);
+  const mappingFields =
+    localFields.length > 0 ? localFields : normalizeTemplateFields(detailQuery.data?.fields ?? []);
   const mappingName = localName || detailQuery.data?.name || "Plantilla";
 
   if (showEditor && editorMode === "upload") {
@@ -127,7 +129,7 @@ export function GdcPlantillasPage() {
               templateId: editingTemplateId,
               body: { fields: mappings },
             });
-            setLocalFields(detail.fields);
+            setLocalFields(normalizeTemplateFields(detail.fields));
           }}
           onActivate={async () => {
             if (!editingTemplateId) return;
