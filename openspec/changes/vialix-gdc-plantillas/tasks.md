@@ -61,7 +61,7 @@
 
 ## HU #9757 — UI preview y generación DP
 
-- [ ] 7.1 Preview compilado + descarga
+- [x] 7.1 Preview compilado + descarga
 - [ ] 7.2 Commit `HU9757:` + dev-tester
 
 ## HU #9758 — UI grilla DP en detalle comparendo
