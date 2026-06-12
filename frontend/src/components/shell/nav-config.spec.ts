@@ -20,5 +20,6 @@ describe("nav-config", () => {
     expect(admin?.href).toBe("/admin");
     expect(resolveActiveNavId("/admin")).toBe("admin");
     expect(resolveActiveNavId("/admin/notificaciones")).toBe("admin");
+    expect(resolveActiveNavId("/admin/reglas")).toBe("admin");
   });
 });
