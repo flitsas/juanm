@@ -252,9 +252,7 @@ export function ProviderForm({ provider, isLoading }: ProviderFormProps) {
               <InputNumber
                 inputId="smtp-port"
                 value={form.smtpPort ? Number(form.smtpPort) : null}
-                onValueChange={(e) =>
-                  update({ smtpPort: e.value === null ? "" : String(e.value) })
-                }
+                onValueChange={(e) => update({ smtpPort: e.value === null ? "" : String(e.value) })}
                 useGrouping={false}
                 min={1}
                 max={65535}

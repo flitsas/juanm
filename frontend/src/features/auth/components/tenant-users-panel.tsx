@@ -120,11 +120,7 @@ export function TenantUsersPanel({
               <Building2 className="size-4 text-[var(--flit-action)]" aria-hidden="true" />
               Compañías
             </div>
-            <PrimaryButton
-              size="sm"
-              onClick={openCreate}
-              data-testid="notif-new-company-btn"
-            >
+            <PrimaryButton size="sm" onClick={openCreate} data-testid="notif-new-company-btn">
               <Plus className="size-3.5" aria-hidden="true" />
               Nueva
             </PrimaryButton>
@@ -135,7 +131,10 @@ export function TenantUsersPanel({
             data-vertical-scroll
           >
             {companiesQuery.isLoading ? (
-              <p className="px-1 py-4 text-center text-xs text-[var(--flit-text-secondary)]" role="status">
+              <p
+                className="px-1 py-4 text-center text-xs text-[var(--flit-text-secondary)]"
+                role="status"
+              >
                 Cargando compañías…
               </p>
             ) : null}

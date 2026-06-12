@@ -58,10 +58,7 @@ export function UnifiedAdminPage() {
 
   return (
     <div className="mx-auto max-w-[1400px] space-y-6 p-6" data-testid="unified-admin-page">
-      <PageHeaderCard
-        title="Administración"
-        subtitle="Multi-compañía, usuarios y roles"
-      />
+      <PageHeaderCard title="Administración" subtitle="Multi-compañía, usuarios y roles" />
 
       <TabPills
         tabs={tabs}
@@ -70,13 +67,9 @@ export function UnifiedAdminPage() {
         ariaLabel="Secciones de administración"
       />
 
-      {activeTab === "users" && superAdmin ? (
-        <AdminUsersSection accessToken={accessToken} />
-      ) : null}
+      {activeTab === "users" && superAdmin ? <AdminUsersSection accessToken={accessToken} /> : null}
 
-      {activeTab === "rbac" && superAdmin ? (
-        <RbacMatrixPanel accessToken={accessToken} />
-      ) : null}
+      {activeTab === "rbac" && superAdmin ? <RbacMatrixPanel accessToken={accessToken} /> : null}
 
       {activeTab === "notificaciones" ? <NotifAdminPanel /> : null}
     </div>
