@@ -40,10 +40,10 @@
 
 ## HU #9754 — API compilación PDF y generación DP
 
-- [ ] 4.1 Compilador PDF + `NeedAppearances`
-- [ ] 4.2 Crear `derecho_peticion` con PDF output
-- [ ] 4.3 Bloqueo sin contraventor (RF07)
-- [ ] 4.4 Commit `HU9754:` + dev-tester
+- [x] 4.1 Compilador PDF + `NeedAppearances`
+- [x] 4.2 Crear `derecho_peticion` con PDF output
+- [x] 4.3 Bloqueo sin contraventor (RF07)
+- [x] 4.4 Commit `HU9754:` + dev-tester
 
 ## HU #9755 — API ciclo de vida DP y versionamiento
 

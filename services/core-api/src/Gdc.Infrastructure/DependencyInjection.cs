@@ -60,6 +60,9 @@ public static class DependencyInjection
         services.AddSingleton<IBinaryAssetStore, PdfBinaryAssetStore>();
         services.AddSingleton<IAcroFormFieldExtractor, PdfSharpAcroFormFieldExtractor>();
         services.AddScoped<GdcPlantillaService>();
+        services.AddScoped<GdcDpService>();
+        services.AddScoped<IComparendoCompilationSource, ComparendoCompilationSource>();
+        services.AddSingleton<IPdfCompiler, PdfSharpPdfCompiler>();
         services.AddScoped<NotifRuleService>();
         services.AddScoped<NotifQueueService>();
         services.AddScoped<NotifSwitchService>();

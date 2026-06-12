@@ -104,6 +104,7 @@ app.MapNotifProviderEndpoints();
 app.MapNotifTemplateEndpoints();
 app.MapNotifRuleEndpoints();
 app.MapGdcPlantillaEndpoints();
+app.MapGdcDpEndpoints();
 
 app.Run();
 
