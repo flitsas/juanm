@@ -7,6 +7,9 @@ public static class PlantillaFieldTypes
     public const string Number = "number";
 
     public const string Choice = "choice";
+
+    public static bool IsValid(string? value) =>
+        value is Text or Number or Choice;
 }
 
 public static class DerechoPeticionEstados

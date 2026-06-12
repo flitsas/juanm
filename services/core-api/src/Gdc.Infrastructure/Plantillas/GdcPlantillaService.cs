@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Gdc.Infrastructure.Persistence;
 using DgcTenantContext = Gdc.Modules.Dgc.Application.Abstractions.ITenantContext;
 using Gdc.Modules.Plantillas.Application.Abstractions;
@@ -90,7 +91,7 @@ public sealed class GdcPlantillaService(
             Name = templateName,
             StorageKey = storageKey,
             Version = 1,
-            IsActive = true,
+            IsActive = false,
             CreatedAt = now,
             CreatedBy = tenantContext.UserId,
         };
@@ -139,8 +140,100 @@ public sealed class GdcPlantillaService(
         }
     }
 
+    public SystemVariableListResponse GetSystemVariables() =>
+        new(SystemVariableCatalog.All
+            .Select(v => new SystemVariableDto(v.Key, v.Label, v.Source, v.DataType))
+            .ToList());
+
+    public async Task<PdfTemplateDetailDto?> UpdateFieldMappingsAsync(
+        Guid templateId,
+        UpdateFieldMappingsRequest request,
+        CancellationToken cancellationToken)
+    {
+        var tenantId = tenantContext.TenantId;
+        var template = await db.PdfTemplates
+            .Include(t => t.Fields)
+            .FirstOrDefaultAsync(t => t.Id == templateId && t.TenantId == tenantId, cancellationToken);
+
+        if (template is null)
+        {
+            return null;
+        }
+
+        var fieldLookup = template.Fields.ToDictionary(f => f.Id);
+        foreach (var mapping in request.Fields)
+        {
+            if (!fieldLookup.TryGetValue(mapping.FieldId, out var field))
+            {
+                throw new ArgumentException($"Field {mapping.FieldId} does not belong to template {templateId}.");
+            }
+
+            PlantillaFieldMappingValidator.ValidateMapping(
+                mapping.FieldType,
+                mapping.SystemVariable,
+                mapping.ChoiceOptions,
+                out var choiceOptionsJson);
+
+            field.FieldType = mapping.FieldType;
+            field.SystemVariable = mapping.SystemVariable;
+            field.ChoiceOptionsJson = choiceOptionsJson;
+            field.UpdatedAt = timeProvider.GetUtcNow();
+            field.UpdatedBy = tenantContext.UserId;
+        }
+
+        await db.SaveChangesAsync(cancellationToken);
+        return ToDetailDto(template);
+    }
+
+    public async Task<ActivateTemplateResponse?> ActivateAsync(Guid templateId, CancellationToken cancellationToken)
+    {
+        var tenantId = tenantContext.TenantId;
+        var template = await db.PdfTemplates
+            .Include(t => t.Fields)
+            .FirstOrDefaultAsync(t => t.Id == templateId && t.TenantId == tenantId, cancellationToken);
+
+        if (template is null)
+        {
+            return null;
+        }
+
+        var unmapped = template.Fields
+            .Where(f => string.IsNullOrWhiteSpace(f.SystemVariable))
+            .Select(f => f.AcroformName)
+            .ToList();
+
+        if (unmapped.Count > 0)
+        {
+            throw new ArgumentException(
+                $"Template cannot be activated until all fields are mapped: {string.Join(", ", unmapped)}.");
+        }
+
+        template.IsActive = true;
+        template.UpdatedAt = timeProvider.GetUtcNow();
+        template.UpdatedBy = tenantContext.UserId;
+        await db.SaveChangesAsync(cancellationToken);
+
+        return new ActivateTemplateResponse(template.Id, template.IsActive, template.Fields.Count);
+    }
+
     private static PdfTemplateFieldDto ToFieldDto(PdfTemplateField field) =>
-        new(field.Id, field.AcroformName, field.FieldType, field.SystemVariable, field.SortOrder);
+        new(
+            field.Id,
+            field.AcroformName,
+            field.FieldType,
+            field.SystemVariable,
+            ParseChoiceOptions(field.ChoiceOptionsJson),
+            field.SortOrder);
+
+    private static IReadOnlyList<string>? ParseChoiceOptions(string? json)
+    {
+        if (string.IsNullOrWhiteSpace(json))
+        {
+            return null;
+        }
+
+        return JsonSerializer.Deserialize<List<string>>(json);
+    }
 
     private static PdfTemplateDetailDto ToDetailDto(PdfTemplate template) =>
         new(

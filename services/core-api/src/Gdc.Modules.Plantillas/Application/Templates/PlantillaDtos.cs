@@ -5,6 +5,7 @@ public sealed record PdfTemplateFieldDto(
     string AcroformName,
     string FieldType,
     string? SystemVariable,
+    IReadOnlyList<string>? ChoiceOptions,
     int SortOrder);
 
 public sealed record PdfTemplateSummaryDto(

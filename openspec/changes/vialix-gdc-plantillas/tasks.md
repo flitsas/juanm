@@ -25,11 +25,11 @@
 
 ## HU #9752 — API carga PDF y extracción AcroForm
 
-- [ ] 2.1 `IBinaryAssetStore` + upload endpoint
-- [ ] 2.2 `IAcroFormFieldExtractor` con PdfSharpCore
-- [ ] 2.3 Listar tags detectados (RF01)
-- [ ] 2.4 OpenAPI `/api/v1/gdc/templates` upload
-- [ ] 2.5 Commit `HU9752:` + dev-tester
+- [x] 2.1 `IBinaryAssetStore` + upload endpoint
+- [x] 2.2 `IAcroFormFieldExtractor` con PdfSharpCore
+- [x] 2.3 Listar tags detectados (RF01)
+- [x] 2.4 API `/api/v1/gdc/templates/upload`
+- [x] 2.5 Commit `HU9752:` + evidencias ADO
 
 ## HU #9753 — API tipado y mapeo variables
 
