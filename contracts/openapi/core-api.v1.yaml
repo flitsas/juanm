@@ -1066,6 +1066,87 @@ paths:
           description: Switch actualizado
         "400":
           description: Sin proveedor activo
+  /api/v1/reglas/runs:
+    get:
+      operationId: listReglasRuns
+      summary: Lista corridas de evaluación REGLAS
+      tags: [Reglas]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Corridas del tenant
+    post:
+      operationId: triggerReglasRun
+      summary: Dispara evaluación manual de reglas activas
+      tags: [Reglas]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "202":
+          description: Corrida aceptada
+        "400":
+          description: Error en evaluación
+  /api/v1/reglas/runs/{id}:
+    get:
+      operationId: getReglasRun
+      summary: Obtiene corrida de evaluación por id
+      tags: [Reglas]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Corrida encontrada
+        "404":
+          description: No encontrada
+  /api/v1/reglas/matches:
+    get:
+      operationId: listReglasMatches
+      summary: Lista coincidencias regla-comparendo
+      tags: [Reglas]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: runId
+          in: query
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - name: ruleId
+          in: query
+          required: false
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Coincidencias registradas
   /api/v1/reglas/rules:
     get:
       operationId: listReglasRules
@@ -1643,3 +1724,73 @@ components:
     UpdateReglasRuleRequest:
       allOf:
         - $ref: "#/components/schemas/CreateReglasRuleRequest"
+    ReglasRunResponse:
+      type: object
+      required: [id, startedAt, status, triggerType, evaluatedCount, matchedCount, processedCount, failedCount]
+      properties:
+        id:
+          type: string
+          format: uuid
+        startedAt:
+          type: string
+          format: date-time
+        finishedAt:
+          type: string
+          format: date-time
+          nullable: true
+        status:
+          type: string
+          enum: [running, completed, failed]
+        triggerType:
+          type: string
+          enum: [scheduled, manual]
+        evaluatedCount:
+          type: integer
+        matchedCount:
+          type: integer
+        processedCount:
+          type: integer
+        failedCount:
+          type: integer
+        errorMessage:
+          type: string
+          nullable: true
+    TriggerReglasRunResponse:
+      type: object
+      required: [runId, matchedCount]
+      properties:
+        runId:
+          type: string
+          format: uuid
+        matchedCount:
+          type: integer
+    ReglasMatchResponse:
+      type: object
+      required: [id, dynamicRuleId, ruleName, comparendoId, comparendoNumero, status, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        dynamicRuleId:
+          type: string
+          format: uuid
+        ruleName:
+          type: string
+        comparendoId:
+          type: string
+          format: uuid
+        comparendoNumero:
+          type: string
+        ruleExecutionRunId:
+          type: string
+          format: uuid
+          nullable: true
+        status:
+          type: string
+        processedAt:
+          type: string
+          format: date-time
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time

@@ -61,6 +61,10 @@ public static class DependencyInjection
         services.AddScoped<NotifRuleService>();
         services.AddValidatorsFromAssemblyContaining<CreateReglasRuleRequestValidator>();
         services.AddScoped<ReglasRuleService>();
+        services.AddScoped<ReglasExecutionJob>();
+        services.AddScoped<ReglasExecutionService>();
+        services.Configure<ReglasExecutionOptions>(configuration.GetSection(ReglasExecutionOptions.SectionName));
+        services.AddHostedService<ReglasExecutionHostedService>();
         services.AddScoped<NotifQueueService>();
         services.AddScoped<NotifSwitchService>();
         services.AddScoped<NotifDispatchJob>();
