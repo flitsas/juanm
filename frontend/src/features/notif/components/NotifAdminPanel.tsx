@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useNotifProvider } from "../api/use-provider";
-import { isSuperAdmin } from "../lib/role-context";
 import { ProviderForm } from "./ProviderForm";
 import { RulesSection } from "./RulesSection";
 import { TemplatesSection } from "./TemplatesSection";

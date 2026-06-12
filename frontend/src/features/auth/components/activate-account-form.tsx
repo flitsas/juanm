@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Password } from "primereact/password";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Password } from "primereact/password";
 import { useState } from "react";
 import { activateAccount } from "../api/auth-api";
 import { GradientButton } from "./gradient-button";

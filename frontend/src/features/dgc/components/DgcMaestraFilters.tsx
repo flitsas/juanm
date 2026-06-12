@@ -4,8 +4,8 @@ import { Search } from "lucide-react";
 import { Calendar } from "primereact/calendar";
 import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
-import type { ComparendoMaestraFilters } from "../lib/comparendo-maestra.types";
 import { COMPARENDO_ESTADO_FILTER_OPTIONS } from "../lib/comparendo-estado-options";
+import type { ComparendoMaestraFilters } from "../lib/comparendo-maestra.types";
 import { formatFilterDate, parseFilterDate } from "../lib/filter-date";
 
 type DgcMaestraFiltersProps = {

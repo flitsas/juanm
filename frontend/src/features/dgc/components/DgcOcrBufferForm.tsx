@@ -4,10 +4,10 @@ import { Calendar } from "primereact/calendar";
 import { Dropdown } from "primereact/dropdown";
 import { InputNumber } from "primereact/inputnumber";
 import { InputText } from "primereact/inputtext";
-import type { OcrBufferFieldErrors, OcrBufferForm } from "../lib/ocr.types";
 import { COMPARENDO_ESTADO_OPTIONS } from "../lib/comparendo-estado-options";
 import { formatCurrencyField, parseCurrencyField } from "../lib/currency-field";
 import { formatFilterDate, parseFilterDate } from "../lib/filter-date";
+import type { OcrBufferFieldErrors, OcrBufferForm } from "../lib/ocr.types";
 
 type DgcOcrBufferFormProps = {
   form: OcrBufferForm;

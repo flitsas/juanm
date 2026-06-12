@@ -235,7 +235,7 @@ export function DgcDetailPanel({
                 </span>
               </p>
 
-              <label className="block">
+              <label className="block" htmlFor="contraventor-nombre">
                 <span className="mb-1 block text-xs text-[var(--muted-foreground)]">Nombre *</span>
                 <InputText
                   id="contraventor-nombre"
@@ -246,7 +246,7 @@ export function DgcDetailPanel({
                   className="flit-field-input w-full"
                 />
               </label>
-              <label className="block">
+              <label className="block" htmlFor="contraventor-documento">
                 <span className="mb-1 block text-xs text-[var(--muted-foreground)]">
                   Documento *
                 </span>
@@ -260,7 +260,7 @@ export function DgcDetailPanel({
                   className="flit-field-input w-full"
                 />
               </label>
-              <label className="block">
+              <label className="block" htmlFor="contraventor-correo">
                 <span className="mb-1 block text-xs text-[var(--muted-foreground)]">Correo</span>
                 <InputText
                   id="contraventor-correo"

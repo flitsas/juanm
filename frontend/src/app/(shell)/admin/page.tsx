@@ -1,6 +1,6 @@
 import { Suspense } from "react";
-import { UnifiedAdminPage } from "@/features/auth/components/unified-admin-page";
 import { LoadingState } from "@/features/auth/components/ui-state";
+import { UnifiedAdminPage } from "@/features/auth/components/unified-admin-page";
 
 export const metadata = {
   title: "Administración · GDC — Gestión De Comparendos",
