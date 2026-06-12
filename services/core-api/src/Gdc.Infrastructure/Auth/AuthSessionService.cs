@@ -12,6 +12,7 @@ namespace Gdc.Infrastructure.Auth;
 public sealed class AuthSessionService(
     GdcDbContext dbContext,
     IJwtTokenService jwtTokenService,
+    IOptions<JwtSettings> jwtOptions,
     IOptions<LockoutSettings> lockoutOptions) : IAuthSessionService
 {
     private static readonly PasswordHasher<User> PasswordHasher = new();
@@ -91,22 +92,73 @@ public sealed class AuthSessionService(
             .OrderBy(code => code)
             .FirstOrDefault() ?? "Operator";
 
-        var (token, expiresAt, _) = jwtTokenService.CreateAccessToken(trackedUser, roleCode);
+        return await IssueSessionAsync(trackedUser, roleCode, cancellationToken);
+    }
 
-        return (new LoginResponse(
-            token,
-            expiresAt,
-            trackedUser.Id,
-            trackedUser.TenantId,
-            trackedUser.Email,
-            roleCode), null);
+    public async Task<(LoginResponse? Success, AuthError? Error)> RefreshAsync(
+        RefreshRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(request.RefreshToken))
+        {
+            return (null, new AuthError(AuthErrorCode.InvalidCredentials, "Sesión expirada."));
+        }
+
+        var tokenHash = TokenHasher.Hash(request.RefreshToken.Trim());
+        var stored = await dbContext.RefreshTokens
+            .IgnoreQueryFilters()
+            .Include(t => t.User)
+            .ThenInclude(u => u.UserRoles)
+            .ThenInclude(ur => ur.Role)
+            .FirstOrDefaultAsync(
+                t => t.TokenHash == tokenHash && t.RevokedAt == null,
+                cancellationToken);
+
+        if (stored is null || stored.ExpiresAt <= DateTimeOffset.UtcNow)
+        {
+            return (null, new AuthError(AuthErrorCode.InvalidCredentials, "Sesión expirada."));
+        }
+
+        if (stored.User.Status != UserStatus.Active)
+        {
+            return (null, new AuthError(AuthErrorCode.AccountNotActive, "Sesión expirada."));
+        }
+
+        var now = DateTimeOffset.UtcNow;
+        stored.RevokedAt = now;
+        stored.UpdatedAt = now;
+
+        var roleCode = stored.User.UserRoles
+            .Select(ur => ur.Role.Code)
+            .OrderBy(code => code)
+            .FirstOrDefault() ?? "Operator";
+
+        return await IssueSessionAsync(stored.User, roleCode, cancellationToken);
     }
 
     public async Task LogoutAsync(ClaimsPrincipal principal, CancellationToken cancellationToken = default)
     {
+        var now = DateTimeOffset.UtcNow;
+        var userIdValue = principal.FindFirstValue(ClaimTypes.NameIdentifier)
+            ?? principal.FindFirstValue(JwtRegisteredClaimNames.Sub);
+        if (Guid.TryParse(userIdValue, out var userId))
+        {
+            var activeRefreshTokens = await dbContext.RefreshTokens
+                .IgnoreQueryFilters()
+                .Where(t => t.UserId == userId && t.RevokedAt == null)
+                .ToListAsync(cancellationToken);
+
+            foreach (var refreshToken in activeRefreshTokens)
+            {
+                refreshToken.RevokedAt = now;
+                refreshToken.UpdatedAt = now;
+            }
+        }
+
         var tokenId = jwtTokenService.GetTokenId(principal);
         if (string.IsNullOrWhiteSpace(tokenId))
         {
+            await dbContext.SaveChangesAsync(cancellationToken);
             return;
         }
 
@@ -115,6 +167,7 @@ public sealed class AuthSessionService(
 
         if (exists)
         {
+            await dbContext.SaveChangesAsync(cancellationToken);
             return;
         }
 
@@ -126,7 +179,6 @@ public sealed class AuthSessionService(
             expiresAt = DateTimeOffset.FromUnixTimeSeconds(unixExp);
         }
 
-        var now = DateTimeOffset.UtcNow;
         dbContext.RevokedTokens.Add(new RevokedToken
         {
             Id = Guid.NewGuid(),
@@ -142,4 +194,43 @@ public sealed class AuthSessionService(
 
     public Task<bool> IsTokenRevokedAsync(string tokenId, CancellationToken cancellationToken = default) =>
         dbContext.RevokedTokens.AsNoTracking().AnyAsync(t => t.TokenId == tokenId, cancellationToken);
+
+    private async Task<(LoginResponse Success, AuthError? Error)> IssueSessionAsync(
+        User user,
+        string roleCode,
+        CancellationToken cancellationToken)
+    {
+        var (accessToken, expiresAt, _) = jwtTokenService.CreateAccessToken(user, roleCode);
+        var (refreshToken, _) = await CreateRefreshTokenAsync(user, cancellationToken);
+
+        return (new LoginResponse(
+            accessToken,
+            refreshToken,
+            expiresAt,
+            user.Id,
+            user.TenantId,
+            user.Email,
+            roleCode), null);
+    }
+
+    private async Task<(string RawToken, RefreshToken Entity)> CreateRefreshTokenAsync(
+        User user,
+        CancellationToken cancellationToken)
+    {
+        var rawToken = TokenHasher.GenerateToken();
+        var now = DateTimeOffset.UtcNow;
+        var entity = new RefreshToken
+        {
+            Id = Guid.NewGuid(),
+            UserId = user.Id,
+            TokenHash = TokenHasher.Hash(rawToken),
+            ExpiresAt = now.AddDays(jwtOptions.Value.RefreshTokenDays),
+            CreatedAt = now,
+            UpdatedAt = now,
+        };
+
+        dbContext.RefreshTokens.Add(entity);
+        await dbContext.SaveChangesAsync(cancellationToken);
+        return (rawToken, entity);
+    }
 }

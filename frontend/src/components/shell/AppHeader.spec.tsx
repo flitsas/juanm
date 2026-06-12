@@ -33,6 +33,7 @@ vi.mock("next/navigation", () => ({
 vi.mock("@/features/auth/lib/session", () => ({
   getSession: () => ({
     accessToken: "jwt-token",
+    refreshToken: "refresh-token",
     expiresAt: "2099-01-01T00:00:00Z",
     userId: "user-1",
     tenantId: "22222222-2222-2222-2222-222222222222",

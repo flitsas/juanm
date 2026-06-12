@@ -21,6 +21,14 @@ public class AuthSessionServiceTests
         return new AuthSessionService(
             context,
             jwt,
+            Options.Create(new JwtSettings
+            {
+                SecretKey = "test-secret-key-with-at-least-32-characters",
+                Issuer = "test",
+                Audience = "test",
+                AccessTokenMinutes = 15,
+                RefreshTokenDays = 7,
+            }),
             Options.Create(new LockoutSettings { MaxFailedAttempts = 100, LockoutMinutes = 15 }));
     }
 
@@ -37,6 +45,7 @@ public class AuthSessionServiceTests
         Assert.Null(error);
         Assert.NotNull(success);
         Assert.False(string.IsNullOrWhiteSpace(success.AccessToken));
+        Assert.False(string.IsNullOrWhiteSpace(success.RefreshToken));
         Assert.Equal(AuthTestData.UserId, success.UserId);
         Assert.Equal(AuthTestData.TenantId, success.TenantId);
         Assert.Equal("Operator", success.Role);
@@ -56,6 +65,31 @@ public class AuthSessionServiceTests
         Assert.NotNull(error);
         Assert.Equal(AuthErrorCode.InvalidCredentials, error.Code);
         Assert.Equal("Credenciales inválidas.", error.Message);
+    }
+
+    [Fact]
+    public async Task RefreshAsync_rotates_token_and_returns_new_session()
+    {
+        await using var context = TestDbContextFactory.CreateInMemory();
+        await AuthTestData.SeedActiveUserAsync(context);
+        var service = CreateService(context);
+
+        var (login, loginError) = await service.LoginAsync(
+            new LoginRequest(AuthTestData.Email, AuthTestData.Password));
+        Assert.Null(loginError);
+        Assert.NotNull(login);
+
+        var (refreshed, refreshError) = await service.RefreshAsync(
+            new RefreshRequest(login.RefreshToken));
+        Assert.Null(refreshError);
+        Assert.NotNull(refreshed);
+        Assert.NotEqual(login.AccessToken, refreshed.AccessToken);
+        Assert.NotEqual(login.RefreshToken, refreshed.RefreshToken);
+
+        var (again, againError) = await service.RefreshAsync(
+            new RefreshRequest(login.RefreshToken));
+        Assert.Null(again);
+        Assert.NotNull(againError);
     }
 
     [Fact]

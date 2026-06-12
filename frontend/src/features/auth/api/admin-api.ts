@@ -1,4 +1,5 @@
 import { getApiBaseUrl } from "@/lib/api-base-url";
+import { ensureAccessToken, SessionExpiredError } from "../lib/ensure-access-token";
 import type {
   InviteUserPayload,
   InviteUserResult,
@@ -7,7 +8,8 @@ import type {
   UserSummary,
 } from "../types";
 
-async function authFetch<T>(path: string, accessToken: string, init?: RequestInit): Promise<T> {
+async function authFetch<T>(path: string, _accessToken: string, init?: RequestInit): Promise<T> {
+  const accessToken = await ensureAccessToken();
   const res = await fetch(`${getApiBaseUrl()}${path}`, {
     ...init,
     headers: {
@@ -19,6 +21,9 @@ async function authFetch<T>(path: string, accessToken: string, init?: RequestIni
 
   if (!res.ok) {
     const body = (await res.json().catch(() => ({}))) as { message?: string };
+    if (res.status === 401) {
+      throw new SessionExpiredError(body.message ?? "Sesión expirada. Inicie sesión nuevamente.");
+    }
     throw new Error(body.message ?? "Error en la solicitud.");
   }
 

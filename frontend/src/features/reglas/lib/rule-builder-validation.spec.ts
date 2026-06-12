@@ -3,6 +3,7 @@ import { countPredicates, formatConditionSummary } from "./condition-tree";
 import {
   EMPTY_RULE_BUILDER_FORM,
   hasRuleBuilderErrors,
+  normalizeSecretariatContactId,
   validateRuleBuilderForm,
 } from "./rule-builder-validation";
 
@@ -60,6 +61,26 @@ describe("validateRuleBuilderForm", () => {
       },
     });
     expect(hasRuleBuilderErrors(errors)).toBe(false);
+  });
+});
+
+describe("normalizeSecretariatContactId", () => {
+  it("convierte opción vacía del dropdown a null", () => {
+    expect(
+      normalizeSecretariatContactId({
+        label: "Sin contacto fijo (resolver por secretaría)",
+        value: "",
+      }),
+    ).toBeNull();
+  });
+
+  it("extrae el id cuando el dropdown devuelve objeto", () => {
+    expect(
+      normalizeSecretariatContactId({
+        label: "Bogotá — ops@test.co",
+        value: "019ebcdb-4846-7cbf-8461-7241b3283907",
+      }),
+    ).toBe("019ebcdb-4846-7cbf-8461-7241b3283907");
   });
 });
 

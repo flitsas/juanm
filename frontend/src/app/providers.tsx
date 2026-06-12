@@ -43,6 +43,7 @@ addLocale("es", {
   ],
   today: "Hoy",
   clear: "Limpiar",
+  chooseDate: "Seleccionar fecha",
 });
 locale("es");
 

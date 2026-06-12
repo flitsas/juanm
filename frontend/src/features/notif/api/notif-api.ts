@@ -38,7 +38,7 @@ export async function fetchCompanies(init?: RequestInit): Promise<NotifCompanyLi
   const response = await fetch(`${getApiBaseUrl()}/api/v1/notif/companies`, {
     ...init,
     headers: {
-      ...buildNotifHeaders({ superAdmin: true }),
+      ...(await buildNotifHeaders({ superAdmin: true })),
       ...init?.headers,
     },
     cache: "no-store",
@@ -60,7 +60,7 @@ export async function createCompany(
     ...init,
     headers: {
       "Content-Type": "application/json",
-      ...buildNotifHeaders({ superAdmin: true }),
+      ...(await buildNotifHeaders({ superAdmin: true })),
       ...init?.headers,
     },
     body: JSON.stringify(payload),
@@ -83,7 +83,7 @@ export async function updateCompany(
     ...init,
     headers: {
       "Content-Type": "application/json",
-      ...buildNotifHeaders({ superAdmin: true }),
+      ...(await buildNotifHeaders({ superAdmin: true })),
       ...init?.headers,
     },
     body: JSON.stringify(payload),
@@ -101,7 +101,7 @@ export async function deleteCompany(id: string, init?: RequestInit): Promise<voi
     method: "DELETE",
     ...init,
     headers: {
-      ...buildNotifHeaders({ superAdmin: true }),
+      ...(await buildNotifHeaders({ superAdmin: true })),
       ...init?.headers,
     },
   });
@@ -142,7 +142,7 @@ export async function fetchProvider(init?: RequestInit): Promise<NotifProvider |
   const response = await fetch(`${getApiBaseUrl()}/api/v1/notif/provider`, {
     ...init,
     headers: {
-      ...buildNotifHeaders(),
+      ...(await buildNotifHeaders()),
       ...init?.headers,
     },
     cache: "no-store",
@@ -168,7 +168,7 @@ export async function saveProvider(
     ...init,
     headers: {
       "Content-Type": "application/json",
-      ...buildNotifHeaders(),
+      ...(await buildNotifHeaders()),
       ...init?.headers,
     },
     body: JSON.stringify(payload),
@@ -190,7 +190,7 @@ export async function testProvider(
     ...init,
     headers: {
       "Content-Type": "application/json",
-      ...buildNotifHeaders(),
+      ...(await buildNotifHeaders()),
       ...init?.headers,
     },
     body: JSON.stringify(payload),
@@ -207,7 +207,7 @@ export async function fetchTemplates(init?: RequestInit): Promise<NotifTemplateL
   const response = await fetch(`${getApiBaseUrl()}/api/v1/notif/templates`, {
     ...init,
     headers: {
-      ...buildNotifHeaders(),
+      ...(await buildNotifHeaders()),
       ...init?.headers,
     },
     cache: "no-store",
@@ -229,7 +229,7 @@ export async function createTemplate(
     ...init,
     headers: {
       "Content-Type": "application/json",
-      ...buildNotifHeaders(),
+      ...(await buildNotifHeaders()),
       ...init?.headers,
     },
     body: JSON.stringify(payload),
@@ -252,7 +252,7 @@ export async function updateTemplate(
     ...init,
     headers: {
       "Content-Type": "application/json",
-      ...buildNotifHeaders(),
+      ...(await buildNotifHeaders()),
       ...init?.headers,
     },
     body: JSON.stringify(payload),
@@ -270,7 +270,7 @@ export async function deleteTemplate(id: string, init?: RequestInit): Promise<vo
     method: "DELETE",
     ...init,
     headers: {
-      ...buildNotifHeaders(),
+      ...(await buildNotifHeaders()),
       ...init?.headers,
     },
   });
@@ -290,7 +290,7 @@ export async function previewTemplate(
     ...init,
     headers: {
       "Content-Type": "application/json",
-      ...buildNotifHeaders(),
+      ...(await buildNotifHeaders()),
       ...init?.headers,
     },
     body: JSON.stringify({ variables }),
@@ -314,7 +314,7 @@ export async function uploadTemplateAsset(
     method: "POST",
     ...init,
     headers: {
-      ...buildNotifHeaders(),
+      ...(await buildNotifHeaders()),
       ...init?.headers,
     },
     body: form,
@@ -331,7 +331,7 @@ export async function fetchTenantProfile(init?: RequestInit): Promise<TenantProf
   const response = await fetch(`${getApiBaseUrl()}/api/v1/notif/profile`, {
     ...init,
     headers: {
-      ...buildNotifHeaders(),
+      ...(await buildNotifHeaders()),
       ...init?.headers,
     },
     cache: "no-store",
@@ -353,7 +353,7 @@ export async function updateTenantProfile(
     ...init,
     headers: {
       "Content-Type": "application/json",
-      ...buildNotifHeaders(),
+      ...(await buildNotifHeaders()),
       ...init?.headers,
     },
     body: JSON.stringify(payload),
@@ -370,7 +370,7 @@ export async function fetchRules(init?: RequestInit): Promise<NotifRuleListResul
   const response = await fetch(`${getApiBaseUrl()}/api/v1/notif/rules`, {
     ...init,
     headers: {
-      ...buildNotifHeaders(),
+      ...(await buildNotifHeaders()),
       ...init?.headers,
     },
     cache: "no-store",
@@ -389,7 +389,7 @@ export async function createRule(payload: SaveRulePayload, init?: RequestInit): 
     ...init,
     headers: {
       "Content-Type": "application/json",
-      ...buildNotifHeaders(),
+      ...(await buildNotifHeaders()),
       ...init?.headers,
     },
     body: JSON.stringify(payload),
@@ -412,7 +412,7 @@ export async function updateRule(
     ...init,
     headers: {
       "Content-Type": "application/json",
-      ...buildNotifHeaders(),
+      ...(await buildNotifHeaders()),
       ...init?.headers,
     },
     body: JSON.stringify(payload),
@@ -430,7 +430,7 @@ export async function deleteRule(id: string, init?: RequestInit): Promise<void> 
     method: "DELETE",
     ...init,
     headers: {
-      ...buildNotifHeaders(),
+      ...(await buildNotifHeaders()),
       ...init?.headers,
     },
   });
@@ -444,7 +444,7 @@ export async function fetchQueue(init?: RequestInit): Promise<NotifQueueListResu
   const response = await fetch(`${getApiBaseUrl()}/api/v1/notif/queue`, {
     ...init,
     headers: {
-      ...buildNotifHeaders(),
+      ...(await buildNotifHeaders()),
       ...init?.headers,
     },
     cache: "no-store",
@@ -461,7 +461,7 @@ export async function fetchSwitch(init?: RequestInit): Promise<NotifSwitchState>
   const response = await fetch(`${getApiBaseUrl()}/api/v1/notif/switch`, {
     ...init,
     headers: {
-      ...buildNotifHeaders(),
+      ...(await buildNotifHeaders()),
       ...init?.headers,
     },
     cache: "no-store",
@@ -483,7 +483,7 @@ export async function updateSwitch(
     ...init,
     headers: {
       "Content-Type": "application/json",
-      ...buildNotifHeaders(),
+      ...(await buildNotifHeaders()),
       ...init?.headers,
     },
     body: JSON.stringify({ dispatchEnabled }),

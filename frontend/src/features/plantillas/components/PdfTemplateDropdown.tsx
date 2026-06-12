@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Dropdown } from "primereact/dropdown";
 import { useMemo } from "react";
+import { FlitSelect } from "@/components/flit/flit-select";
 import { usePdfTemplates } from "../api/use-plantillas";
 import { buildPdfTemplateSelectOptions } from "../lib/template-select-options";
 
@@ -57,13 +57,13 @@ export function PdfTemplateDropdown({
   }
 
   return (
-    <Dropdown
+    <FlitSelect
       inputId={inputId}
       value={value}
       options={options}
-      onChange={(e) => onChange((e.value as string) ?? "")}
-      className={className}
+      onChange={onChange}
       placeholder="Seleccione plantilla PDF"
+      className={className}
       data-testid={testId}
     />
   );

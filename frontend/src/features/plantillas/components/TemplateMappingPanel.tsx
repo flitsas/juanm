@@ -1,9 +1,9 @@
 "use client";
 
 import { Button } from "primereact/button";
-import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
 import { useMemo, useState } from "react";
+import { FlitSelect } from "@/components/flit/flit-select";
 import { defaultChoiceOptions } from "../lib/acroform-defaults";
 import { buildMappingsFromFields, validateMappings } from "../lib/mapping-validation";
 import {
@@ -123,24 +123,21 @@ export function TemplateMappingPanel({
                     {field.acroformName}
                   </td>
                   <td className="px-4 py-3">
-                    <Dropdown
+                    <FlitSelect
                       value={fieldType}
                       options={fieldTypeOptions}
-                      onChange={(e) =>
-                        updateOverride(field.id, { fieldType: e.value as PlantillaFieldType })
+                      onChange={(value) =>
+                        updateOverride(field.id, { fieldType: value as PlantillaFieldType })
                       }
-                      className="flit-dropdown w-full max-w-[180px]"
-                      panelClassName="flit-dropdown-panel"
-                      appendTo={typeof document !== "undefined" ? document.body : undefined}
+                      className="max-w-[180px]"
                       data-testid={`gdc-field-type-${field.acroformName}`}
                     />
                   </td>
                   <td className="px-4 py-3">
-                    <Dropdown
-                      value={systemVariable || null}
+                    <FlitSelect
+                      value={systemVariable}
                       options={variableOptions}
-                      onChange={(e) => {
-                        const nextVariable = e.value as string;
+                      onChange={(nextVariable) => {
                         const variableDef = systemVariables.find((v) => v.key === nextVariable);
                         const patch: FieldOverride = { systemVariable: nextVariable };
                         if (variableDef) {
@@ -155,9 +152,7 @@ export function TemplateMappingPanel({
                         updateOverride(field.id, patch);
                       }}
                       placeholder="Seleccionar variable"
-                      className="flit-dropdown w-full max-w-[280px]"
-                      panelClassName="flit-dropdown-panel"
-                      appendTo={typeof document !== "undefined" ? document.body : undefined}
+                      className="max-w-[280px]"
                       data-testid={`gdc-field-variable-${field.acroformName}`}
                     />
                   </td>

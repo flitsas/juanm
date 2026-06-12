@@ -97,7 +97,11 @@ public class PasswordRecoveryServiceTests
     {
         await using var context = TestDbContextFactory.CreateInMemory();
         await AuthTestData.SeedActiveUserAsync(context);
-        var session = new AuthSessionService(context, PasswordRecoveryTestSettings.Jwt, PasswordRecoveryTestSettings.Lockout);
+        var session = new AuthSessionService(
+            context,
+            PasswordRecoveryTestSettings.Jwt,
+            PasswordRecoveryTestSettings.JwtOptions,
+            PasswordRecoveryTestSettings.Lockout);
 
         for (var i = 0; i < 5; i++)
         {
@@ -135,12 +139,15 @@ internal static class PasswordRecoveryTestSettings
             ResetBaseUrl = "http://localhost:40103/reset",
         });
 
-    public static readonly IJwtTokenService Jwt = new JwtTokenService(
+    public static readonly Microsoft.Extensions.Options.IOptions<JwtSettings> JwtOptions =
         Microsoft.Extensions.Options.Options.Create(new JwtSettings
         {
             SecretKey = "test-secret-key-with-at-least-32-characters",
             Issuer = "test",
             Audience = "test",
             AccessTokenMinutes = 15,
-        }));
+            RefreshTokenDays = 7,
+        });
+
+    public static readonly IJwtTokenService Jwt = new JwtTokenService(JwtOptions);
 }

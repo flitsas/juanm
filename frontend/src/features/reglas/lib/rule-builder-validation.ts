@@ -50,6 +50,21 @@ export function hasRuleBuilderErrors(errors: RuleBuilderFormErrors): boolean {
   return Object.keys(errors).length > 0;
 }
 
+/** PrimeReact Dropdown sin optionValue puede devolver { label, value }. */
+export function normalizeDropdownValue(value: unknown): string {
+  if (typeof value === "string") return value;
+  if (value && typeof value === "object" && "value" in value) {
+    const nested = (value as { value?: unknown }).value;
+    return typeof nested === "string" ? nested : nested == null ? "" : String(nested);
+  }
+  return "";
+}
+
+export function normalizeSecretariatContactId(value: unknown): string | null {
+  const id = normalizeDropdownValue(value).trim();
+  return id || null;
+}
+
 export function validateRuleBuilderForm(form: RuleBuilderFormState): RuleBuilderFormErrors {
   const errors: RuleBuilderFormErrors = {};
 

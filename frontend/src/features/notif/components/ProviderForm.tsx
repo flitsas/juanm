@@ -2,11 +2,12 @@
 
 import { Button } from "primereact/button";
 import { Checkbox } from "primereact/checkbox";
-import { Dropdown } from "primereact/dropdown";
 import { InputNumber } from "primereact/inputnumber";
 import { InputText } from "primereact/inputtext";
 import { Password } from "primereact/password";
 import { useEffect, useState } from "react";
+import { FlitSelect } from "@/components/flit/flit-select";
+import { FlitFormField } from "@/components/flit/modal-form";
 import { fetchDevProviderPrefill } from "../api/notif-api";
 import { useNotifProviderMutations } from "../api/use-provider";
 import type { NotifProvider, ProviderType } from "../lib/notif.types";
@@ -150,44 +151,30 @@ export function ProviderForm({ provider, isLoading }: ProviderFormProps) {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <div className="flex flex-col gap-1 md:col-span-2">
-          <label htmlFor="provider-type" className="text-xs text-[var(--muted-foreground)]">
-            Tipo de proveedor
-          </label>
-          <Dropdown
-            inputId="provider-type"
-            value={form.providerType}
-            options={PROVIDER_OPTIONS}
-            onChange={(e) => update({ providerType: e.value as ProviderType | "" })}
-            placeholder="Seleccione proveedor"
-            className="flit-dropdown w-full max-w-md"
-            panelClassName="flit-dropdown-panel"
-            aria-invalid={Boolean(errors.providerType)}
-          />
-          {errors.providerType ? (
-            <span className="text-xs text-[var(--alert)]" role="alert">
-              {errors.providerType}
-            </span>
-          ) : null}
+        <div className="md:col-span-2 max-w-md">
+          <FlitFormField label="Tipo de proveedor" htmlFor="provider-type" error={errors.providerType}>
+            <FlitSelect
+              inputId="provider-type"
+              value={form.providerType}
+              options={PROVIDER_OPTIONS}
+              onChange={(value) => update({ providerType: value as ProviderType | "" })}
+              placeholder="Seleccione proveedor"
+              invalid={Boolean(errors.providerType)}
+            />
+          </FlitFormField>
         </div>
 
-        <div className="flex flex-col gap-1 md:col-span-2">
-          <label htmlFor="provider-from" className="text-xs text-[var(--muted-foreground)]">
-            Remitente (From)
-          </label>
-          <InputText
-            id="provider-from"
-            type="email"
-            value={form.fromAddress}
-            onChange={(e) => update({ fromAddress: e.target.value })}
-            className="flit-field-input w-full max-w-md"
-            aria-invalid={Boolean(errors.fromAddress)}
-          />
-          {errors.fromAddress ? (
-            <span className="text-xs text-[var(--alert)]" role="alert">
-              {errors.fromAddress}
-            </span>
-          ) : null}
+        <div className="md:col-span-2 max-w-md">
+          <FlitFormField label="Remitente (From)" htmlFor="provider-from" error={errors.fromAddress}>
+            <InputText
+              id="provider-from"
+              type="email"
+              value={form.fromAddress}
+              onChange={(e) => update({ fromAddress: e.target.value })}
+              className={`flit-field-input w-full ${errors.fromAddress ? "p-invalid" : ""}`}
+              aria-invalid={Boolean(errors.fromAddress)}
+            />
+          </FlitFormField>
         </div>
 
         {form.providerType === "api" ? (

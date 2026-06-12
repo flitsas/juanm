@@ -1,3 +1,4 @@
+using Gdc.Infrastructure.Auth;
 using Gdc.Infrastructure.Persistence;
 using DgcTenantContext = Gdc.Modules.Dgc.Application.Abstractions.ITenantContext;
 using Gdc.Modules.Notif.Application.Abstractions;
@@ -58,6 +59,14 @@ public sealed class NotifCompanyService(
         };
 
         db.TenantCompanies.Add(company);
+        await CoreTenantProvisioner.EnsureAsync(
+            db,
+            company.Id,
+            company.Name,
+            company.IsActive,
+            company.CreatedAt,
+            company.UpdatedAt,
+            cancellationToken);
         await db.SaveChangesAsync(cancellationToken);
         return ToResponse(company);
     }
@@ -89,6 +98,14 @@ public sealed class NotifCompanyService(
         }
 
         company.UpdatedAt = timeProvider.GetUtcNow();
+        await CoreTenantProvisioner.EnsureAsync(
+            db,
+            company.Id,
+            company.Name,
+            company.IsActive,
+            company.CreatedAt,
+            company.UpdatedAt,
+            cancellationToken);
         await db.SaveChangesAsync(cancellationToken);
         return ToResponse(company);
     }
@@ -109,6 +126,14 @@ public sealed class NotifCompanyService(
         company.DeletedAt = timeProvider.GetUtcNow();
         company.IsActive = false;
         company.UpdatedAt = company.DeletedAt;
+        await CoreTenantProvisioner.EnsureAsync(
+            db,
+            company.Id,
+            company.Name,
+            isActive: false,
+            company.CreatedAt,
+            company.UpdatedAt,
+            cancellationToken);
         await db.SaveChangesAsync(cancellationToken);
         return true;
     }

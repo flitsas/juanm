@@ -1,8 +1,9 @@
 "use client";
 
 import { Button } from "primereact/button";
-import { Dropdown } from "primereact/dropdown";
 import { useEffect, useMemo, useState } from "react";
+import { FlitSelect } from "@/components/flit/flit-select";
+import { FlitFormField, FlitModal } from "@/components/flit/modal-form";
 import { useComparendosMaestra } from "@/features/dgc/api/use-comparendos-maestra";
 import { PlantillasApiError } from "../api/plantillas-api";
 import { useDpGeneration } from "../api/use-dp-generation";
@@ -35,7 +36,7 @@ export function TemplateGenerationDialog({
   });
   const { generate, download } = useDpGeneration();
 
-  const [selectedComparendoId, setSelectedComparendoId] = useState<string | null>(null);
+  const [selectedComparendoId, setSelectedComparendoId] = useState("");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [generatedDpId, setGeneratedDpId] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -57,7 +58,7 @@ export function TemplateGenerationDialog({
 
   useEffect(() => {
     if (!visible) {
-      setSelectedComparendoId(null);
+      setSelectedComparendoId("");
       setGeneratedDpId(null);
       setErrorMessage(null);
       setPreviewUrl((current) => {
@@ -116,127 +117,101 @@ export function TemplateGenerationDialog({
     }
   };
 
-  if (!visible) return null;
-
   return (
-    <div
-      className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-4"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="gdc-generation-dialog-title"
-      data-testid="gdc-generation-dialog"
+    <FlitModal
+      open={visible}
+      onClose={onHide}
+      title={`Generar documento — ${template?.name ?? ""}`}
+      titleId="gdc-generation-dialog-title"
+      testId="gdc-generation-dialog"
+      size="2xl"
     >
-      <div className="flex max-h-[90vh] w-full max-w-[960px] flex-col overflow-hidden rounded-2xl bg-[var(--card)] shadow-xl">
-        <header className="flex items-center justify-between gap-4 border-b border-[var(--border)] px-6 py-4">
-          <h2 id="gdc-generation-dialog-title" className="text-lg font-bold text-[var(--deep)]">
-            Generar documento — {template?.name ?? ""}
-          </h2>
-          <button
-            type="button"
-            onClick={onHide}
-            className="rounded-full px-3 py-1 text-sm text-[var(--muted-foreground)] hover:bg-[var(--muted)]"
-            aria-label="Cerrar diálogo"
+      <div className="space-y-4">
+        <p className="text-sm text-[var(--flit-text-secondary)]">
+          Seleccione el comparendo destino. La vista previa compila el PDF con los datos
+          transaccionales del comparendo y del contraventor.
+        </p>
+
+        <FlitFormField label="Comparendo destino" htmlFor="gdc-comparendo-select">
+          <FlitSelect
+            inputId="gdc-comparendo-select"
+            value={selectedComparendoId}
+            options={comparendoOptions}
+            onChange={(value) => {
+              setSelectedComparendoId(value);
+              setErrorMessage(null);
+              setGeneratedDpId(null);
+              if (previewUrl) {
+                URL.revokeObjectURL(previewUrl);
+                setPreviewUrl(null);
+              }
+            }}
+            placeholder="Seleccionar comparendo"
+            filter
+            data-testid="gdc-comparendo-select"
+          />
+        </FlitFormField>
+
+        {blockedByContraventor ? (
+          <div
+            className="rounded-xl border border-[var(--flit-state-danger)]/30 bg-[var(--flit-state-danger)]/10 p-4 text-sm text-[var(--flit-state-danger)]"
+            role="alert"
+            data-testid="gdc-contraventor-block"
           >
-            Cerrar
-          </button>
-        </header>
-
-        <div className="flex-1 space-y-4 overflow-y-auto p-6">
-          <p className="text-sm text-[var(--muted-foreground)]">
-            Seleccione el comparendo destino. La vista previa compila el PDF con los datos
-            transaccionales del comparendo y del contraventor.
-          </p>
-
-          <div className="space-y-2">
-            <label
-              className="text-sm font-medium text-[var(--deep)]"
-              htmlFor="gdc-comparendo-select"
-            >
-              Comparendo destino
-            </label>
-            <Dropdown
-              inputId="gdc-comparendo-select"
-              value={selectedComparendoId}
-              options={comparendoOptions}
-              onChange={(e) => {
-                setSelectedComparendoId(e.value as string);
-                setErrorMessage(null);
-                setGeneratedDpId(null);
-                if (previewUrl) {
-                  URL.revokeObjectURL(previewUrl);
-                  setPreviewUrl(null);
-                }
-              }}
-              placeholder="Seleccionar comparendo"
-              className="flit-dropdown w-full"
-              panelClassName="flit-dropdown-panel"
-              appendTo={typeof document !== "undefined" ? document.body : undefined}
-              filter
-              data-testid="gdc-comparendo-select"
-            />
+            {CONTRAVENTOR_BLOCK_MESSAGE}
           </div>
+        ) : null}
 
-          {blockedByContraventor ? (
-            <div
-              className="rounded-xl border border-[var(--alert)]/30 bg-[var(--alert)]/10 p-4 text-sm text-[var(--alert)]"
-              role="alert"
-              data-testid="gdc-contraventor-block"
-            >
-              {CONTRAVENTOR_BLOCK_MESSAGE}
-            </div>
-          ) : null}
-
-          {errorMessage && !blockedByContraventor ? (
-            <div
-              className="rounded-xl border border-[var(--alert)]/30 bg-[var(--alert)]/10 p-4 text-sm text-[var(--alert)]"
-              role="alert"
-            >
-              {errorMessage}
-            </div>
-          ) : null}
-
-          <div className="flex flex-wrap gap-2">
-            <Button
-              type="button"
-              label="Generar vista previa"
-              className="flit-btn-primary"
-              disabled={!selectedComparendoId || blockedByContraventor || generate.isPending}
-              loading={generate.isPending || download.isPending}
-              onClick={() => void handlePreview()}
-              data-testid="gdc-generate-preview-btn"
-            />
-            <Button
-              type="button"
-              label="Descargar PDF"
-              className="flit-btn-secondary"
-              disabled={!generatedDpId || blockedByContraventor}
-              loading={download.isPending}
-              onClick={() => void handleDownload()}
-              data-testid="gdc-download-pdf-btn"
-            />
+        {errorMessage && !blockedByContraventor ? (
+          <div
+            className="rounded-xl border border-[var(--flit-state-danger)]/30 bg-[var(--flit-state-danger)]/10 p-4 text-sm text-[var(--flit-state-danger)]"
+            role="alert"
+          >
+            {errorMessage}
           </div>
+        ) : null}
 
-          {previewUrl ? (
-            <div
-              className="overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--muted)]/20"
-              data-testid="gdc-pdf-preview"
-            >
-              <iframe
-                title="Vista previa del derecho de petición"
-                src={previewUrl}
-                className="h-[min(70vh,640px)] w-full bg-white"
-              />
-            </div>
-          ) : (
-            <div
-              className="rounded-2xl border border-dashed border-[var(--border)] bg-[var(--card)] p-10 text-center text-sm text-[var(--muted-foreground)]"
-              data-testid="gdc-pdf-preview-empty"
-            >
-              La vista previa del documento legal aparecerá aquí tras generar.
-            </div>
-          )}
+        <div className="flex flex-wrap gap-2">
+          <Button
+            type="button"
+            label="Generar vista previa"
+            className="flit-btn-primary"
+            disabled={!selectedComparendoId || blockedByContraventor || generate.isPending}
+            loading={generate.isPending || download.isPending}
+            onClick={() => void handlePreview()}
+            data-testid="gdc-generate-preview-btn"
+          />
+          <Button
+            type="button"
+            label="Descargar PDF"
+            className="flit-btn-secondary"
+            disabled={!generatedDpId || blockedByContraventor}
+            loading={download.isPending}
+            onClick={() => void handleDownload()}
+            data-testid="gdc-download-pdf-btn"
+          />
         </div>
+
+        {previewUrl ? (
+          <div
+            className="overflow-hidden rounded-2xl border border-[var(--flit-border-input)] bg-[var(--flit-bg-muted)]/20"
+            data-testid="gdc-pdf-preview"
+          >
+            <iframe
+              title="Vista previa del derecho de petición"
+              src={previewUrl}
+              className="h-[min(70vh,640px)] w-full bg-white"
+            />
+          </div>
+        ) : (
+          <div
+            className="rounded-2xl border border-dashed border-[var(--flit-border-input)] bg-[var(--flit-bg-muted)]/10 p-10 text-center text-sm text-[var(--flit-text-secondary)]"
+            data-testid="gdc-pdf-preview-empty"
+          >
+            La vista previa del documento legal aparecerá aquí tras generar.
+          </div>
+        )}
       </div>
-    </div>
+    </FlitModal>
   );
 }

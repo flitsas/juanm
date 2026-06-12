@@ -20,6 +20,7 @@ internal static class DevDataSeeder
         await SeedCatalogsAsync(db, cancellationToken);
         await EnsureIdentityTenantsAsync(db, cancellationToken);
         await EnsureCoreTenantsAsync(db, cancellationToken);
+        await SyncIdentityTenantsToCoreAsync(db, cancellationToken);
         await SyncLegacyTenantIdsAsync(db, cancellationToken);
         await SeedUsersAsync(db, cancellationToken);
     }
@@ -88,6 +89,25 @@ internal static class DevDataSeeder
             VALUES
               ('{DevTenantId}', 'FLIT Dev Tenant', true, NOW(), NOW(), '1'::xid),
               ('{TestTenantId}', 'FLIT Test Tenant', true, NOW(), NOW(), '1'::xid)
+            ON CONFLICT (id) DO UPDATE
+            SET name = EXCLUDED.name,
+                is_active = EXCLUDED.is_active,
+                updated_at = NOW();
+            """,
+            cancellationToken);
+    }
+
+    /// <summary>
+    /// Compañías NOTIF viven en identity.tenants; auth.users FK a core.tenants.
+    /// </summary>
+    private static async Task SyncIdentityTenantsToCoreAsync(GdcDbContext db, CancellationToken cancellationToken)
+    {
+        await db.Database.ExecuteSqlRawAsync(
+            """
+            INSERT INTO core.tenants (id, name, is_active, created_at, updated_at, row_version)
+            SELECT i.id, i.name, COALESCE(i.is_active, true), i.created_at, COALESCE(i.updated_at, i.created_at), '1'::xid
+            FROM identity.tenants i
+            WHERE i.deleted_at IS NULL
             ON CONFLICT (id) DO UPDATE
             SET name = EXCLUDED.name,
                 is_active = EXCLUDED.is_active,

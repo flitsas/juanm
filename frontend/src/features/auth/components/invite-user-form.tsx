@@ -1,8 +1,9 @@
 "use client";
 
-import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
 import { useMemo, useState } from "react";
+import { FlitSelect } from "@/components/flit/flit-select";
+import { FlitFormField } from "@/components/flit/modal-form";
 import { PrimaryButton } from "@/components/flit/primary-button";
 import { inviteUser } from "../api/admin-api";
 import type { TenantGroup } from "../types";
@@ -73,13 +74,7 @@ export function InviteUserForm({
       ) : null}
 
       <div className="mt-4 space-y-3">
-        <div className="space-y-1.5">
-          <label
-            htmlFor="invite-email"
-            className="text-xs font-semibold text-[var(--flit-text-primary)]"
-          >
-            Correo electrónico
-          </label>
+        <FlitFormField label="Correo electrónico" htmlFor="invite-email">
           <InputText
             id="invite-email"
             type="email"
@@ -89,25 +84,17 @@ export function InviteUserForm({
             className="flit-field-input w-full"
             placeholder="nuevo@empresa.co"
           />
-        </div>
+        </FlitFormField>
 
-        <div className="space-y-1.5">
-          <label
-            htmlFor="invite-compania"
-            className="text-xs font-semibold text-[var(--flit-text-primary)]"
-          >
-            Compañía
-          </label>
-          <Dropdown
+        <FlitFormField label="Compañía" htmlFor="invite-compania">
+          <FlitSelect
             inputId="invite-compania"
             value={tenantId}
             options={tenantOptions}
-            onChange={(e) => setTenantId((e.value as string) ?? "")}
-            className="flit-dropdown w-full"
-            panelClassName="flit-dropdown-panel"
+            onChange={setTenantId}
             disabled={tenants.length === 0}
           />
-        </div>
+        </FlitFormField>
       </div>
 
       <PrimaryButton

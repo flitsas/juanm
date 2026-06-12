@@ -5,6 +5,11 @@ import { Checkbox } from "primereact/checkbox";
 import { InputMask } from "primereact/inputmask";
 import { InputText } from "primereact/inputtext";
 import { useEffect, useState } from "react";
+import {
+  FlitFormField,
+  FlitModal,
+  FlitModalActionsSplit,
+} from "@/components/flit/modal-form";
 import type { CreateCompanyPayload, NotifCompany } from "../lib/notif.types";
 
 type CompanyFormDialogProps = {
@@ -45,8 +50,6 @@ export function CompanyFormDialog({
     setErrors({});
   }, [open, company]);
 
-  if (!open) return null;
-
   const handleSubmit = () => {
     const nextErrors: FieldErrors = {};
     if (!name.trim()) {
@@ -71,145 +74,105 @@ export function CompanyFormDialog({
   };
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="company-form-title"
-      data-testid="notif-company-form-dialog"
-    >
-      <div className="w-full max-w-lg rounded-2xl bg-[var(--card)] p-6 shadow-xl">
-        <div className="flex items-center justify-between gap-4">
-          <h2 id="company-form-title" className="text-xl font-bold text-[var(--deep)]">
-            {company ? "Editar compañía" : "Nueva compañía"}
-          </h2>
-          <button
-            type="button"
-            onClick={() => onOpenChange(false)}
-            className="rounded-full px-3 py-1 text-sm text-[var(--muted-foreground)] hover:bg-[var(--muted)]"
-            aria-label="Cerrar diálogo"
-          >
-            Cerrar
-          </button>
-        </div>
-
-        <div className="mt-6 space-y-4">
-          <div className="flex flex-col gap-1">
-            <label htmlFor="company-name" className="text-xs text-[var(--muted-foreground)]">
-              Nombre
-            </label>
-            <InputText
-              id="company-name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className={`flit-field-input w-full ${errors.name ? "p-invalid" : ""}`}
-              aria-invalid={Boolean(errors.name)}
-            />
-            {errors.name ? (
-              <span className="text-xs text-[var(--alert)]" role="alert">
-                {errors.name}
-              </span>
-            ) : null}
-          </div>
-
-          <div className="flex flex-col gap-1">
-            <label htmlFor="company-nit" className="text-xs text-[var(--muted-foreground)]">
-              NIT
-            </label>
-            <InputText
-              id="company-nit"
-              value={nit}
-              keyfilter="int"
-              onChange={(e) => setNit(e.target.value)}
-              className="flit-field-input w-full"
-              placeholder="Solo números"
-            />
-          </div>
-
-          <div className="flex flex-col gap-1">
-            <label htmlFor="company-email" className="text-xs text-[var(--muted-foreground)]">
-              Correo de contacto
-            </label>
-            <InputText
-              id="company-email"
-              type="email"
-              value={contactEmail}
-              onChange={(e) => setContactEmail(e.target.value)}
-              className={`flit-field-input w-full ${errors.contactEmail ? "p-invalid" : ""}`}
-              aria-invalid={Boolean(errors.contactEmail)}
-            />
-            {errors.contactEmail ? (
-              <span className="text-xs text-[var(--alert)]" role="alert">
-                {errors.contactEmail}
-              </span>
-            ) : null}
-          </div>
-
-          <div className="flex flex-col gap-1">
-            <label htmlFor="company-phone" className="text-xs text-[var(--muted-foreground)]">
-              Teléfono
-            </label>
-            <InputMask
-              id="company-phone"
-              mask="9999999999"
-              value={contactPhone}
-              onChange={(e) => setContactPhone(e.value ?? "")}
-              className={`flit-field-input w-full ${errors.contactPhone ? "p-invalid" : ""}`}
-              placeholder="3001234567"
-              aria-invalid={Boolean(errors.contactPhone)}
-            />
-            {errors.contactPhone ? (
-              <span className="text-xs text-[var(--alert)]" role="alert">
-                {errors.contactPhone}
-              </span>
-            ) : null}
-          </div>
-
-          {company ? (
-            <div className="flex items-center gap-2">
-              <Checkbox
-                inputId="company-active"
-                checked={isActive}
-                onChange={(e) => setIsActive(Boolean(e.checked))}
+    <FlitModal
+      open={open}
+      onClose={() => onOpenChange(false)}
+      title={company ? "Editar compañía" : "Nueva compañía"}
+      titleId="company-form-title"
+      testId="notif-company-form-dialog"
+      footer={
+        <FlitModalActionsSplit
+          start={
+            company && onDelete ? (
+              <Button
+                type="button"
+                label="Eliminar compañía"
+                className="flit-btn-danger"
+                loading={deleting}
+                onClick={onDelete}
+                data-testid={`delete-company-${company.id}`}
               />
-              <label htmlFor="company-active" className="text-sm text-[var(--deep)]">
-                Compañía activa
-              </label>
-            </div>
-          ) : null}
-        </div>
+            ) : undefined
+          }
+          end={
+            <>
+              <Button
+                type="button"
+                label="Cancelar"
+                className="flit-btn-secondary"
+                onClick={() => onOpenChange(false)}
+              />
+              <Button
+                type="button"
+                label={company ? "Guardar cambios" : "Crear compañía"}
+                className="flit-btn-primary"
+                loading={saving}
+                onClick={handleSubmit}
+                data-testid="company-form-submit"
+              />
+            </>
+          }
+        />
+      }
+    >
+      <div className="space-y-4">
+        <FlitFormField label="Nombre" htmlFor="company-name" error={errors.name}>
+          <InputText
+            id="company-name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className={`flit-field-input w-full ${errors.name ? "p-invalid" : ""}`}
+            aria-invalid={Boolean(errors.name)}
+          />
+        </FlitFormField>
 
-        <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
-          {company && onDelete ? (
-            <Button
-              type="button"
-              label="Eliminar compañía"
-              className="flit-btn-danger"
-              loading={deleting}
-              onClick={onDelete}
-              data-testid={`delete-company-${company.id}`}
+        <FlitFormField label="NIT" htmlFor="company-nit">
+          <InputText
+            id="company-nit"
+            value={nit}
+            keyfilter="int"
+            onChange={(e) => setNit(e.target.value)}
+            className="flit-field-input w-full"
+            placeholder="Solo números"
+          />
+        </FlitFormField>
+
+        <FlitFormField label="Correo de contacto" htmlFor="company-email" error={errors.contactEmail}>
+          <InputText
+            id="company-email"
+            type="email"
+            value={contactEmail}
+            onChange={(e) => setContactEmail(e.target.value)}
+            className={`flit-field-input w-full ${errors.contactEmail ? "p-invalid" : ""}`}
+            aria-invalid={Boolean(errors.contactEmail)}
+          />
+        </FlitFormField>
+
+        <FlitFormField label="Teléfono" htmlFor="company-phone" error={errors.contactPhone}>
+          <InputMask
+            id="company-phone"
+            mask="9999999999"
+            value={contactPhone}
+            onChange={(e) => setContactPhone(e.value ?? "")}
+            className={`flit-field-input w-full ${errors.contactPhone ? "p-invalid" : ""}`}
+            placeholder="3001234567"
+            aria-invalid={Boolean(errors.contactPhone)}
+          />
+        </FlitFormField>
+
+        {company ? (
+          <div className="flex items-center gap-2">
+            <Checkbox
+              inputId="company-active"
+              checked={isActive}
+              onChange={(e) => setIsActive(Boolean(e.checked))}
             />
-          ) : (
-            <span />
-          )}
-          <div className="flex gap-3">
-            <Button
-              type="button"
-              label="Cancelar"
-              className="flit-btn-secondary"
-              onClick={() => onOpenChange(false)}
-            />
-            <Button
-              type="button"
-              label={company ? "Guardar cambios" : "Crear compañía"}
-              className="flit-btn-primary"
-              loading={saving}
-              onClick={handleSubmit}
-              data-testid="company-form-submit"
-            />
+            <label htmlFor="company-active" className="text-sm text-[var(--deep)]">
+              Compañía activa
+            </label>
           </div>
-        </div>
+        ) : null}
       </div>
-    </div>
+    </FlitModal>
   );
 }

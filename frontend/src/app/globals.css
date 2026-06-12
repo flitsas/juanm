@@ -284,6 +284,51 @@ body {
   color: var(--action);
 }
 
+/* ===== Modales (Lovable / flitready) — campos con radius 16px ===== */
+.flit-modal .flit-field-input.p-inputtext,
+.flit-modal .flit-dropdown.p-dropdown,
+.flit-modal .flit-input-number.p-inputnumber .p-inputnumber-input {
+  border-radius: var(--flit-radius-input);
+}
+
+.flit-modal .flit-calendar.p-calendar {
+  border-radius: var(--flit-radius-input);
+  width: 100%;
+}
+
+.flit-modal .flit-textarea.p-inputtextarea {
+  border: 1px solid var(--border);
+  border-radius: var(--flit-radius-input);
+  background: var(--card);
+  color: var(--deep);
+  font-family: "Poppins", sans-serif;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  padding: 0.75rem 1rem;
+  width: 100%;
+  min-height: 6rem;
+  box-shadow: none;
+  resize: vertical;
+}
+
+.flit-modal .flit-textarea.p-inputtextarea:enabled:focus {
+  border-color: var(--action);
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--action) 25%, transparent);
+  outline: none;
+}
+
+.flit-modal .p-checkbox .p-checkbox-box {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.flit-modal .p-checkbox .p-checkbox-box.p-highlight {
+  background: var(--action);
+  border-color: var(--action);
+}
+
 .flit-calendar.p-calendar {
   display: inline-flex;
   align-items: stretch;

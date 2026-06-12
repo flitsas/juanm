@@ -12,6 +12,7 @@ vi.mock("next/navigation", () => ({
 vi.mock("../lib/session", () => ({
   getSession: () => ({
     accessToken: "jwt",
+    refreshToken: "refresh-token",
     role: "SuperAdmin",
     email: "admin@flit.dev",
     userId: "11111111-1111-4111-8111-111111111111",

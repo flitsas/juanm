@@ -1,16 +1,17 @@
-import { getSession } from "@/features/auth/lib/session";
+import { ensureAccessToken } from "@/features/auth/lib/ensure-access-token";
 import { getUserRole } from "../lib/role-context";
 import { getTenantId } from "../lib/tenant-context";
 
-export function buildNotifHeaders(options?: { superAdmin?: boolean }): HeadersInit {
+export async function buildNotifHeaders(options?: { superAdmin?: boolean }): Promise<HeadersInit> {
   const headers: Record<string, string> = {
     Accept: "application/json",
     "X-Tenant-Id": getTenantId(),
   };
 
-  const token = getSession()?.accessToken;
-  if (token) {
-    headers.Authorization = `Bearer ${token}`;
+  try {
+    headers.Authorization = `Bearer ${await ensureAccessToken()}`;
+  } catch {
+    // Sin sesión válida: el API responderá 401.
   }
 
   if (options?.superAdmin) {

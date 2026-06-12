@@ -1,5 +1,6 @@
 using Gdc.Infrastructure.Notif;
 using Gdc.Infrastructure.Persistence;
+using Gdc.Infrastructure.Persistence.Auth.Entities;
 using Gdc.Modules.Dgc.Application.Abstractions;
 using Gdc.Modules.Notif.Application.Abstractions;
 using Gdc.Modules.Notif.Application.TenantAdmin;
@@ -26,6 +27,11 @@ public sealed class NotifCompanyTests
         Assert.Equal("Acme Flota", created.Name);
         Assert.Equal("900123456", created.Nit);
         Assert.Single(await db.TenantCompanies.IgnoreQueryFilters().Where(c => c.Name == "Acme Flota").ToListAsync());
+
+        var coreTenant = await db.Tenants.IgnoreQueryFilters().FirstOrDefaultAsync(t => t.Id == created.Id);
+        Assert.NotNull(coreTenant);
+        Assert.Equal("Acme Flota", coreTenant.Name);
+        Assert.True(coreTenant.IsActive);
     }
 
     [Fact]

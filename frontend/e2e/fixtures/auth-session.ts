@@ -8,6 +8,7 @@ export async function installAuthSession(page: Page) {
       "gdc-auth-session",
       JSON.stringify({
         accessToken: "e2e-token",
+        refreshToken: "e2e-refresh",
         userId: "33333333-3333-4333-8333-333333333303",
         tenantId,
         email: "superadmin@example.com",

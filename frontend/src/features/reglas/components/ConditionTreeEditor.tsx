@@ -1,8 +1,8 @@
 "use client";
 
 import { Button } from "primereact/button";
-import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
+import { FlitSelect } from "@/components/flit/flit-select";
 import {
   REGLAS_FIELD_OPTIONS,
   REGLAS_LOGIC_OPTIONS,
@@ -51,11 +51,11 @@ export function ConditionTreeEditor({ root, onChange, depth = 0 }: ConditionTree
         <span className="text-xs font-semibold uppercase tracking-wide text-[var(--muted-foreground)]">
           Agrupación
         </span>
-        <Dropdown
+        <FlitSelect
           value={root.logicOperator ?? "and"}
-          options={[...REGLAS_LOGIC_OPTIONS]}
-          onChange={(e) => onChange({ ...root, logicOperator: e.value as string })}
-          className="flit-field-input w-40"
+          options={REGLAS_LOGIC_OPTIONS}
+          onChange={(value) => onChange({ ...root, logicOperator: value })}
+          className="w-40"
           aria-label="Operador lógico"
         />
         <Button
@@ -119,18 +119,16 @@ function PredicateRow({
       className="grid gap-3 rounded-lg border border-[var(--border)]/70 bg-[var(--card)] p-3 md:grid-cols-[1fr_1fr_1fr_auto]"
       data-testid="reglas-condition-predicate"
     >
-      <Dropdown
+      <FlitSelect
         value={node.fieldKey ?? "estado"}
-        options={[...REGLAS_FIELD_OPTIONS]}
-        onChange={(e) => onChange({ ...node, fieldKey: e.value as string })}
-        className="flit-field-input w-full"
+        options={REGLAS_FIELD_OPTIONS}
+        onChange={(value) => onChange({ ...node, fieldKey: value })}
         aria-label="Campo"
       />
-      <Dropdown
+      <FlitSelect
         value={node.comparisonOperator ?? "eq"}
-        options={[...REGLAS_OPERATOR_OPTIONS]}
-        onChange={(e) => onChange({ ...node, comparisonOperator: e.value as string })}
-        className="flit-field-input w-full"
+        options={REGLAS_OPERATOR_OPTIONS}
+        onChange={(value) => onChange({ ...node, comparisonOperator: value })}
         aria-label="Operador"
       />
       <InputText
@@ -143,13 +141,13 @@ function PredicateRow({
       {onRemove ? (
         <Button
           type="button"
-          icon="pi pi-trash"
-          className="flit-btn-danger p-button-sm"
-          aria-label="Eliminar condición"
+          icon="pi pi-times"
+          className="flit-btn-danger p-button-sm p-button-rounded"
           onClick={onRemove}
+          aria-label="Quitar condición"
         />
       ) : (
-        <span className="hidden md:block" />
+        <span className="hidden md:block" aria-hidden />
       )}
     </div>
   );

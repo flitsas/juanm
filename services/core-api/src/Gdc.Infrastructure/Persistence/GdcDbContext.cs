@@ -31,6 +31,7 @@ public sealed class GdcDbContext : DbContext
     public DbSet<ActivationToken> ActivationTokens => Set<ActivationToken>();
     public DbSet<PasswordResetToken> PasswordResetTokens => Set<PasswordResetToken>();
     public DbSet<RevokedToken> RevokedTokens => Set<RevokedToken>();
+    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
     public DbSet<Comparendo> Comparendos => Set<Comparendo>();
 
