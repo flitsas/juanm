@@ -141,10 +141,12 @@ public sealed class GdcPlantillaService(
         }
     }
 
+#pragma warning disable CA1822 // Servicio inyectable por DI; la instancia es intencional.
     public SystemVariableListResponse GetSystemVariables() =>
         new(SystemVariableCatalog.All
             .Select(v => new SystemVariableDto(v.Key, v.Label, v.Source, v.DataType))
             .ToList());
+#pragma warning restore CA1822
 
     public async Task<PdfTemplateDetailDto?> UpdateFieldMappingsAsync(
         Guid templateId,
@@ -241,7 +243,7 @@ public sealed class GdcPlantillaService(
             ParseChoiceOptions(field.ChoiceOptionsJson),
             field.SortOrder);
 
-    private static IReadOnlyList<string>? ParseChoiceOptions(string? json)
+    private static List<string>? ParseChoiceOptions(string? json)
     {
         if (string.IsNullOrWhiteSpace(json))
         {
