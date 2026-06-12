@@ -70,6 +70,7 @@
     <PackageVersion Include="AWSSDK.S3" Version="3.7.410" />
     <!-- FluentValidation (validators por command en Flit.Modules.*). -->
     <PackageVersion Include="FluentValidation" Version="11.10.0" />
+    <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="11.10.0" />
     <!-- DI abstractions para librerías que exponen AddXxx() sin depender de ASP.NET. -->
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.9" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.9" />

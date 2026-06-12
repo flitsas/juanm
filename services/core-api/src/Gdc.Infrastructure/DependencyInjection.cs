@@ -4,6 +4,9 @@ using Gdc.Infrastructure.Dgc.Renting;
 using Gdc.Infrastructure.Notif;
 using Gdc.Infrastructure.Notif.EmailSenders;
 using Gdc.Infrastructure.Persistence;
+using Gdc.Infrastructure.Reglas;
+using Gdc.Modules.Reglas.Application.Rules.Validators;
+using FluentValidation;
 using Gdc.Modules.Dgc.Application.Abstractions;
 using Gdc.Modules.Notif.Application.Abstractions;
 using Microsoft.EntityFrameworkCore;
@@ -56,6 +59,8 @@ public static class DependencyInjection
         services.AddScoped<NotifProviderService>();
         services.AddScoped<NotifTemplateService>();
         services.AddScoped<NotifRuleService>();
+        services.AddValidatorsFromAssemblyContaining<CreateReglasRuleRequestValidator>();
+        services.AddScoped<ReglasRuleService>();
         services.AddScoped<NotifQueueService>();
         services.AddScoped<NotifSwitchService>();
         services.AddScoped<NotifDispatchJob>();

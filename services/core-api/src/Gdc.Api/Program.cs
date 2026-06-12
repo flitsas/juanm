@@ -103,6 +103,7 @@ app.MapNotifCompanyEndpoints();
 app.MapNotifProviderEndpoints();
 app.MapNotifTemplateEndpoints();
 app.MapNotifRuleEndpoints();
+app.MapReglasRuleEndpoints();
 
 app.Run();
 

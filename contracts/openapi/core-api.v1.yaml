@@ -1066,6 +1066,118 @@ paths:
           description: Switch actualizado
         "400":
           description: Sin proveedor activo
+  /api/v1/reglas/rules:
+    get:
+      operationId: listReglasRules
+      summary: Lista reglas dinámicas DP del tenant
+      tags: [Reglas]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Reglas configuradas
+    post:
+      operationId: createReglasRule
+      summary: Crea regla dinámica con árbol de condiciones
+      tags: [Reglas]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateReglasRuleRequest"
+      responses:
+        "201":
+          description: Regla creada
+        "400":
+          description: Validación fallida
+  /api/v1/reglas/rules/{id}:
+    get:
+      operationId: getReglasRule
+      summary: Obtiene regla dinámica por id
+      tags: [Reglas]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Regla encontrada
+        "404":
+          description: No encontrada
+    put:
+      operationId: updateReglasRule
+      summary: Actualiza regla dinámica y condiciones
+      tags: [Reglas]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateReglasRuleRequest"
+      responses:
+        "200":
+          description: Regla actualizada
+        "400":
+          description: Validación fallida
+        "404":
+          description: No encontrada
+    delete:
+      operationId: deleteReglasRule
+      summary: Elimina regla dinámica (soft delete)
+      tags: [Reglas]
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Eliminada
+        "404":
+          description: No encontrada
   /health:
     get:
       operationId: getHealth
@@ -1441,3 +1553,93 @@ components:
       properties:
         dispatchEnabled:
           type: boolean
+    ReglasConditionNode:
+      type: object
+      required: [nodeType]
+      properties:
+        nodeType:
+          type: string
+          enum: [group, predicate]
+        logicOperator:
+          type: string
+          enum: [and, or]
+          nullable: true
+        fieldKey:
+          type: string
+          enum: [estado, numero_comparendo, placa, infractor_nombre, fecha_comparendo, fecha_notificacion, destino_email]
+          nullable: true
+        comparisonOperator:
+          type: string
+          enum: [eq, neq, gt, lt, contains, not_contains]
+          nullable: true
+        comparisonValue:
+          type: string
+          nullable: true
+        children:
+          type: array
+          items:
+            $ref: "#/components/schemas/ReglasConditionNode"
+          nullable: true
+    ReglasRuleResponse:
+      type: object
+      required: [id, name, isActive, pdfTemplateId, emailSubject, emailBodyHtml, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        isActive:
+          type: boolean
+        pdfTemplateId:
+          type: string
+          format: uuid
+        emailSubject:
+          type: string
+        emailBodyHtml:
+          type: string
+        secretariatContactId:
+          type: string
+          format: uuid
+          nullable: true
+        conditionRoot:
+          $ref: "#/components/schemas/ReglasConditionNode"
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+          nullable: true
+    CreateReglasRuleRequest:
+      type: object
+      required: [name, isActive, pdfTemplateId, emailSubject, emailBodyHtml]
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        isActive:
+          type: boolean
+        pdfTemplateId:
+          type: string
+          format: uuid
+        emailSubject:
+          type: string
+        emailBodyHtml:
+          type: string
+        secretariatContactId:
+          type: string
+          format: uuid
+          nullable: true
+        conditionRoot:
+          $ref: "#/components/schemas/ReglasConditionNode"
+          nullable: true
+    UpdateReglasRuleRequest:
+      allOf:
+        - $ref: "#/components/schemas/CreateReglasRuleRequest"
