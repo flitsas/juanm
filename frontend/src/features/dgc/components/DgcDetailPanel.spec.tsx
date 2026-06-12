@@ -51,6 +51,26 @@ vi.mock("../api/fetch-email-evidence", () => ({
   }),
 }));
 
+vi.mock("@/features/plantillas/api/use-plantillas", () => ({
+  useDerechosPeticionList: () => ({
+    data: {
+      items: [
+        {
+          id: "dp-1",
+          comparendoId: "cmp-1",
+          templateId: "tpl-1",
+          templateVersion: 1,
+          estado: "NoEnviado",
+          generatedAt: "2026-06-12T08:00:00Z",
+          downloadPath: "/api/v1/gdc/derechos-peticion/dp-1/download",
+        },
+      ],
+    },
+    isLoading: false,
+    isError: false,
+  }),
+}));
+
 const summary: ComparendoMaestraItem = {
   id: "cmp-1",
   estado: "Pendiente",
@@ -85,13 +105,14 @@ describe("DgcDetailPanel", () => {
     expect(screen.getByRole("tab", { name: "Log de correos" })).toBeTruthy();
   });
 
-  it("muestra sección DP solo lectura en pestaña Detalle", async () => {
+  it("muestra grilla de derechos de petición en pestaña Detalle", async () => {
     renderWithQueryClient(
       <DgcDetailPanel comparendoId="cmp-1" summaryItem={summary} onClose={vi.fn()} />,
     );
 
-    expect(await screen.findByTestId("dgc-dp-readonly")).toBeTruthy();
-    expect(screen.getByText("DP-PENDIENTE")).toBeTruthy();
+    expect(await screen.findByTestId("gdc-dp-section")).toBeTruthy();
+    expect(screen.getByTestId("gdc-dp-grid")).toBeTruthy();
+    expect(screen.getByText("No enviado")).toBeTruthy();
   });
 
   it("abre modal con HTML de evidencia desde log de correos", async () => {

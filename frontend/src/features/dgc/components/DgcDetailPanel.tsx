@@ -15,8 +15,8 @@ import {
   DETAIL_PANEL_TABS,
   type DetailPanelTab,
 } from "../lib/detail-panel.types";
-import { formatDpReadonly } from "../lib/format-dp-readonly";
 import { formatMaestraCell } from "../lib/format-maestra-cell";
+import { DgcDpGrid } from "./DgcDpGrid";
 import { DgcEmailEvidenceModal } from "./DgcEmailEvidenceModal";
 
 type DgcDetailPanelProps = {
@@ -108,7 +108,6 @@ export function DgcDetailPanel({
       : null;
   const item = detailQuery.data ?? summaryItem;
   const emails = emailsQuery.data?.items ?? [];
-  const dp = formatDpReadonly(item?.dp);
 
   if (!comparendoId || !mounted) return null;
 
@@ -200,28 +199,11 @@ export function DgcDetailPanel({
               <DetailRow label="Pago" value={item.pago ?? "—"} />
               <DetailRow label="Fuente" value={item.fuente} />
 
-              <section
-                className="mt-4 rounded-2xl border border-[var(--border)] bg-[var(--muted)]/30 p-4"
-                data-testid="dgc-dp-readonly"
-              >
+              <section className="mt-4 space-y-3" data-testid="gdc-dp-section">
                 <h3 className="text-xs font-semibold uppercase tracking-wide text-[var(--muted-foreground)]">
-                  Trámite DP (solo lectura)
+                  Derechos de petición
                 </h3>
-                <p className="mt-2 text-xs text-[var(--muted-foreground)]">
-                  Consulta de estado — generación de documentos en Feature #9564.
-                </p>
-                {dp.isLink && dp.href ? (
-                  <a
-                    href={dp.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-2 inline-block text-sm font-medium text-[var(--action)] underline"
-                  >
-                    {dp.label}
-                  </a>
-                ) : (
-                  <p className="mt-2 text-sm font-medium text-[var(--deep)]">{dp.label}</p>
-                )}
+                <DgcDpGrid comparendoId={comparendoId} />
               </section>
             </div>
           ) : null}
