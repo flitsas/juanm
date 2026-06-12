@@ -47,7 +47,7 @@ describe("auth-api", () => {
 
     await logout("jwt-abc");
     expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringContaining("/auth/logout"),
+      expect.stringContaining("/api/v1/auth/logout"),
       expect.objectContaining({
         method: "POST",
         headers: expect.objectContaining({
