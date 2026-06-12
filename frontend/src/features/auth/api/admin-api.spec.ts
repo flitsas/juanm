@@ -26,7 +26,7 @@ describe("admin-api", () => {
     const result = await listAdminUsers("jwt-super");
     expect(result).toEqual(users);
     expect(fetch).toHaveBeenCalledWith(
-      expect.stringContaining("/auth/admin/users"),
+      expect.stringContaining("/api/v1/auth/admin/users"),
       expect.objectContaining({
         headers: expect.objectContaining({ Authorization: "Bearer jwt-super" }),
       }),
@@ -98,7 +98,7 @@ describe("admin-api", () => {
     await updateRbacMatrix("jwt-super", [{ roleId: "r1", permissionId: "p1", enabled: true }]);
 
     expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringContaining("/auth/rbac/matrix"),
+      expect.stringContaining("/api/v1/auth/rbac/matrix"),
       expect.objectContaining({
         method: "PUT",
         body: JSON.stringify({

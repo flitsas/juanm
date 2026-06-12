@@ -18,7 +18,7 @@ public class RbacMatrixEndpointsTests
         await factory.SeedAsync(AuthTestData.SeedMultiTenantUsersAsync);
         var client = await CreateSuperAdminClientAsync(factory);
 
-        var response = await client.GetAsync("/auth/rbac/matrix");
+        var response = await client.GetAsync("/api/v1/auth/rbac/matrix");
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         var matrix = await response.Content.ReadFromJsonAsync<MatrixDto>(JsonOptions);
@@ -34,7 +34,7 @@ public class RbacMatrixEndpointsTests
         await factory.SeedAsync(AuthTestData.SeedMultiTenantUsersAsync);
         var client = await CreateSuperAdminClientAsync(factory);
 
-        var update = await client.PutAsJsonAsync("/auth/rbac/matrix", new
+        var update = await client.PutAsJsonAsync("/api/v1/auth/rbac/matrix", new
         {
             assignments = new[]
             {
@@ -43,7 +43,7 @@ public class RbacMatrixEndpointsTests
         });
         Assert.Equal(HttpStatusCode.NoContent, update.StatusCode);
 
-        var get = await client.GetAsync("/auth/rbac/matrix");
+        var get = await client.GetAsync("/api/v1/auth/rbac/matrix");
         var matrix = await get.Content.ReadFromJsonAsync<MatrixDto>(JsonOptions);
         var op = matrix!.Roles.Single(r => r.Code == "Operator");
         Assert.Contains(AuthPermissionIds.UsersWrite, op.PermissionIds);
@@ -59,7 +59,7 @@ public class RbacMatrixEndpointsTests
         var token = await LoginAsync(client, AuthTestData.Email);
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        var response = await client.PutAsJsonAsync("/auth/rbac/matrix", new
+        var response = await client.PutAsJsonAsync("/api/v1/auth/rbac/matrix", new
         {
             assignments = new[]
             {
@@ -80,7 +80,7 @@ public class RbacMatrixEndpointsTests
         var token = await LoginAsync(client, AuthTestData.Email);
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        var response = await client.GetAsync("/auth/rbac/matrix");
+        var response = await client.GetAsync("/api/v1/auth/rbac/matrix");
 
         Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
     }
@@ -95,7 +95,7 @@ public class RbacMatrixEndpointsTests
 
     private static async Task<string> LoginAsync(HttpClient client, string email)
     {
-        var login = await client.PostAsJsonAsync("/auth/login", new
+        var login = await client.PostAsJsonAsync("/api/v1/auth/login", new
         {
             email,
             password = AuthTestData.Password,

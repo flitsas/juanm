@@ -7,7 +7,7 @@ import type {
 } from "../types";
 
 export async function login(payload: LoginPayload): Promise<AuthSession> {
-  const res = await fetch(`${getApiBaseUrl()}/auth/login`, {
+  const res = await fetch(`${getApiBaseUrl()}/api/v1/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
@@ -22,7 +22,7 @@ export async function login(payload: LoginPayload): Promise<AuthSession> {
 }
 
 export async function logout(accessToken: string): Promise<void> {
-  const res = await fetch(`${getApiBaseUrl()}/auth/logout`, {
+  const res = await fetch(`${getApiBaseUrl()}/api/v1/auth/logout`, {
     method: "POST",
     headers: { Authorization: `Bearer ${accessToken}` },
   });
@@ -35,7 +35,7 @@ export async function logout(accessToken: string): Promise<void> {
 export async function activateAccount(
   payload: ActivateAccountPayload,
 ): Promise<ActivateAccountResult> {
-  const res = await fetch(`${getApiBaseUrl()}/auth/users/activate`, {
+  const res = await fetch(`${getApiBaseUrl()}/api/v1/auth/users/activate`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),

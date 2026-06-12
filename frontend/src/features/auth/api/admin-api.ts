@@ -30,28 +30,28 @@ async function authFetch<T>(path: string, accessToken: string, init?: RequestIni
 }
 
 export async function listAdminUsers(accessToken: string): Promise<UserSummary[]> {
-  return authFetch<UserSummary[]>("/auth/admin/users", accessToken);
+  return authFetch<UserSummary[]>("/api/v1/auth/admin/users", accessToken);
 }
 
 export async function inviteUser(
   accessToken: string,
   payload: InviteUserPayload,
 ): Promise<InviteUserResult> {
-  return authFetch<InviteUserResult>("/auth/users/invite", accessToken, {
+  return authFetch<InviteUserResult>("/api/v1/auth/users/invite", accessToken, {
     method: "POST",
     body: JSON.stringify(payload),
   });
 }
 
 export async function getRbacMatrix(accessToken: string): Promise<RbacMatrix> {
-  return authFetch<RbacMatrix>("/auth/rbac/matrix", accessToken);
+  return authFetch<RbacMatrix>("/api/v1/auth/rbac/matrix", accessToken);
 }
 
 export async function updateRbacMatrix(
   accessToken: string,
   assignments: RbacAssignmentUpdate[],
 ): Promise<void> {
-  await authFetch<void>("/auth/rbac/matrix", accessToken, {
+  await authFetch<void>("/api/v1/auth/rbac/matrix", accessToken, {
     method: "PUT",
     body: JSON.stringify({ assignments }),
   });

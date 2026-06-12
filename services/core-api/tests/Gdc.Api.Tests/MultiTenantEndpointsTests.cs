@@ -20,7 +20,7 @@ public class MultiTenantEndpointsTests
         var token = await LoginAsync(client, AuthTestData.Email);
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        var response = await client.GetAsync("/auth/users");
+        var response = await client.GetAsync("/api/v1/auth/users");
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
         var users = await response.Content.ReadFromJsonAsync<List<UserDto>>(JsonOptions);
@@ -39,7 +39,7 @@ public class MultiTenantEndpointsTests
         var token = await LoginAsync(client, AuthTestData.Email);
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        var response = await client.GetAsync($"/auth/users/{AuthTestData.UserBId}");
+        var response = await client.GetAsync($"/api/v1/auth/users/{AuthTestData.UserBId}");
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 
@@ -53,7 +53,7 @@ public class MultiTenantEndpointsTests
         var token = await LoginAsync(client, AuthTestData.SuperAdminEmail);
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        var response = await client.GetAsync("/auth/admin/users");
+        var response = await client.GetAsync("/api/v1/auth/admin/users");
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
         var users = await response.Content.ReadFromJsonAsync<List<UserDto>>(JsonOptions);
@@ -63,7 +63,7 @@ public class MultiTenantEndpointsTests
 
     private static async Task<string> LoginAsync(HttpClient client, string email)
     {
-        var login = await client.PostAsJsonAsync("/auth/login", new
+        var login = await client.PostAsJsonAsync("/api/v1/auth/login", new
         {
             email,
             password = AuthTestData.Password,
