@@ -151,7 +151,9 @@ export function TemplateGenerationDialog({
               }
             }}
             placeholder="Seleccionar comparendo"
-            className="w-full"
+            className="flit-dropdown w-full"
+            panelClassName="flit-dropdown-panel"
+            appendTo={typeof document !== "undefined" ? document.body : undefined}
             filter
             data-testid="gdc-comparendo-select"
           />

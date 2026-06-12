@@ -128,17 +128,21 @@ export function TemplateMappingPanel({
                       onChange={(e) =>
                         updateOverride(field.id, { fieldType: e.value as PlantillaFieldType })
                       }
-                      className="w-full max-w-[180px]"
+                      className="flit-dropdown w-full max-w-[180px]"
+                      panelClassName="flit-dropdown-panel"
+                      appendTo={typeof document !== "undefined" ? document.body : undefined}
                       data-testid={`gdc-field-type-${field.acroformName}`}
                     />
                   </td>
                   <td className="px-4 py-3">
                     <Dropdown
-                      value={systemVariable}
+                      value={systemVariable || null}
                       options={variableOptions}
                       onChange={(e) => updateOverride(field.id, { systemVariable: e.value })}
                       placeholder="Seleccionar variable"
-                      className="w-full max-w-[280px]"
+                      className="flit-dropdown w-full max-w-[280px]"
+                      panelClassName="flit-dropdown-panel"
+                      appendTo={typeof document !== "undefined" ? document.body : undefined}
                       data-testid={`gdc-field-variable-${field.acroformName}`}
                     />
                   </td>
